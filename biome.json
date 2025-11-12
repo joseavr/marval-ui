@@ -1,0 +1,70 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 90,
+		"includes": ["apps/v1/src/**"]
+	},
+	"javascript": {
+		"formatter": {
+			"arrowParentheses": "always",
+			"quoteStyle": "double",
+			"jsxQuoteStyle": "double",
+			"bracketSameLine": false,
+			"bracketSpacing": true,
+			"semicolons": "asNeeded",
+			"trailingCommas": "none"
+		}
+	},
+	"json": {
+		"formatter": {
+			"enabled": true,
+			"indentStyle": "tab"
+		}
+	},
+
+	"linter": {
+		"enabled": true,
+		"includes": ["apps/v1/src/**"],
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedImports": {
+					"level": "warn",
+					"fix": "safe"
+				},
+				"noUnusedVariables": "warn",
+				"noUnsafeOptionalChaining": "error",
+				"noUnsafeFinally": "error",
+				"useUniqueElementIds": "off"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"attributes": ["className"],
+						"functions": ["cn", "clsx", "cva"]
+					}
+				}
+			}
+		}
+	},
+
+	"assist": {
+		"enabled": true,
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}
+

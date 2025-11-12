@@ -1,0 +1,26 @@
+{
+  "editor.defaultFormatter": "biomejs.biome",
+  "[javascript][javascriptreact][typescript][typescriptreact][json][css][tailwindcss]": {
+		"editor.defaultFormatter": "biomejs.biome"
+	},
+
+  "editor.formatOnSave": true,
+	"editor.formatOnPaste": false,
+	"editor.codeActionsOnSave": {
+		"source.addMissingImports.ts": "explicit",
+		"quickfix.biome": "explicit",
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll.biome": "explicit"
+	},
+
+  // Support Tailwindcss inside these functions 
+  "tailwindCSS.classFunctions": ["cn", "cva", "clsx"],
+	"editor.tabSize": 2,
+	"git.autofetch": true,
+	"editor.suggest.insertMode": "replace",
+	"files.insertFinalNewline": true,
+	"typescript.validate.enable": true,
+	"javascript.validate.enable": true,
+
+	"diffEditor.ignoreTrimWhitespace": false,
+}
