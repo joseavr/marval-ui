@@ -29,6 +29,11 @@
 			"indentStyle": "tab"
 		}
 	},
+	"css": {
+		"parser": {
+			"tailwindDirectives": true
+		}
+	},
 
 	"linter": {
 		"enabled": true,
@@ -67,4 +72,3 @@
 		}
 	}
 }
-
