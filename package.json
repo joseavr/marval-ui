@@ -1,35 +1,43 @@
 {
-  "name": "joseui-monorepo",
+  "name": "marval-ui",
   "version": "0.1.0",
   "private": true,
-  "description": "JoseUI component library monorepo",
+  "description": "Marval UI component library monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean && rm -rf node_modules .turbo"
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "prepare": "husky",
+    "cm": "cz"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",
-    "@changesets/cli": "2.27.9",
-    "@commitlint/cli": "19.6.0",
-    "@commitlint/config-conventional": "19.6.0",
-    "husky": "9.1.7",
+    "@changesets/cli": "2.27.12",
+    "@commitlint/cli": "20.1.0",
+    "@commitlint/config-conventional": "20.0.0",
+    "@commitlint/cz-commitlint": "^20.1.0",
+    "commitizen": "^4.3.1",
+    "husky": "^9.1.7",
+    "inquirer": "^9.3.8",
     "lint-staged": "15.2.10",
     "turbo": "2.3.3",
     "typescript": "5.6.3"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx,json,css,md}": [
-      "biome check --write"
-    ]
+  "config": {
+    "commitizen": {
+      "path": "@commitlint/cz-commitlint"
+    }
   },
   "packageManager": "pnpm@9.15.0",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "pnpm": ">=9.0.0"
   }
 }
-

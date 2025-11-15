@@ -1,32 +1,132 @@
 {
   "extends": ["@commitlint/config-conventional"],
   "rules": {
-    "type-enum": [
-      2,
-      "always",
-      [
-        "feat",
-        "fix",
-        "docs",
-        "style",
-        "refactor",
-        "perf",
-        "test",
-        "build",
-        "ci",
-        "chore",
-        "revert",
-        "security",
-        "config",
-        "release"
-      ]
-    ],
+    "type-enum": [2, "always", [
+      "feat",
+      "fix",
+      "docs",
+      "style",
+      "refactor",
+      "test",
+      "build",
+      "chore",
+      "release",
+      "revert",
+      "perf",
+      "enh",
+      "ci",
+      "security"
+    ]],
+    "scope-enum": [2, "always", ["web", "cli"]],
     "type-case": [2, "always", "lower-case"],
     "type-empty": [2, "never"],
     "scope-case": [2, "always", "lower-case"],
     "subject-empty": [2, "never"],
     "subject-full-stop": [2, "never", "."],
     "header-max-length": [2, "always", 100]
+  },
+  "prompt": {
+    "settings": {},
+    "messages": {
+      "skip": "':skip",
+      "max": "upper %d chars",
+      "min": "%d chars at least",
+      "emptyWarning": "can not be empty",
+      "upperLimitWarning": "over limit",
+      "lowerLimitWarning": "below limit"
+    },
+    "questions": {
+      "type": {
+        "description": "Select the type of change that you're committing:",
+        "enum": {
+          "feat": {
+            "description": "Add a new feature.",
+            "title": "Features"
+          },
+          "fix": {
+            "description": "Submit a bug fix.",
+            "title": "Bug Fixes"
+          },
+          "docs": {
+            "description": "Documentation changes.",
+            "title": "Documentation"
+          },
+          "style": {
+            "description": "Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc).",
+            "title": "Styles"
+          },
+          "refactor": {
+            "description": "Neither fixes a bug nor adds a feature.",
+            "title": "Code Refactoring"
+          },
+          "test": {
+            "description": "Add or modify tests.",
+            "title": "Tests"
+          },
+          "build": {
+            "description": "Changes that affect build, bundling, deployment artifacts (Vite, Turborepo, Terraform).",
+            "title": "Builds"
+          },
+          "chore": {
+            "description": "Other changes that don't modify src, test files, build, or CI.",
+            "title": "Chores"
+          },
+          "release": {
+            "description": "Publish a new package version.",
+            "title": "Package Release"
+          },
+          "revert": {
+            "description": "Revert a previous commit.",
+            "title": "Reverts"
+          },
+          "perf": {
+            "description": "Improve performance without API changes (speed, render, response times, DB queries).",
+            "title": "Performance"
+          },
+          "enh": {
+            "description": "Improve an existing feature (UI, UX, outputs).",
+            "title": "Enhancement"
+          },
+          "ci": {
+            "description": "Changes to CI config files and scripts.",
+            "title": "Continuous Integrations"
+          },
+          "security": {
+            "description": "Changes that fix vulnerabilities (authentication, permissions).",
+            "title": "Security Improvements"
+          }
+        }
+      },
+      "scope": {
+        "description":
+          "What is the scope of this change (e.g. component or file name)"
+      },
+      "subject": {
+        "description": "Write a short, imperative tense description of the change"
+      },
+      "body": {
+        "description": "Provide a longer description of the change"
+      },
+      "isBreaking": {
+        "description": "Are there any breaking changes?"
+      },
+      "breakingBody": {
+        "description":
+          "A BREAKING CHANGE commit requires a body. Please enter a longer description of the commit itself"
+      },
+      "breaking": {
+        "description": "Describe the breaking changes"
+      },
+      "isIssueAffected": {
+        "description": "Does this change affect any open issues?"
+      },
+      "issuesBody": {
+        "description":
+          "If issues are closed, the commit requires a body. Please enter a longer description of the commit itself"
+      },
+      "issues": {
+        "description": "Add issue references (e.g. 'fix #123', 're #123'.)"
+      }
+    }
   }
 }
-
