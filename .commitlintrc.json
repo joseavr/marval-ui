@@ -4,17 +4,17 @@
     "type-enum": [2, "always", [
       "feat",
       "fix",
+      "chore",
       "docs",
       "style",
       "refactor",
       "test",
       "build",
-      "chore",
+      "ci",
       "release",
       "revert",
       "perf",
       "enh",
-      "ci",
       "security"
     ]],
     "scope-enum": [2, "always", ["web", "cli"]],
@@ -47,6 +47,10 @@
             "description": "Submit a bug fix.",
             "title": "Bug Fixes"
           },
+          "chore": {
+            "description": "Other changes that don't modify src, test files, build, or CI.",
+            "title": "Chores"
+          },
           "docs": {
             "description": "Documentation changes.",
             "title": "Documentation"
@@ -67,9 +71,9 @@
             "description": "Changes that affect build, bundling, deployment artifacts (Vite, Turborepo, Terraform).",
             "title": "Builds"
           },
-          "chore": {
-            "description": "Other changes that don't modify src, test files, build, or CI.",
-            "title": "Chores"
+          "ci": {
+            "description": "Changes to CI config files and scripts.",
+            "title": "Continuous Integrations"
           },
           "release": {
             "description": "Publish a new package version.",
@@ -86,10 +90,6 @@
           "enh": {
             "description": "Improve an existing feature (UI, UX, outputs).",
             "title": "Enhancement"
-          },
-          "ci": {
-            "description": "Changes to CI config files and scripts.",
-            "title": "Continuous Integrations"
           },
           "security": {
             "description": "Changes that fix vulnerabilities (authentication, permissions).",
