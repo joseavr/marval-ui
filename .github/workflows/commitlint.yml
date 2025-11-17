@@ -1,5 +1,10 @@
 name: Lint Commit Messages
-on: [pull_request, push]
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
 
 permissions:
   contents: read
