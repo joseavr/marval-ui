@@ -23,7 +23,7 @@ export const mdxComponents = {
 					.replace(/\?/g, "")
 					.toLowerCase()}
 				className={cn(
-					"[&+.steps]:!mt-0 [&+.steps>h3]:!mt-4 [&+h3]:!mt-6 [&+p]:!mt-4 mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+]*:[code]:text-xl",
+					"[&+.steps]:mt-0! [&+.steps>h3]:mt-4! [&+h3]:mt-6! [&+p]:mt-4! mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+]*:[code]:text-xl",
 					className
 				)}
 				{...props}
@@ -33,7 +33,7 @@ export const mdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"[&+p]:!mt-4 mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight *:[code]:text-xl",
+				"[&+p]:mt-4! mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight [code]:*:text-xl",
 				className
 			)}
 			{...props}
@@ -65,7 +65,7 @@ export const mdxComponents = {
 	),
 	p: ({ className, ...props }: React.ComponentProps<"p">) => (
 		<p
-			className={cn("leading-relaxed [&:not(:first-child)]:mt-6", className)}
+			className={cn("leading-relaxed not-first:mt-6", className)}
 			{...props}
 		/>
 	),
@@ -107,7 +107,7 @@ export const mdxComponents = {
 	th: ({ className, ...props }: React.ComponentProps<"th">) => (
 		<th
 			className={cn(
-				"px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right",
+				"px-4 py-2 text-left font-bold [[align=center]]:text-center [[align=right]]:text-right",
 				className
 			)}
 			{...props}
@@ -116,7 +116,7 @@ export const mdxComponents = {
 	td: ({ className, ...props }: React.ComponentProps<"td">) => (
 		<td
 			className={cn(
-				"whitespace-nowrap px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right",
+				"whitespace-nowrap px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right",
 				className
 			)}
 			{...props}
@@ -126,7 +126,7 @@ export const mdxComponents = {
 		return (
 			<pre
 				className={cn(
-					"no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-none has-[[data-slot=tabs]]:p-0 has-[[data-highlighted-line]]:px-0 has-[[data-line-numbers]]:px-0",
+					"no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-hidden has-data-[slot=tabs]:p-0 has-data-highlighted-line:px-0 has-data-line-numbers:px-0",
 					className
 				)}
 				{...props}

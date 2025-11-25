@@ -41,7 +41,7 @@ export function Search() {
 				placeholder="Search documentation..."
 				value={query}
 				onChange={(e) => handleSearch(e.target.value)}
-				className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+				className="w-full rounded-md border border-input bg-background px-4 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
 			/>
 			{query && (
 				<div className="absolute top-full z-50 mt-2 w-full rounded-md border bg-background shadow-lg">

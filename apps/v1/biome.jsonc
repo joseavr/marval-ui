@@ -1,0 +1,64 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "extends": ["../../biome.json"],
+  "files": {
+    "includes": ["!node_modules", "!.next", "!dist", "!build", "!out"]
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              // react
+              ["react", "react/**"],
+              
+              // next
+              ["next", "next/**"],
+
+              ":BLANK_LINE:",
+
+              // third party: packages
+              ":PACKAGE:",
+
+              ":BLANK_LINE:",
+
+              // @workspace/*
+              ["@workspace", "@workspace/**"],
+
+              ":BLANK_LINE:",
+
+              // types
+              ["types", "@/types", "@/types/**"],
+
+              // config
+              ["@/config", "@/config/**"],
+
+              // lib
+              ["@/lib", "@/lib/**"],
+
+              // hooks
+              ["@/hooks", "@/hooks/**"],
+
+              // ui components
+              ["@/components/ui", "@/components/ui/**"],
+
+              // other components
+              ["@/components", "@/components/**"],
+
+              // styles
+              ["@/styles", "@/styles/**"],
+
+              ":BLANK_LINE:",
+
+              // everything relative last
+              ":PATH:"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
+
