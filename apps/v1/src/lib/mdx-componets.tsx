@@ -23,7 +23,7 @@ export const mdxComponents = {
 					.replace(/\?/g, "")
 					.toLowerCase()}
 				className={cn(
-					"[&+.steps]:mt-0! [&+.steps>h3]:mt-4! [&+h3]:mt-6! [&+p]:mt-4! mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+]*:[code]:text-xl",
+					"mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+.steps>h3]:mt-4! [&+.steps]:mt-0! [&+h3]:mt-6! [&+p]:mt-4! [&+]*:[code]:text-xl",
 					className
 				)}
 				{...props}
@@ -33,7 +33,7 @@ export const mdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"[&+p]:mt-4! mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight [code]:*:text-xl",
+				"mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight [&+p]:mt-4! [code]:*:text-xl",
 				className
 			)}
 			{...props}
@@ -65,7 +65,7 @@ export const mdxComponents = {
 	),
 	p: ({ className, ...props }: React.ComponentProps<"p">) => (
 		<p
-			className={cn("leading-relaxed not-first:mt-6", className)}
+			className={cn("not-first:mt-6 leading-relaxed", className)}
 			{...props}
 		/>
 	),

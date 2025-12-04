@@ -21,6 +21,11 @@
 	"files.insertFinalNewline": true,
 	"typescript.validate.enable": true,
 	"javascript.validate.enable": true,
-
+	
+	// git
 	"diffEditor.ignoreTrimWhitespace": false,
+
+	// language settings
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"javascript.updateImportsOnFileMove.enabled": "always"
 }

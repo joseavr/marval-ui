@@ -4,6 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+	--breakpoint-3xl: 1600px;
+	--breakpoint-4xl: 2000px;
+
 	--color-neutral: var(--color-red-50);
 	--color-neutral-border: var(--color-red-100);
 	--color-neutral-foreground: var(--color-red-800);
@@ -16,15 +19,14 @@
 
 	--color-warning: var(--color-amber-50);
 	--color-warning-border: var(--color-amber-100);
-  --color-warning-foreground: var(--color-amber-800);
-  --color-warning-foreground-dark: var(--color-amber-900);
+	--color-warning-foreground: var(--color-amber-800);
+	--color-warning-foreground-dark: var(--color-amber-900);
 
 	--color-error: var(--color-rose-50);
 	--color-error-border: var(--color-rose-100);
 	--color-error-foreground: var(--color-rose-800);
 	--color-error-foreground-dark: var(--color-rose-900);
-	
-	/* ----------------------------------- */
+
 	--radius-lg: var(--radius);
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-sm: calc(var(--radius) - 4px);
@@ -69,18 +71,24 @@
 	--color-chart-5: var(--chart-5);
 
 	--color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+	--color-sidebar-foreground: var(--sidebar-foreground);
+	--color-sidebar-primary: var(--sidebar-primary);
+	--color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+	--color-sidebar-accent: var(--sidebar-accent);
+	--color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+	--color-sidebar-border: var(--sidebar-border);
+	--color-sidebar-ring: var(--sidebar-ring);
 }
 
 /* Light theme */
 :root {
-	--radius:  0.625rem;
+	/* custom variables */
+	--header-height: 4rem;
+	--sidebar-width: 16rem;
+	--footer-height: 6rem;
+	
+	/* shadcn variables	 */
+	--radius: 0.625rem;
 	--background: oklch(1 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
@@ -154,16 +162,15 @@
 	}
 
 	body {
-		@apply bg-background text-foreground antialiased;
+		@apply bg-background text-foreground antialiased overscroll-none;
 	}
 
 	html {
-		@apply overscroll-y-none scroll-smooth
+		@apply overscroll-y-none scroll-smooth;
 	}
 
-	apply onPress
 	a:active,
-  button:active {
-    @apply opacity-60 md:opacity-100;
-  }
+	button:active {
+		@apply opacity-60 md:opacity-100;
+	}
 }

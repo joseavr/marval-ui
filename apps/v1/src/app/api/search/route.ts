@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+
 import { search } from "@/lib/search";
 
 export async function GET(request: Request) {

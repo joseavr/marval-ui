@@ -5,13 +5,6 @@
 		"clientKind": "git",
 		"useIgnoreFile": true
 	},
-	"formatter": {
-		"enabled": true,
-		"indentStyle": "tab",
-		"indentWidth": 2,
-		"lineWidth": 90,
-		"includes": ["apps/v1/src/**"]
-	},
 	"javascript": {
 		"formatter": {
 			"arrowParentheses": "always",
@@ -34,7 +27,13 @@
 			"tailwindDirectives": true
 		}
 	},
-
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 90,
+		"includes": ["apps/v1/src/**"]
+	},
 	"linter": {
 		"enabled": true,
 		"includes": ["apps/v1/src/**"],
@@ -45,7 +44,10 @@
 					"level": "warn",
 					"fix": "safe"
 				},
-				"noUnusedVariables": "warn",
+				"noUnusedVariables": {
+					"level": "warn",
+					"fix": "none"
+				},
 				"noUnsafeOptionalChaining": "error",
 				"noUnsafeFinally": "error",
 				"useUniqueElementIds": "off"
@@ -59,15 +61,6 @@
 						"functions": ["cn", "clsx", "cva"]
 					}
 				}
-			}
-		}
-	},
-
-	"assist": {
-		"enabled": true,
-		"actions": {
-			"source": {
-				"organizeImports": "on"
 			}
 		}
 	}

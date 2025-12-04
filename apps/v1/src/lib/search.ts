@@ -1,7 +1,7 @@
-import { create, insert, search as oramaSearch } from "@orama/orama";
-import type { Orama, Schema } from "@orama/orama";
-import { readFile, readdir } from "fs/promises";
+import { readdir, readFile } from "fs/promises";
 import { join } from "path";
+import type { Orama, Schema } from "@orama/orama";
+import { create, insert, search as oramaSearch } from "@orama/orama";
 
 const schema = {
 	title: "string",

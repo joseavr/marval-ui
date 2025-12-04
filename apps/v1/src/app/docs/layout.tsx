@@ -1,17 +1,23 @@
-import { Search } from "@/components/search"
+import { DocsSideBar } from "@/components/pages/docs/sidebar"
+import { Footer } from "@/components/shared/footer"
+import { Header } from "@/components/shared/header"
+import { Container } from "@/components/shared/page-container"
+import { BaseLayout } from "@/components/shared/root-layout"
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="min-h-screen">
-			<nav className="border-b">
-				<div className="container mx-auto flex items-center justify-between px-4 py-4">
-					<a href="/" className="font-bold text-xl">
-						Marval UI
-					</a>
-					<Search />
-				</div>
-			</nav>
-			<div className="container mx-auto px-4 py-8">{children}</div>
-		</div>
+		<BaseLayout>
+			<Header />
+			{/* <div className="h-4 w-full"></div> */}
+			<div className="flex flex-1 flex-col">
+				<Container className="relative flex items-start">
+					<DocsSideBar />
+					<main id="rightside" className="h-full w-full">
+						{children}
+					</main>
+				</Container>
+			</div>
+			<Footer />
+		</BaseLayout>
 	)
 }

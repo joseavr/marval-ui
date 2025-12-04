@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Button } from "@/components/ui/button"
 
 export default function Home() {
 	return (
@@ -9,14 +9,11 @@ export default function Home() {
 					A modern component library built with React and Tailwind CSS
 				</p>
 				<div className="flex justify-center gap-4">
-					<Link
-						href="/docs/components"
-						className="rounded-md bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
-					>
-						View Components
-					</Link>
+					<Button className="rounded-lg" variant="secondary">
+						Comming soon
+					</Button>
 				</div>
 			</div>
 		</main>
-	);
+	)
 }

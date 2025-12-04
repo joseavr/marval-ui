@@ -1,0 +1,24 @@
+import type { SVGProps } from "react"
+
+export function ProPlanIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
+	return (
+		<svg
+			className={className}
+			width="24"
+			height="24"
+			viewBox="0 0 24 24"
+			fill="none"
+			xmlns="http://www.w3.org/2000/svg"
+			{...props}
+		>
+			<title>Pro Icon</title>
+			<path
+				d="M2 10L5.40627 4.8906C5.7772 4.3342 6.40166 4 7.07037 4H12M2 10L12 20M2 10H22M12 20L22 10M12 20L16 10L12 4M12 20L8 10L12 4M22 10L18.5937 4.8906C18.2228 4.3342 17.5983 4 16.9296 4H12"
+				stroke="#000000"
+				strokeWidth="2"
+				strokeLinecap="round"
+				strokeLinejoin="round"
+			></path>
+		</svg>
+	)
+}
