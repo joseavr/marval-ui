@@ -5,10 +5,10 @@ type BaseLayoutProps = {
 	className?: string
 }
 
-export function BaseLayout({ children, className }: BaseLayoutProps) {
+export function PageLayout({ children, className }: BaseLayoutProps) {
 	return (
 		<div
-			id="layout"
+			data-id="page-layout"
 			className={cn(
 				"relative z-10 flex min-h-svh flex-col bg-background text-sm [scrollbar-gutter:stable]",
 				className

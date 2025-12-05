@@ -15,7 +15,7 @@ export function DocsSideBar() {
 	const pathname = usePathname()
 
 	return (
-		<aside className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height)-var(--footer-height))] min-w-(--sidebar-width) max-w-(--sidebar-width) flex-1 flex-col pt-8">
+		<aside data-id="docs-leftside" className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height)-var(--footer-height))] min-w-(--sidebar-width) max-w-(--sidebar-width) flex-1 flex-col pt-8">
 			<ScrollArea>
 				<nav
 					className="flex flex-col gap-8"
