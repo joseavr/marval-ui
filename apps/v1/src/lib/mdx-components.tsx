@@ -1,29 +1,18 @@
 import { cn } from "@/lib/utils"
 
-/**
- * Override HTML elements and create own  MDX components
- */
-export const mdxComponents = {
+const defaultMdxComponents = {
 	h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
 		<h1
-			className={cn(
-				"mt-2 scroll-m-28 font-bold font-heading text-3xl tracking-tight",
-				className
-			)}
+			className={cn("mt-2 scroll-m-28 font-bold text-3xl tracking-tight", className)}
 			{...props}
 		/>
 	),
 	h2: ({ className, ...props }: React.ComponentProps<"h2">) => {
 		return (
 			<h2
-				id={props.children
-					?.toString()
-					.replace(/ /g, "-")
-					.replace(/'/g, "")
-					.replace(/\?/g, "")
-					.toLowerCase()}
 				className={cn(
-					"mt-10 scroll-m-28 font-heading font-medium text-xl tracking-tight first:mt-0 lg:mt-16 [&+.steps>h3]:mt-4! [&+.steps]:mt-0! [&+h3]:mt-6! [&+p]:mt-4! [&+]*:[code]:text-xl",
+					"mt-10 scroll-m-28 font-medium text-xl tracking-tight first:mt-0 lg:mt-16",
+					"[&+.steps>h3]:mt-4! [&+.steps]:mt-0! [&+h3]:mt-6! [&+p]:mt-4! [&+]*:[code]:text-xl",
 					className
 				)}
 				{...props}
@@ -33,7 +22,8 @@ export const mdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"mt-12 scroll-m-28 font-heading font-medium text-lg tracking-tight [&+p]:mt-4! [code]:*:text-xl",
+				"mt-12 scroll-m-28 font-medium text-lg tracking-tight",
+				"[&+p]:mt-4! [code]:*:text-xl",
 				className
 			)}
 			{...props}
@@ -41,10 +31,7 @@ export const mdxComponents = {
 	),
 	h4: ({ className, ...props }: React.ComponentProps<"h4">) => (
 		<h4
-			className={cn(
-				"mt-8 scroll-m-28 font-heading font-medium text-base tracking-tight",
-				className
-			)}
+			className={cn("mt-8 scroll-m-28 font-medium text-base tracking-tight", className)}
 			{...props}
 		/>
 	),
@@ -64,10 +51,7 @@ export const mdxComponents = {
 		<a className={cn("font-medium underline underline-offset-4", className)} {...props} />
 	),
 	p: ({ className, ...props }: React.ComponentProps<"p">) => (
-		<p
-			className={cn("not-first:mt-6 leading-relaxed", className)}
-			{...props}
-		/>
+		<p className={cn("not-first:mt-6 leading-relaxed", className)} {...props} />
 	),
 	strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
 		<strong className={cn("font-medium", className)} {...props} />
@@ -84,6 +68,7 @@ export const mdxComponents = {
 	blockquote: ({ className, ...props }: React.ComponentProps<"blockquote">) => (
 		<blockquote className={cn("mt-6 border-l-2 pl-6 italic", className)} {...props} />
 	),
+
 	img: ({ className, alt, ...props }: React.ComponentProps<"img">) => (
 		<img className={cn("rounded-md", className)} alt={alt} {...props} />
 	),
@@ -122,22 +107,6 @@ export const mdxComponents = {
 			{...props}
 		/>
 	),
-	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
-		return (
-			<pre
-				className={cn(
-					"no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-hidden has-data-[slot=tabs]:p-0 has-data-highlighted-line:px-0 has-data-line-numbers:px-0",
-					className
-				)}
-				{...props}
-			>
-				{children}
-			</pre>
-		)
-	},
-	figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
-		return <figure className={cn(className)} {...props} />
-	},
 	figcaption: ({ className, children, ...props }: React.ComponentProps<"figcaption">) => {
 		return (
 			<figcaption
@@ -149,6 +118,29 @@ export const mdxComponents = {
 			>
 				{children}
 			</figcaption>
+		)
+	}
+}
+
+/**
+ * Override HTML elements and create own  MDX components
+ */
+export const mdxComponents = {
+	...defaultMdxComponents,
+	figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
+		return <figure className={cn(className)} {...props} />
+	},
+	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
+		return (
+			<pre
+				className={cn(
+					"no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-hidden has-data-[slot=tabs]:p-0 has-data-highlighted-line:px-0 has-data-line-numbers:px-0",
+					className
+				)}
+				{...props}
+			>
+				{children}
+			</pre>
 		)
 	},
 	code: ({ className, ...props }: React.ComponentProps<"code">) => {
