@@ -48,16 +48,20 @@ const defaultMdxComponents = {
 		/>
 	),
 	a: ({ className, ...props }: React.ComponentProps<"a">) => (
-		<a className={cn("font-medium underline underline-offset-4", className)} {...props} />
-	),
-	p: ({ className, ...props }: React.ComponentProps<"p">) => (
-		<p className={cn("not-first:mt-6 leading-relaxed", className)} {...props} />
+		<a
+			className={cn("font-medium underline underline-offset-4", className)}
+			target="_blank"
+			{...props}
+		/>
 	),
 	strong: ({ className, ...props }: React.HTMLAttributes<HTMLElement>) => (
 		<strong className={cn("font-medium", className)} {...props} />
 	),
+	p: ({ className, ...props }: React.ComponentProps<"p">) => (
+		<p className={cn("not-first:mt-6 leading-relaxed", className)} {...props} />
+	),
 	ul: ({ className, ...props }: React.ComponentProps<"ul">) => (
-		<ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
+		<ul className={cn("my-6 mt-4 ml-6 list-disc", className)} {...props} />
 	),
 	ol: ({ className, ...props }: React.ComponentProps<"ol">) => (
 		<ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
@@ -75,6 +79,7 @@ const defaultMdxComponents = {
 	hr: ({ ...props }: React.ComponentProps<"hr">) => (
 		<hr className="my-4 md:my-8" {...props} />
 	),
+	// TODO
 	table: ({ className, ...props }: React.ComponentProps<"table">) => (
 		<div className="no-scrollbar my-6 w-full overflow-y-auto rounded-lg border">
 			<table
@@ -106,7 +111,17 @@ const defaultMdxComponents = {
 			)}
 			{...props}
 		/>
-	),
+	)
+}
+
+/**
+ * Override HTML elements and create own  MDX components
+ */
+export const mdxComponents = {
+	...defaultMdxComponents,
+	figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
+		return <figure className={cn(className)} {...props} />
+	},
 	figcaption: ({ className, children, ...props }: React.ComponentProps<"figcaption">) => {
 		return (
 			<figcaption
@@ -119,16 +134,6 @@ const defaultMdxComponents = {
 				{children}
 			</figcaption>
 		)
-	}
-}
-
-/**
- * Override HTML elements and create own  MDX components
- */
-export const mdxComponents = {
-	...defaultMdxComponents,
-	figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
-		return <figure className={cn(className)} {...props} />
 	},
 	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
 		return (
@@ -153,5 +158,20 @@ export const mdxComponents = {
 				{...props}
 			/>
 		)
-	}
+	},
+	Step: ({ className, ...props }: React.ComponentProps<"h3">) => (
+		<h3
+			className={cn(
+				"mt-8 scroll-m-20 font-heading font-semibold text-xl tracking-tight",
+				className
+			)}
+			{...props}
+		/>
+	),
+	Steps: ({ ...props }) => (
+		<div
+			className="[&>h3]:step steps mb-12 [counter-reset:step] md:ml-4 md:border-l md:pl-8"
+			{...props}
+		/>
+	)
 }

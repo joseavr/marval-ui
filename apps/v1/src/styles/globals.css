@@ -179,3 +179,24 @@
 		cursor: pointer;
 	}
 }
+
+@layer components {
+	.steps {
+		& > h3 {
+			@apply mt-8 mb-4 text-base font-semibold;
+		}
+
+		&:first-child > h3:first-child {
+			@apply mt-0;
+		}
+	}
+
+	.step {
+		counter-increment: step;
+		&::before {
+			@apply md:absolute w-8 h-8 md:w-9 md:h-9 bg-muted rounded-full font-mono font-medium text-center text-base inline-flex items-center justify-center -indent-px border-4 mr-2 border-background;
+			@apply md:ml-[-50px] md:mt-[-4px];
+			content: counter(step);
+		}
+	}
+}
