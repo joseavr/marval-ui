@@ -1,5 +1,17 @@
+import {
+	ArrowNarrowLeft,
+	ArrowNarrowRight,
+	ChevronDown,
+	Copy01,
+	Edit05
+} from "@untitledui/icons"
 import { notFound } from "next/navigation"
 
+import { BugIcon } from "@/components/icons/bug-icon"
+import { GithubIcon } from "@/components/icons/github-icon"
+import { IssueOpenIcon } from "@/components/icons/issue-icon"
+import { Button } from "@/components/ui/button"
+import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
 
@@ -29,12 +41,124 @@ export default async function ComponentPage(props: {
 	}
 	const document = page.data
 	const MDX = document?.body
+	const { title, description, metadata } = document
 
 	return (
 		<div data-id="docs-rightside-divided-in-two" className="flex items-stretch xl:w-full">
-			<article className="flex min-w-0 flex-1 flex-col pt-8">
+			<article className="flex min-w-0 flex-1 flex-col pt-4">
 				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-8">
-					<header data-id="mdx-header">{document.title}</header>
+					<header data-id="mdx-header" className="flex w-full flex-col gap-3.5">
+						<div className="flex flex-row items-center justify-between">
+							<h1 className="scroll-m-20 font-medium text-2xl tracking-tight sm:text-3xl">
+								{title}
+							</h1>
+
+							<div className="flex flex-row gap-2">
+								<ButtonGroup>
+									<Button variant="secondary" size="sm">
+										<Copy01 />
+										Copy Markdown
+									</Button>
+
+									<ButtonGroupSeparator />
+
+									<Button variant="secondary" size="icon-sm">
+										<ChevronDown />
+									</Button>
+								</ButtonGroup>
+
+								<Button variant="secondary" size="icon-sm">
+									<ArrowNarrowLeft />
+								</Button>
+
+								<Button variant="secondary" size="icon-sm">
+									<ArrowNarrowRight />
+								</Button>
+							</div>
+						</div>
+
+						<span className="font-medium text-lg text-muted-foreground">
+							{description}
+						</span>
+
+						{metadata && (
+							<div className="flex flex-col gap-1 text-muted-foreground">
+								<div className="flex items-center gap-2">
+									<span className="min-w-14">GitHub</span>
+									<div className="flex gap-1.5 text-accent-foreground">
+										<Button
+											asChild
+											variant="ghost"
+											size="default"
+											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+										>
+											<a href={metadata.github.repoUrl.url}>
+												<GithubIcon />
+												<span>{metadata.github.repoUrl.label}</span>
+											</a>
+										</Button>
+
+										<Button
+											asChild
+											variant="ghost"
+											size="default"
+											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+										>
+											<a href={metadata.github.openIssuesUrl}>
+												<BugIcon />
+												<span>Issue</span>
+											</a>
+										</Button>
+
+										<Button
+											asChild
+											variant="ghost"
+											size="default"
+											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+										>
+											<a href={metadata.github.repoUrl.url}>
+												<IssueOpenIcon />
+												<span>Open Issues 200</span>
+											</a>
+										</Button>
+									</div>
+								</div>
+								<div className="flex gap-2">
+									<span className="min-w-14">Docs</span>
+									<span className="text-accent-foreground">
+										<Button
+											asChild
+											variant="ghost"
+											size="default"
+											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+										>
+											<a href={metadata.editPageUrl}>
+												<Edit05 />
+												<span>Edit on GitHub</span>
+											</a>
+										</Button>
+									</span>
+								</div>
+								{metadata.credits?.map((person) => (
+									<div key={person.name} className="flex gap-2">
+										<span className="min-w-14">Credits</span>
+										<span className="text-accent-foreground">
+											<Button
+												asChild
+												variant="ghost"
+												size="default"
+												className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+											>
+												<a href={person.url}>
+													<span>{person.name}</span>
+												</a>
+											</Button>
+										</span>
+									</div>
+								))}
+							</div>
+						)}
+					</header>
 					<div data-id="mdx-content">
 						<MDX components={mdxComponents} />
 					</div>
@@ -44,7 +168,7 @@ export default async function ComponentPage(props: {
 
 			<aside
 				data-id="toc"
-				className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 pt-8 xl:flex"
+				className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 pt-4 text-sm xl:flex"
 			>
 				<div className="flex-1">TOC</div>
 			</aside>

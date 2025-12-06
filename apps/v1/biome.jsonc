@@ -8,7 +8,7 @@
     "includes": ["src/**"]
   },
   "linter": {
-    "includes": ["src/**"]
+    "includes": ["src/**", "!src/components/ui/**"]
   },
   "assist": {
     "enabled": true,

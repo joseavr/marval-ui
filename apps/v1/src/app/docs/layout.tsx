@@ -2,11 +2,11 @@ import { DocsSideBar } from "@/components/pages/docs/sidebar"
 import { Footer } from "@/components/shared/footer"
 import { Header } from "@/components/shared/header"
 import { Container } from "@/components/shared/page-container"
-import { PageLayout } from "@/components/shared/page-layout"
+import { RootLayout } from "@/components/shared/root-layout"
 
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
 	return (
-		<PageLayout>
+		<RootLayout>
 			<Header />
 			{/* <div className="h-4 w-full"></div> */}
 			<div className="flex flex-1 flex-col">
@@ -18,6 +18,6 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 				</Container>
 			</div>
 			<Footer />
-		</PageLayout>
+		</RootLayout>
 	)
 }

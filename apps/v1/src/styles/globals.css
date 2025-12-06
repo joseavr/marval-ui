@@ -86,7 +86,7 @@
 	--header-height: 4rem;
 	--sidebar-width: 16rem;
 	--footer-height: 6rem;
-	
+
 	/* shadcn variables	 */
 	--radius: 0.625rem;
 	--background: oklch(1 0 0);
@@ -172,5 +172,10 @@
 	a:active,
 	button:active {
 		@apply opacity-60 md:opacity-100;
+	}
+
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
 	}
 }
