@@ -33,12 +33,12 @@ const variants = {
 	"text-sm": "text-sm leading-normal ",
 	"text-xs": "text-xs leading-normal ",
 
-	"display": "",
-	"headline": "",
-	"title": "",
-	"body": "",
-	"body-secondary":"",
-	"label": "",
+	display: "",
+	headline: "",
+	title: "",
+	body: "",
+	"body-secondary": "",
+	label: "",
 
 	"text-heading-lg": cn("font-bold text-base text-foreground"),
 	"text-heading-base": cn("font-bold text-foreground text-sm"),

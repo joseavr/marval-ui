@@ -115,7 +115,7 @@ const defaultMdxComponents = {
 }
 
 /**
- * Override HTML elements and create own  MDX components
+ * Custom MDX components, ready to use in .mdx files
  */
 export const mdxComponents = {
 	...defaultMdxComponents,
@@ -135,6 +135,42 @@ export const mdxComponents = {
 			</figcaption>
 		)
 	},
+	// figure: ({
+	// 	className,
+	// 	__language__,
+	// 	__filepath__,
+	// 	__raw__,
+	// 	__showHeader__,
+	// 	__isExpanded__,
+	// 	children,
+	// 	...props
+	// }: React.ComponentProps<"figure"> & {
+	// 	__language__: string
+	// 	__filepath__: string
+	// 	__raw__: string
+	// 	__showHeader__: boolean
+	// 	__isExpanded__: boolean
+
+	// }) => (
+	// 	<figure
+	// 		className={cn(
+	// 			"relative my-4 rounded-lg bg-card-code py-1 font-geist-mono",
+	// 			className
+	// 		)}
+	// 		{...props}
+	// 	>
+	// 		<ExpandProvider>
+	// 			<CodeBlockHeader
+	// 				language={__language__}
+	// 				filepath={__filepath__}
+	// 				showHeader={__showHeader__}
+	// 				expand={__isExpanded__}
+	// 				raw={__raw__}
+	// 			/>
+	// 			{__isExpanded__ ? <WithExpand>{children}</WithExpand> : children}
+	// 		</ExpandProvider>
+	// 	</figure>
+	// ),
 	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
 		return (
 			<pre

@@ -3,7 +3,7 @@ import "@/styles/globals.css"
 
 import { Outfit } from "next/font/google"
 
-import { TailwindIndicator } from "@/components/ui/tailwind-indicator"
+import { TailwindIndicator } from "@/components/shared/tailwind-indicator"
 
 export const metadata: Metadata = {
 	title: "Marval UI",
