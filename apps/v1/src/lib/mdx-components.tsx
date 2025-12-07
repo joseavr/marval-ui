@@ -1,3 +1,11 @@
+import { DEVICONS } from "@/components/icons/language-icons"
+import { ClipboardButton, ClipboardIcon } from "@/components/ui/clipboard-button"
+import {
+	CodeBlock,
+	CodeBlockContentWithExpand,
+	CodeBlockHeader,
+	CodeBlockHeaderItem
+} from "@/components/ui/codeblock"
 import { cn } from "@/lib/utils"
 
 const defaultMdxComponents = {
@@ -111,17 +119,7 @@ const defaultMdxComponents = {
 			)}
 			{...props}
 		/>
-	)
-}
-
-/**
- * Custom MDX components, ready to use in .mdx files
- */
-export const mdxComponents = {
-	...defaultMdxComponents,
-	figure: ({ className, ...props }: React.ComponentProps<"figure">) => {
-		return <figure className={cn(className)} {...props} />
-	},
+	),
 	figcaption: ({ className, children, ...props }: React.ComponentProps<"figcaption">) => {
 		return (
 			<figcaption
@@ -134,61 +132,88 @@ export const mdxComponents = {
 				{children}
 			</figcaption>
 		)
-	},
-	// figure: ({
-	// 	className,
-	// 	__language__,
-	// 	__filepath__,
-	// 	__raw__,
-	// 	__showHeader__,
-	// 	__isExpanded__,
-	// 	children,
-	// 	...props
-	// }: React.ComponentProps<"figure"> & {
-	// 	__language__: string
-	// 	__filepath__: string
-	// 	__raw__: string
-	// 	__showHeader__: boolean
-	// 	__isExpanded__: boolean
+	}
+}
 
-	// }) => (
-	// 	<figure
-	// 		className={cn(
-	// 			"relative my-4 rounded-lg bg-card-code py-1 font-geist-mono",
-	// 			className
-	// 		)}
-	// 		{...props}
-	// 	>
-	// 		<ExpandProvider>
-	// 			<CodeBlockHeader
-	// 				language={__language__}
-	// 				filepath={__filepath__}
-	// 				showHeader={__showHeader__}
-	// 				expand={__isExpanded__}
-	// 				raw={__raw__}
-	// 			/>
-	// 			{__isExpanded__ ? <WithExpand>{children}</WithExpand> : children}
-	// 		</ExpandProvider>
-	// 	</figure>
-	// ),
-	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
+/**
+ * Custom MDX components, ready to use in .mdx files
+ */
+export const mdxComponents = {
+	...defaultMdxComponents,
+	figure: ({
+		className,
+		__language__,
+		__filepath__,
+		__raw__,
+		__showHeader__,
+		__showExpand__,
+		children,
+		...props
+	}: React.ComponentProps<"figure"> & {
+		__language__: string
+		__filepath__: string
+		__raw__: string
+		__showHeader__: boolean
+		__showExpand__: boolean
+	}) => {
+		const Icon = DEVICONS[__language__]
+
 		return (
-			<pre
-				className={cn(
-					"no-scrollbar min-w-0 overflow-x-auto px-4 py-3.5 outline-hidden has-data-[slot=tabs]:p-0 has-data-highlighted-line:px-0 has-data-line-numbers:px-0",
-					className
-				)}
+			<CodeBlock
+				language={__language__}
+				filepath={__filepath__}
+				showHeader={__showHeader__}
+				raw={__raw__}
 				{...props}
 			>
+				<CodeBlockHeader>
+					{__showHeader__ && (
+						<CodeBlockHeaderItem align="left">
+							{Icon && <Icon className="inline-flex size-4" />}
+							<span className="font-geist-sans text-foreground text-sm dark:text-muted-foreground">
+								{__filepath__}
+							</span>
+						</CodeBlockHeaderItem>
+					)}
+
+					<CodeBlockHeaderItem align="right">
+						<ClipboardButton textToCopy={__raw__} variant="outline" size="icon-sm">
+							<ClipboardIcon />
+						</ClipboardButton>
+					</CodeBlockHeaderItem>
+				</CodeBlockHeader>
+
+				{__showExpand__ ? (
+					<CodeBlockContentWithExpand>{children}</CodeBlockContentWithExpand>
+				) : (
+					children
+				)}
+			</CodeBlock>
+		)
+	},
+	pre: ({ className, children, ...props }: React.ComponentProps<"pre">) => {
+		return (
+			<pre className={className} {...props}>
 				{children}
 			</pre>
 		)
 	},
-	code: ({ className, ...props }: React.ComponentProps<"code">) => {
+	code: ({
+		className,
+		...props
+	}: React.ComponentProps<"code"> & {
+		"data-language": string
+	}) => {
+		const isCodeBlock = !!props?.["data-language"]
+
 		return (
 			<code
 				className={cn(
-					"relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
+					!isCodeBlock &&
+						"relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
+
+					isCodeBlock &&
+						"relative my-4 overflow-x-auto rounded-lg font-mono [scrollbar-width:none]",
 					className
 				)}
 				{...props}

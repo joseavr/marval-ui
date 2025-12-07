@@ -125,17 +125,17 @@ function preProcess() {
         // make regex
         const fileRegex = /filepath="(.*)"/;
         const showHeaderRegex = /\bshowHeader\b/;
-        const expandedRegex = /\bexpanded\b/;
+        const showExpandRegex = /\bshowExpand\b/;
 
         // apply regex
         const fileMatch = codeElement.data?.meta?.match(fileRegex) ?? undefined;
         const isHeaderPresent = showHeaderRegex.test(codeElement.data?.meta || "");
-        const isExpanded = expandedRegex.test(codeElement.data?.meta || "");
+        const isExpandPresent = showExpandRegex.test(codeElement.data?.meta || "");
 
         // set metadata to pre node
         currNode.properties.__filepath__ = fileMatch ? fileMatch[1] : undefined;
         currNode.properties.__showHeader__ = isHeaderPresent;
-        currNode.properties.__isExpanded__ = isExpanded;
+        currNode.properties.__showExpand__ = isExpandPresent;
 
         const codeElementChildren = codeElement.children as (Element & ElementData & Literal)[];
         const currNodeChildren = currNode.children as (Element & ElementData)[];
