@@ -32,6 +32,7 @@
     "rehype-pretty-code": "latest",
     "rehype-slug": "6.0.0",
     "shiki": "1.29.2",
+    "sonner": "^2.0.7",
     "tailwind-merge": "2.5.5",
     "tailwindcss-animate": "1.0.7",
     "unist-util-visit": "4.1.0",
