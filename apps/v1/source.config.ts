@@ -117,7 +117,7 @@ function preProcess() {
       const currNode = (node as unknown) as Element & ElementData;
 
       // pre node
-      if (currNode?.type === "element" && currNode?.tagName === "pre") {
+      if (currNode?.type === "element" && currNode?.tagName === "pre" && currNode.children) {
         const [element] = node.children as (Element & ElementData)[];
         if (element.tagName !== "code") return;
         const codeElement = element;

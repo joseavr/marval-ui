@@ -5,7 +5,10 @@ import {
 	CodeBlockContentWithExpand,
 	CodeBlockExpandTrigger,
 	CodeBlockHeader,
-	CodeBlockHeaderItem
+	CodeBlockHeaderItem,
+	CodeBlockTabs,
+	CodeBlockTabsContent,
+	CodeBlockTabsTrigger
 } from "@/components/ui/codeblock"
 import { cn } from "@/lib/utils"
 
@@ -158,7 +161,8 @@ export const mdxComponents = {
 		__showExpand__: boolean
 	}) => {
 		const Icon = DEVICONS[__language__]
-
+		console.log("FIGURE:\n", __raw__, "\n\n")
+		const isInstallation = __raw__.startsWith("npm") || __raw__.startsWith("npx")
 		return (
 			<CodeBlock
 				language={__language__}
@@ -171,9 +175,19 @@ export const mdxComponents = {
 					{__showHeader__ && (
 						<CodeBlockHeaderItem align="left">
 							{Icon && <Icon className="inline-flex size-4" />}
-							<span className="font-geist-sans text-foreground text-sm dark:text-muted-foreground">
-								{__filepath__}
-							</span>
+							{__filepath__ && (
+								<span className="font-geist-sans text-foreground text-sm dark:text-muted-foreground">
+									{__filepath__}
+								</span>
+							)}
+							{isInstallation && (
+								<CodeBlockTabs>
+									<CodeBlockTabsTrigger>pnpm</CodeBlockTabsTrigger>
+									<CodeBlockTabsTrigger>npm</CodeBlockTabsTrigger>
+									<CodeBlockTabsTrigger>yarn</CodeBlockTabsTrigger>
+									<CodeBlockTabsTrigger>bun</CodeBlockTabsTrigger>
+								</CodeBlockTabs>
+							)}
 						</CodeBlockHeaderItem>
 					)}
 
@@ -202,22 +216,41 @@ export const mdxComponents = {
 	},
 	code: ({
 		className,
+		__npm__,
+		__pnpm__,
+		__bun__,
+		__yarn__,
+		children,
 		...props
 	}: React.ComponentProps<"code"> & {
 		"data-language": string
+		__npm__?: string
+		__pnpm__?: string
+		__yarn__?: string
+		__bun__?: string
 	}) => {
 		const isCodeBlock = !!props?.["data-language"]
-
+		const isInstallationCodeBlock = Boolean(__npm__)
 		return (
 			<code
 				className={cn(
 					isCodeBlock
-						? "wrap-break-word relative grid min-w-full select-all overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-1 font-mono text-sm [scrollbar-width:none]"
+						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-1 font-mono text-sm [scrollbar-width:none]"
 						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
+					isInstallationCodeBlock && "select-all",
 					className
 				)}
 				{...props}
-			/>
+			>
+				{isInstallationCodeBlock ? (
+					<CodeBlockTabsContent
+						// biome-ignore lint/style/noNonNullAssertion: at this point, all of them exist
+						values={{ pnpm: __pnpm__!, npm: __npm__!, yarn: __yarn__!, bun: __bun__! }}
+					/>
+				) : (
+					children
+				)}
+			</code>
 		)
 	},
 	Step: ({ className, ...props }: React.ComponentProps<"h3">) => (

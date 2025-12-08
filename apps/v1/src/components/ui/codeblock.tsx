@@ -1,8 +1,9 @@
 "use client"
 
-import React, { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState } from "react"
 
-import { Button, type ButtonVariantProps, buttonVariants } from "@/components/ui/button"
+import { Button, type ButtonVariantProps } from "@/components/ui/button"
+import { type PackageManager, usePackageManagerStore } from "@/lib/package-manager-store"
 import { cn } from "@/lib/utils"
 
 interface CodeBlockContextType {
@@ -26,7 +27,7 @@ function useCodeBlockContext() {
 	return context
 }
 
-function CodeBlockProvider({
+function CodeBlockRoot({
 	className,
 	language,
 	filepath,
@@ -159,14 +160,48 @@ function CodeBlockContentWithExpand({ children }: { children: React.ReactNode })
 	)
 }
 
-function CodeBlockTabs() {}
+function CodeBlockTabs({ children }: { children: React.ReactNode }) {
+	return <div className="flex gap-1">{children}</div>
+}
+
+function CodeBlockTabsTrigger({ children }: { children: React.ReactNode }) {
+	const packageManager = usePackageManagerStore(
+		(state: { packageManager: PackageManager }) => state.packageManager
+	)
+	const setPackageManager = usePackageManagerStore(
+		(state: { setPackageManager: (manager: PackageManager) => void }) =>
+			state.setPackageManager
+	)
+	const value = children as PackageManager
+	return (
+		<Button
+			size="sm"
+			variant="outline"
+			className={cn(
+				"h-6 bg-accent px-2 border-transparent",
+				packageManager === value ? "border-border" : "shadow-none"
+			)}
+			onClick={() => setPackageManager(value)}
+		>
+			{children}
+		</Button>
+	)
+}
+
+function CodeBlockTabsContent({ values }: { values: Record<PackageManager, string> }) {
+	const packageManager = usePackageManagerStore((state) => state.packageManager)
+	const value = values[packageManager]
+	return <span data-line>{value}</span>
+}
 
 export {
-	CodeBlockProvider as CodeBlock,
+	CodeBlockRoot as CodeBlock,
 	CodeBlockHeader,
 	CodeBlockHeaderItem,
 	CodeBlockExpandTrigger,
 	CodeBlockTabs,
+	CodeBlockTabsTrigger,
+	CodeBlockTabsContent,
 	CodeBlockContentWithExpand,
 	useCodeBlockContext
 }
