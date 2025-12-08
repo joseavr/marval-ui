@@ -57,7 +57,7 @@ function CodeBlockProvider({
 		>
 			<figure
 				className={cn(
-					"relative my-4 rounded-lg bg-secondary py-1 font-geist-mono",
+					"group/codeblock relative my-4 rounded-lg bg-secondary  font-geist-mono",
 					className
 				)}
 				{...props}
@@ -78,8 +78,8 @@ function CodeBlockHeader({ children }: CodeHeaderProps) {
 	return (
 		<div
 			className={cn(
-				"flex h-12 w-full items-center justify-between px-5",
-				showHeader && "border-border border-b",
+				"flex h-10 w-full items-center justify-between px-5 pr-2",
+				showHeader && "",
 				!showHeader &&
 					"top-0 rounded-lg absolute z-10 bg-[linear-gradient(to_bottom,rgba(0,0,0,0.05),transparent_80%)] opacity-0 transition-opacity hover:opacity-100"
 			)}
@@ -102,7 +102,7 @@ function CodeBlockHeaderItem({
 		<div
 			data-align={align}
 			className={cn(
-				"flex items-center gap-3 flex-none",
+				"flex items-center gap-2.5 flex-none",
 				align === "left" ? "mr-auto" : "ml-auto",
 				className
 			)}

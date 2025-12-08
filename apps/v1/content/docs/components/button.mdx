@@ -21,7 +21,7 @@ metadata:
 
 The Button component is part of the JoseUI component library. You can add it to your project using the CLI:
 
-```bash showHeader filepath="src/index.js" showLineNumbers
+```bash showHeader filepath="src/index.js"
 pnpm dlx @joseui/cli add button
 ```
 
@@ -41,10 +41,216 @@ All standard HTML button attributes are also supported.
 
 ### Basic Usage
 
-```tsx filepath="xd" showHeader expanded
+```tsx showLineNumbers filepath="src/components/ui/button" showHeader showExpand
 import { Button } from "@/components/ui/button";
 
 export function Example() {
   return <Button>Click me</Button>;
 }
+
+
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+
+
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+
+
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+
+
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+
+import { Button } from "@/components/ui/button";
+
+export function Example() {
+  return <Button>Click me</Button>;
+}
+```
+
+
+### Variants
+
+The Button component supports multiple visual variants:
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function Variants() {
+  return (
+    <div className="flex gap-4">
+      <Button variant="default">Default</Button>
+      <Button variant="destructive">Destructive</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="link">Link</Button>
+    </div>
+  );
+}
+```
+
+### Sizes
+
+Buttons come in different sizes:
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function Sizes() {
+  return (
+    <div className="flex items-center gap-4">
+      <Button size="sm">Small</Button>
+      <Button size="default">Default</Button>
+      <Button size="lg">Large</Button>
+      <Button size="icon">🚀</Button>
+    </div>
+  );
+}
+```
+
+### Disabled State
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function Disabled() {
+  return (
+    <div className="flex gap-4">
+      <Button disabled>Disabled</Button>
+      <Button variant="outline" disabled>
+        Disabled Outline
+      </Button>
+    </div>
+  );
+}
+```
+
+### With Icons
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
+
+export function WithIcon() {
+  return (
+    <Button>
+      <Download className="mr-2 h-4 w-4" />
+      Download
+    </Button>
+  );
+}
+```
+
+## Variants Showcase
+
+### Default Variant
+The primary button style, suitable for main actions.
+
+### Destructive Variant
+Used for dangerous or destructive actions like delete or remove.
+
+### Outline Variant
+A button with an outline border, useful for secondary actions.
+
+### Secondary Variant
+A subtle button style for less prominent actions.
+
+### Ghost Variant
+A minimal button with no background, appearing on hover.
+
+### Link Variant
+Styled like a text link, useful for inline actions.
+
+## Accessibility
+
+The Button component is built with accessibility in mind:
+
+- **Keyboard Navigation**: Fully keyboard accessible with proper focus states
+- **ARIA Attributes**: Includes appropriate ARIA attributes when needed
+- **Focus Management**: Visible focus indicators for keyboard users
+- **Disabled State**: Properly handles disabled state with `aria-disabled`
+- **Screen Reader Support**: Semantic HTML button element ensures screen reader compatibility
+
+### Best Practices
+
+- Use descriptive button text that clearly indicates the action
+- Avoid using buttons for navigation (use links instead)
+- Ensure sufficient color contrast for all variants
+- Provide loading states for async actions
+- Use the destructive variant sparingly and with clear confirmation
+
+## Code Examples
+
+### Form Submission
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function FormButton() {
+  return (
+    <form>
+      {/* form fields */}
+      <Button type="submit">Submit</Button>
+    </form>
+  );
+}
+```
+
+### Loading State
+
+```tsx
+import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
+export function LoadingButton() {
+  const [loading, setLoading] = React.useState(false);
+
+  return (
+    <Button disabled={loading}>
+      {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+      {loading ? "Loading..." : "Submit"}
+    </Button>
+  );
+}
+```
+
+### Button Group
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+export function ButtonGroup() {
+  return (
+    <div className="flex gap-2">
+      <Button variant="outline">Cancel</Button>
+      <Button>Confirm</Button>
+    </div>
+  );
+}
+```
+
+## Styling
+
+The Button component uses Tailwind CSS and supports custom styling through the `className` prop. The component uses CSS variables for theming, making it easy to customize colors.
+
+```tsx
+<Button className="bg-blue-500 hover:bg-blue-600">
+  Custom Styled
+</Button>
 ```

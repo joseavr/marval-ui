@@ -97,7 +97,7 @@
 	--popover-foreground: oklch(0.145 0 0);
 	--primary: oklch(0.205 0 0);
 	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.97 0 0);
+	--secondary: oklch(0.978 0 0);
 	--secondary-foreground: oklch(0.205 0 0);
 	--muted: oklch(0.97 0 0);
 	--muted-foreground: oklch(0.556 0 0);
@@ -203,7 +203,6 @@
 
 /* ----------------REHYPE STYLES---------------- */
 [data-rehype-pretty-code-figure] code {
-	@apply grid min-w-full wrap-break-word rounded-none border-0 bg-transparent p-0 text-sm text-black;
 	counter-reset: line;
 	box-decoration-break: clone;
 }

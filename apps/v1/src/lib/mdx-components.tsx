@@ -211,11 +211,9 @@ export const mdxComponents = {
 		return (
 			<code
 				className={cn(
-					!isCodeBlock &&
-						"relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
-
-					isCodeBlock &&
-						"relative my-4 overflow-x-auto rounded-lg font-mono [scrollbar-width:none]",
+					isCodeBlock
+						? "wrap-break-word relative grid min-w-full select-all overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-1 font-mono text-sm [scrollbar-width:none]"
+						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
 					className
 				)}
 				{...props}
