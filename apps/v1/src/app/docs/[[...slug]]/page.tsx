@@ -90,7 +90,7 @@ export default async function ComponentPage(props: {
 											asChild
 											variant="ghost"
 											size="default"
-											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
 											<a href={metadata.github.repoUrl.url}>
 												<GithubIcon />
@@ -102,7 +102,7 @@ export default async function ComponentPage(props: {
 											asChild
 											variant="ghost"
 											size="default"
-											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
 											<a href={metadata.github.openIssuesUrl}>
 												<BugIcon />
@@ -114,7 +114,7 @@ export default async function ComponentPage(props: {
 											asChild
 											variant="ghost"
 											size="default"
-											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
 											<a href={metadata.github.repoUrl.url}>
 												<IssueOpenIcon />
@@ -130,7 +130,7 @@ export default async function ComponentPage(props: {
 											asChild
 											variant="ghost"
 											size="default"
-											className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
 											<a href={metadata.editPageUrl}>
 												<Edit05 />
@@ -147,7 +147,7 @@ export default async function ComponentPage(props: {
 												asChild
 												variant="ghost"
 												size="default"
-												className="flex h-6 items-center gap-1 px-1.5! hover:underline"
+												className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 											>
 												<a href={person.url}>
 													<span>{person.name}</span>
