@@ -1,10 +1,8 @@
 "use client"
 
-import React, { cloneElement, createContext, useContext, useState } from "react"
+import React, { createContext, useContext, useState } from "react"
 
-import { DEVICONS } from "@/components/icons/language-icons"
-import { buttonVariants } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
+import { Button, type ButtonVariantProps, buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface CodeBlockContextType {
@@ -114,26 +112,35 @@ function CodeBlockHeaderItem({
 	)
 }
 
-function CodeBlockExpandTrigger({ className }: { className?: string }) {
+function CodeBlockExpandTrigger({
+	position,
+	className,
+	variant,
+	size
+}: ButtonVariantProps & {
+	position: "bottom-center" | "inline"
+	className?: string
+}) {
 	const { isExpanded, toggleExpand } = useCodeBlockContext()
 
 	return (
-		<button
+		<Button
 			className={cn(
-				buttonVariants({ variant: "outline", size: "sm" }),
-				"border-none px-2 text-sm",
+				position === "bottom-center" ? "absolute right-1/2 bottom-4 translate-x-1/2" : "",
 				className
 			)}
-			onClick={toggleExpand}
 			type="button"
+			variant={variant ?? "outline"}
+			size={size ?? "sm"}
+			onClick={toggleExpand}
 		>
 			{isExpanded ? "Collapse" : "Expand"}
-		</button>
+		</Button>
 	)
 }
 
 function CodeBlockContentWithExpand({ children }: { children: React.ReactNode }) {
-	const { isExpanded, toggleExpand } = useCodeBlockContext()
+	const { isExpanded } = useCodeBlockContext()
 
 	return (
 		<div data-id="code-block-content" className="relative">
@@ -141,22 +148,13 @@ function CodeBlockContentWithExpand({ children }: { children: React.ReactNode })
 				className={cn(
 					" h-full w-full overflow-hidden",
 					!isExpanded &&
-						"max-h-96 [mask-image:linear-gradient(to_top,transparent,white_30%,white_100%,transparent)]"
+						"max-h-96 [mask-image:linear-gradient(to_top,transparent,white_60%,white_100%,transparent)]"
 				)}
 			>
 				{children}
 			</div>
 
-			<button
-				className={cn(
-					buttonVariants({ variant: "ghost" }),
-					"absolute right-1/2 bottom-4 translate-x-1/2 rounded-md border-none font-normal"
-				)}
-				type="button"
-				onClick={toggleExpand}
-			>
-				{isExpanded ? "Collapse" : "Expand"}
-			</button>
+			<CodeBlockExpandTrigger position="bottom-center" />
 		</div>
 	)
 }

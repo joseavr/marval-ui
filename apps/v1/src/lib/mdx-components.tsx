@@ -3,6 +3,7 @@ import { ClipboardButton, ClipboardIcon } from "@/components/ui/clipboard-button
 import {
 	CodeBlock,
 	CodeBlockContentWithExpand,
+	CodeBlockExpandTrigger,
 	CodeBlockHeader,
 	CodeBlockHeaderItem
 } from "@/components/ui/codeblock"
@@ -177,6 +178,7 @@ export const mdxComponents = {
 					)}
 
 					<CodeBlockHeaderItem align="right">
+						{__showExpand__ && <CodeBlockExpandTrigger position="inline" />}
 						<ClipboardButton textToCopy={__raw__} variant="outline" size="icon-sm">
 							<ClipboardIcon />
 						</ClipboardButton>
