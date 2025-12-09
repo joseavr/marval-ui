@@ -100,7 +100,7 @@ const defaultMdxComponents = {
 		<div className="no-scrollbar my-6 w-full overflow-y-auto rounded-lg border">
 			<table
 				className={cn(
-					"relative w-full overflow-hidden border-none text-sm [&_tbody_tr:last-child]:border-b-0",
+					"relative w-full overflow-hidden border-none text-sm [&_tbody_tr:last-child]:border-b-0 [&_thead_tr]:bg-accent [&_thead_tr_th:nth-child(2)]:max-w-[60%]",
 					className
 				)}
 				{...props}
@@ -108,7 +108,13 @@ const defaultMdxComponents = {
 		</div>
 	),
 	tr: ({ className, ...props }: React.ComponentProps<"tr">) => (
-		<tr className={cn("m-0 border-b", className)} {...props} />
+		<tr
+			className={cn(
+				"[&_td:nth-child(2)]:whitespace-normal! m-0 border-b transition-colors hover:bg-accent",
+				className
+			)}
+			{...props}
+		/>
 	),
 	th: ({ className, ...props }: React.ComponentProps<"th">) => (
 		<th

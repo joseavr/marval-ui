@@ -8,6 +8,11 @@
     "includes": ["src/**"]
   },
   "linter": {
+    "rules": {
+      "performance": {
+        "noImgElement": "off"
+      }
+    },
     "includes": ["src/**", "!src/components/ui/**"]
   },
   "assist": {
