@@ -27,7 +27,7 @@
 	--color-error-foreground: var(--color-rose-800);
 	--color-error-foreground-dark: var(--color-rose-900);
 
-	--radius-lg: var(--radius);
+	--radius-lg: var(--radius); /* 10 px */
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-xs: calc(var(--radius) - 6px);

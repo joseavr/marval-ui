@@ -1,4 +1,7 @@
+import { InfoCircle } from "@untitledui/icons"
+
 import { DEVICONS } from "@/components/icons/language-icons"
+import { Button } from "@/components/ui/button"
 import { ClipboardButton, ClipboardIcon } from "@/components/ui/clipboard-button"
 import {
 	CodeBlock,
@@ -10,6 +13,7 @@ import {
 	CodeBlockTabsContent,
 	CodeBlockTabsTrigger
 } from "@/components/ui/codeblock"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 
 const defaultMdxComponents = {
@@ -267,5 +271,19 @@ export const mdxComponents = {
 			className="[&>h3]:step steps mb-12 [counter-reset:step] md:ml-4 md:border-l md:pl-8"
 			{...props}
 		/>
-	)
+	),
+	InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"div">) => {
+		return (
+			<Popover>
+				<PopoverTrigger asChild>
+					<Button size="icon-sm" variant="ghost" className="ml-0 hover:bg-transparent">
+						<InfoCircle />
+					</Button>
+				</PopoverTrigger>
+				<PopoverContent className="rounded-xl px-3 py-2 text-sm">
+					{children}
+				</PopoverContent>
+			</Popover>
+		)
+	}
 }
