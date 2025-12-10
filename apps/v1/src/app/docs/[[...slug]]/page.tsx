@@ -1,20 +1,31 @@
 import {
 	ArrowNarrowLeft,
 	ArrowNarrowRight,
+	BookOpen01,
 	ChevronDown,
 	Copy01,
 	Edit05
 } from "@untitledui/icons"
+import { findNeighbour } from "fumadocs-core/page-tree"
+import Link from "next/link"
 import { notFound } from "next/navigation"
+import { Fragment } from "react"
 
 import { BugIcon } from "@/components/icons/bug-icon"
 import { GithubIcon } from "@/components/icons/github-icon"
 import { IssueOpenIcon } from "@/components/icons/issue-icon"
+import { DocsTableOfContents } from "@/components/pages/docs/toc"
+import {
+	Breadcrumb,
+	BreadcrumbItem,
+	BreadcrumbLink,
+	BreadcrumbList,
+	BreadcrumbSeparator
+} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
-
 // export async function generateStaticParams() {
 // 	try {
 // 		const files = await import("fs/promises");
@@ -39,22 +50,68 @@ export default async function ComponentPage(props: {
 	if (!page) {
 		return notFound()
 	}
+	const neighbourPages = findNeighbour(source.pageTree, page.url)
 	const document = page.data
+	console.log("\nCONSOLE:\n", document.toc, "\n\n")
 	const MDX = document?.body
-	const { title, description, metadata } = document
+	const {
+		title,
+		description,
+		metadata,
+		toc,
+		lastModified,
+		releaseDate,
+		getText,
+		isPublished
+	} = document
 
 	return (
 		<div data-id="docs-rightside-divided-in-two" className="flex items-stretch xl:w-full">
 			<article className="flex min-w-0 flex-1 flex-col pt-4">
 				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-8">
 					<header data-id="mdx-header" className="flex w-full flex-col gap-3.5">
+						<Breadcrumb className="mb-3.5">
+							<BreadcrumbList>
+								<BreadcrumbItem>
+									<BreadcrumbLink href="/docs" className="relative">
+										<BookOpen01 className="peer z-10 size-3.5" />
+										<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
+									</BreadcrumbLink>
+								</BreadcrumbItem>
+
+								{!!slug &&
+									slug.map((s, index, arr) => {
+										return (
+											<Fragment key={s}>
+												<BreadcrumbSeparator />
+												<BreadcrumbItem key={s}>
+													{index === arr.length - 1 ? (
+														<span className="font-medium text-foreground">{s}</span>
+													) : (
+														<BreadcrumbLink href={`/docs/${s}`} className="text-sm">
+															{s}
+														</BreadcrumbLink>
+													)}
+												</BreadcrumbItem>
+											</Fragment>
+										)
+									})}
+							</BreadcrumbList>
+						</Breadcrumb>
+
 						<div className="flex flex-row items-center justify-between">
-							<h1 className="scroll-m-20 font-medium text-2xl tracking-tight sm:text-3xl">
+							<h1 className="scroll-m-20 font-medium text-3xl tracking-tight sm:text-4xl">
 								{title}
 							</h1>
 
 							<div className="flex flex-row gap-2">
 								<ButtonGroup>
+									<DocsTableOfContents
+										toc={toc}
+										variant="dropdown"
+										className="border-t-0 border-b-0 border-l-0 bg-secondary shadow-none xl:hidden"
+									/>
+
 									<Button variant="secondary" size="sm">
 										<Copy01 />
 										Copy Markdown
@@ -67,13 +124,21 @@ export default async function ComponentPage(props: {
 									</Button>
 								</ButtonGroup>
 
-								<Button variant="secondary" size="icon-sm">
-									<ArrowNarrowLeft />
-								</Button>
+								{neighbourPages.previous && (
+									<Button variant="secondary" size="icon-sm" asChild>
+										<Link href={neighbourPages.previous.url}>
+											<ArrowNarrowLeft />
+										</Link>
+									</Button>
+								)}
 
-								<Button variant="secondary" size="icon-sm">
-									<ArrowNarrowRight />
-								</Button>
+								{neighbourPages.next && (
+									<Button variant="secondary" size="icon-sm">
+										<Link href={neighbourPages.next.url}>
+											<ArrowNarrowRight />
+										</Link>
+									</Button>
+								)}
 							</div>
 						</div>
 
@@ -170,7 +235,9 @@ export default async function ComponentPage(props: {
 				data-id="toc"
 				className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 pt-4 text-sm xl:flex"
 			>
-				<div className="flex-1">TOC</div>
+				<div className="flex-1">
+					<DocsTableOfContents toc={toc} variant="list" />
+				</div>
 			</aside>
 		</div>
 	)
