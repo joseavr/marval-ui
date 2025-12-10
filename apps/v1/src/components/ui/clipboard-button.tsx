@@ -81,8 +81,8 @@ function ClipboardIcon({
 	successIcon
 }: {
 	className?: string
-	copyIcon?: React.ReactElement<SVGSVGElement>
-	successIcon?: React.ReactElement<SVGSVGElement>
+	copyIcon?: React.ReactElement<React.SVGProps<SVGSVGElement>>
+	successIcon?: React.ReactElement<React.SVGProps<SVGSVGElement>>
 }) {
 	const { onCopy, setOnCopy, onDone, setOnDone } = useClipboardButtonContext()
 
@@ -93,7 +93,7 @@ function ClipboardIcon({
 				"transition-all",
 				onCopy ? "scale-0" : "scale-100"
 			),
-			ontransitionend: () => {
+			onTransitionEnd: () => {
 				if (onCopy) {
 					setOnDone(true)
 				}
@@ -117,7 +117,7 @@ function ClipboardIcon({
 				"transition-all",
 				onDone ? "scale-100" : "scale-0"
 			),
-			ontransitionend: () => {
+			onTransitionEnd: () => {
 				setTimeout(() => {
 					setOnCopy(false)
 					setOnDone(false)

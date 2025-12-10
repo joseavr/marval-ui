@@ -3,7 +3,6 @@ import {
 	ArrowNarrowRight,
 	BookOpen01,
 	ChevronDown,
-	Copy01,
 	Edit05
 } from "@untitledui/icons"
 import { findNeighbour } from "fumadocs-core/page-tree"
@@ -14,6 +13,7 @@ import { Fragment } from "react"
 import { BugIcon } from "@/components/icons/bug-icon"
 import { GithubIcon } from "@/components/icons/github-icon"
 import { IssueOpenIcon } from "@/components/icons/issue-icon"
+import { CopyMarkdownButton } from "@/components/pages/docs/copy-markdown-button"
 import { DocsTableOfContents } from "@/components/pages/docs/toc"
 import { InlineCode } from "@/components/shared/typography"
 import {
@@ -53,7 +53,6 @@ export default async function ComponentPage(props: {
 	}
 	const neighbourPages = findNeighbour(source.pageTree, page.url)
 	const document = page.data
-	console.log("\nCONSOLE:\n", document.toc, "\n\n")
 	const MDX = document?.body
 	const {
 		title,
@@ -65,6 +64,13 @@ export default async function ComponentPage(props: {
 		getText,
 		isPublished
 	} = document
+
+	if (!isPublished) return notFound()
+	const markdownRaw = await getText("raw")
+	const parseMarkdown = (text: string) => {
+		const draftIndex = text.indexOf("---", 4)
+		return markdownRaw.slice(draftIndex + 4).trim()
+	}
 
 	return (
 		<div data-id="docs-rightside-divided-in-two" className="flex items-stretch xl:w-full">
@@ -115,14 +121,7 @@ export default async function ComponentPage(props: {
 								/>
 
 								<ButtonGroup>
-									<Button
-										variant="outline"
-										size="sm"
-										className="border-none bg-secondary shadow-none"
-									>
-										<Copy01 />
-										Copy Markdown
-									</Button>
+									<CopyMarkdownButton text={parseMarkdown(markdownRaw)} animationDuration={2500}/>
 
 									<ButtonGroupSeparator />
 
