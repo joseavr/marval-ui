@@ -15,6 +15,7 @@ import { BugIcon } from "@/components/icons/bug-icon"
 import { GithubIcon } from "@/components/icons/github-icon"
 import { IssueOpenIcon } from "@/components/icons/issue-icon"
 import { DocsTableOfContents } from "@/components/pages/docs/toc"
+import { InlineCode } from "@/components/shared/typography"
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -67,7 +68,7 @@ export default async function ComponentPage(props: {
 
 	return (
 		<div data-id="docs-rightside-divided-in-two" className="flex items-stretch xl:w-full">
-			<article className="flex min-w-0 flex-1 flex-col pt-4">
+			<article className="flex min-w-0 flex-1 flex-col gap-8 pt-4">
 				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-8">
 					<header data-id="mdx-header" className="flex w-full flex-col gap-3.5">
 						<Breadcrumb className="mb-3.5">
@@ -245,7 +246,27 @@ export default async function ComponentPage(props: {
 						<MDX components={mdxComponents} />
 					</div>
 				</div>
-				<footer data-id="mdx-footer"></footer>
+
+				<footer
+					data-id="mdx-footer"
+					className="mx-auto mb-8 flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-12"
+				>
+					<div className="flex justify-between">
+						<div>Built by Jose Valdivia. Hire me please!</div>
+						{!!lastModified && (
+							<div>
+								{"Last updated: "}
+								<InlineCode className="font-bold text-xs">
+									{new Intl.DateTimeFormat("en-US", {
+										month: "2-digit",
+										day: "2-digit",
+										year: "numeric"
+									}).format(new Date())}
+								</InlineCode>
+							</div>
+						)}
+					</div>
+				</footer>
 			</article>
 
 			<aside

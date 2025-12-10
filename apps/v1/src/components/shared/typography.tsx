@@ -52,3 +52,22 @@ export function Typography({ as: As, variant, children, className }: typographyP
 
 	return <As className={cn(baseStyles, className)}>{children}</As>
 }
+
+export function InlineCode({
+	className,
+	children
+}: {
+	className?: string
+	children: React.ReactNode
+}) {
+	return (
+		<code
+			className={cn(
+				"relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
+				className
+			)}
+		>
+			{children}
+		</code>
+	)
+}
