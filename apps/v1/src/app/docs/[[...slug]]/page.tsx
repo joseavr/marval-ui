@@ -105,27 +105,40 @@ export default async function ComponentPage(props: {
 							</h1>
 
 							<div className="flex flex-row gap-2">
-								<ButtonGroup>
-									<DocsTableOfContents
-										toc={toc}
-										variant="dropdown"
-										className="border-t-0 border-b-0 border-l-0 bg-secondary shadow-none xl:hidden"
-									/>
+								<DocsTableOfContents
+									toc={toc}
+									variant="dropdown"
+									className="border-none bg-secondary shadow-none xl:hidden"
+								/>
 
-									<Button variant="secondary" size="sm">
+								<ButtonGroup>
+									<Button
+										variant="outline"
+										size="sm"
+										className="border-none bg-secondary shadow-none"
+									>
 										<Copy01 />
 										Copy Markdown
 									</Button>
 
 									<ButtonGroupSeparator />
 
-									<Button variant="secondary" size="icon-sm">
+									<Button
+										variant="outline"
+										size="icon-sm"
+										className="border-none bg-secondary shadow-none"
+									>
 										<ChevronDown />
 									</Button>
 								</ButtonGroup>
 
 								{neighbourPages.previous && (
-									<Button variant="secondary" size="icon-sm" asChild>
+									<Button
+										variant="outline"
+										size="icon-sm"
+										asChild
+										className="border-none bg-secondary shadow-none"
+									>
 										<Link href={neighbourPages.previous.url}>
 											<ArrowNarrowLeft />
 										</Link>
@@ -133,7 +146,11 @@ export default async function ComponentPage(props: {
 								)}
 
 								{neighbourPages.next && (
-									<Button variant="secondary" size="icon-sm">
+									<Button
+										variant="outline"
+										size="icon-sm"
+										className="border-none bg-secondary shadow-none"
+									>
 										<Link href={neighbourPages.next.url}>
 											<ArrowNarrowRight />
 										</Link>
