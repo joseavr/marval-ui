@@ -18,7 +18,7 @@ export const docs = defineDocs({
     schema: frontmatterSchema.extend({
       title: z.string(),
       description: z.string(),
-      published: z.boolean().optional().default(false),
+      isPublished: z.boolean().optional().default(false),
       releaseDate: z.coerce.date().optional(),
       
       metadata: z.object({
@@ -50,11 +50,10 @@ export default defineConfig({
   lastModifiedTime: 'git',
   mdxOptions: {
     rehypePlugins: (plugins) => {
-      //clean up plugins array
-      plugins.shift()
+      //clean up (idk but it makes preprocess work)
       plugins.shift()
       plugins.push(preProcess)
-      plugins.push(rehypeSlug) // Add IDs to headings (h1 through h6)
+
       plugins.push(
         [
           // Add anchor tags to headings (h1-h6)
