@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 const defaultMdxComponents = {
 	h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
 		<h1
-			className={cn("mt-2 scroll-m-28 font-bold text-3xl tracking-tight", className)}
+			className={cn("mt-2 scroll-m-28 font-bold text-4xl tracking-tight", className)}
 			{...props}
 		/>
 	),
@@ -27,8 +27,8 @@ const defaultMdxComponents = {
 		return (
 			<h2
 				className={cn(
-					"mt-10 scroll-m-28 font-medium text-xl tracking-tight first:mt-0 lg:mt-16",
-					"[&+.steps>h3]:mt-4! [&+.steps]:mt-0! [&+h3]:mt-6! [&+p]:mt-4! [&+]*:[code]:text-xl",
+					"mt-10 scroll-m-28 font-medium text-2xl tracking-tight first:mt-0 lg:mt-16",
+					"[&+.steps>h3]:mt-4! [&+.steps]:mt-0! [&+h3]:mt-6! [&+p]:mt-4! [&+]*:[code]:text-2xl",
 					className
 				)}
 				{...props}
@@ -38,7 +38,7 @@ const defaultMdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"mt-12 scroll-m-28 font-medium text-lg tracking-tight",
+				"mt-12 scroll-m-28 font-medium text-xl tracking-tight",
 				"[&+p]:mt-4! [code]:*:text-xl",
 				className
 			)}
@@ -171,7 +171,6 @@ export const mdxComponents = {
 		__showExpand__: boolean
 	}) => {
 		const Icon = DEVICONS[__language__]
-		console.log("FIGURE:\n", __raw__, "\n\n")
 		const isInstallation = __raw__.startsWith("npm") || __raw__.startsWith("npx")
 		return (
 			<CodeBlock
