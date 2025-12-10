@@ -61,7 +61,10 @@ export function DocsTableOfContents({
 	className?: string
 }) {
 	const [open, setOpen] = React.useState(false)
-	const itemIds = React.useMemo(() => toc?.map((item) => item.url.replace("#", "")), [toc])
+	const itemIds = React.useMemo(
+		() => toc?.map((item) => item.url.replace("#", "")),
+		[toc]
+	)
 	const activeHeading = useActiveItem(itemIds)
 
 	if (!toc?.length) {
@@ -97,8 +100,8 @@ export function DocsTableOfContents({
 
 	return (
 		<div className={cn("flex flex-col gap-2 p-4 pt-0 text-sm", className)}>
-			<p className="sticky top-0 h-6 bg-background text-muted-foreground text-xs">
-				On This Page
+			<p className="sticky top-0 flex h-6 items-center justify-start gap-1 bg-background text-muted-foreground text-sm [&>svg]:size-3.5">
+				<Menu03 /> On this page
 			</p>
 			{toc.map((item) => (
 				<a

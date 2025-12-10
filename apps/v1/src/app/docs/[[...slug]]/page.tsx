@@ -74,9 +74,11 @@ export default async function ComponentPage(props: {
 						<Breadcrumb className="mb-3.5">
 							<BreadcrumbList>
 								<BreadcrumbItem>
-									<BreadcrumbLink href="/docs" className="relative">
-										<BookOpen01 className="peer z-10 size-3.5" />
-										<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
+									<BreadcrumbLink asChild className="relative">
+										<Link href="/docs">
+											<BookOpen01 className="peer z-10 size-3.5" />
+											<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
+										</Link>
 									</BreadcrumbLink>
 								</BreadcrumbItem>
 
@@ -89,8 +91,8 @@ export default async function ComponentPage(props: {
 													{index === arr.length - 1 ? (
 														<span className="font-medium text-foreground">{s}</span>
 													) : (
-														<BreadcrumbLink href={`/docs/${s}`} className="text-sm">
-															{s}
+														<BreadcrumbLink asChild>
+															<Link href={`/docs/${s}`}>{s}</Link>
 														</BreadcrumbLink>
 													)}
 												</BreadcrumbItem>
