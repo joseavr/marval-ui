@@ -1,17 +1,17 @@
 "use client"
 
 import { Check, Copy06 } from "@untitledui/icons"
-import { VariantProps } from "class-variance-authority"
+import type { VariantProps } from "class-variance-authority"
 import React, {
 	createContext,
-	Dispatch,
-	SetStateAction,
+	type Dispatch,
+	type SetStateAction,
 	useContext,
 	useState
 } from "react"
 import { toast } from "sonner"
 
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button, type buttonVariants } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 interface ClipboardContextType {
@@ -63,7 +63,7 @@ function ClipboardButtonRoot({
 				disabled={isCopied}
 				onClick={isCopied ? undefined : handleCopyClipboard}
 				className={cn(
-					"transition-all relative rounded-md disabled:opacity-80",
+					"relative rounded-md transition-all disabled:opacity-80",
 					className
 				)}
 				variant={variant}
