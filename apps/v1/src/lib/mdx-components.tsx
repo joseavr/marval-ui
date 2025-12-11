@@ -286,7 +286,7 @@ export const mdxComponents = {
 			{...props}
 		/>
 	),
-	InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"div">) => {
+	InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"button">) => {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>
@@ -294,6 +294,7 @@ export const mdxComponents = {
 						size="icon-sm"
 						variant="ghost"
 						className="ml-0 align-middle hover:bg-transparent"
+						{...props}
 					>
 						<InfoCircle />
 					</Button>
