@@ -2,7 +2,7 @@
 
 import { Copy01 } from "@untitledui/icons"
 
-import { ClipboardButton, ClipboardIcon } from "@/components/ui/clipboard-button"
+import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 
 interface CopyMarkdownButtonProps {
 	text: string
@@ -10,7 +10,10 @@ interface CopyMarkdownButtonProps {
 	animationDuration?: number
 }
 
-export function CopyMarkdownButton({ animationDuration = 2000, text }: CopyMarkdownButtonProps) {
+export function CopyMarkdownButton({
+	animationDuration = 2000,
+	text
+}: CopyMarkdownButtonProps) {
 	return (
 		<ClipboardButton
 			variant="outline"

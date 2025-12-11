@@ -1,8 +1,8 @@
 import { InfoCircle } from "@untitledui/icons"
 
 import { DEVICONS } from "@/components/icons/language-icons"
+import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 import { Button } from "@/components/ui/button"
-import { ClipboardButton, ClipboardIcon } from "@/components/ui/clipboard-button"
 import {
 	CodeBlock,
 	CodeBlockContentWithExpand,
