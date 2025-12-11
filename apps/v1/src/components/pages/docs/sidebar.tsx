@@ -66,7 +66,8 @@ export function DocsSideBar() {
 											className={cn(
 												"relative flex w-full justify-start p-2 pl-4 text-start text-accent-foreground/70 transition-colors hover:no-underline group-hover:font-medium group-hover:text-foreground",
 												isDisabled &&
-													"pointer-events-none select-none text-foreground opacity-50 hover:text-foreground"
+													"pointer-events-none select-none text-foreground opacity-50 hover:text-foreground",
+												isActive && "text-foreground"
 											)}
 											disabled={isDisabled}
 										>
