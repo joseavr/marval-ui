@@ -5,6 +5,7 @@ import { Outfit } from "next/font/google"
 
 import { Providers } from "@/components/shared/app-providers"
 import { TailwindIndicator } from "@/components/shared/tailwind-indicator"
+import { ThemeProvider } from "@/components/shared/theme-provider"
 import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
@@ -27,9 +28,18 @@ export default function RootLayout({
 			lang="en"
 			className={cn(outfit.className, "light")}
 			style={{ colorScheme: "light" }}
+			suppressHydrationWarning
 		>
 			<body>
-				<Providers>{children}</Providers>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					enableSystem
+					disableTransitionOnChange
+					themes={['light', 'dark']}
+				>
+					<Providers>{children}</Providers>
+				</ThemeProvider>
 				<TailwindIndicator align="bottom-right" />
 			</body>
 		</html>

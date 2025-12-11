@@ -1,6 +1,7 @@
 import Link from "next/link"
 
 import { CommandMenu } from "@/components/pages/docs/command-menu"
+import { DynamicThemeToggle } from "@/components/shared/dynamic-theme-toggle"
 import { GitHubLink } from "@/components/shared/github-link"
 import { LayoutToggle } from "@/components/shared/layout-toggle"
 import { Container } from "@/components/shared/page-container"
@@ -12,8 +13,8 @@ export function AppHeader() {
 	return (
 		<header className="sticky top-0 z-30 w-full bg-transparent backdrop-blur-sm">
 			<Container>
-				<div className="h-(--header-height)">
-					<div className="flex h-8 items-start justify-between pt-3">
+				<div className="h-(--header-height) pt-3">
+					<div className="flex h-8 items-start justify-between">
 						<div data-id="left-content">
 							<Link href="/" className="h-8 font-bold text-xl">
 								marval ui
@@ -28,6 +29,7 @@ export function AppHeader() {
 							<CommandMenu tree={pageTree} />
 							<LayoutToggle variant="ghost" size="icon" />
 							<GitHubLink variant="ghost" size="icon" />
+							<DynamicThemeToggle />
 						</div>
 					</div>
 				</div>
