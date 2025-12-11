@@ -2,6 +2,7 @@ import { InfoCircle } from "@untitledui/icons"
 
 import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
+import { ComponentPreview } from "@/components/shared/component-preview"
 import { Button } from "@/components/ui/button"
 import {
 	CodeBlock,
@@ -15,6 +16,7 @@ import {
 } from "@/components/ui/codeblock"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
+import { ButtonDemo } from "@/registry/demo/button-demo"
 
 const defaultMdxComponents = {
 	h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
@@ -125,14 +127,16 @@ const defaultMdxComponents = {
 			{...props}
 		/>
 	),
-	td: ({ className, ...props }: React.ComponentProps<"td">) => (
+	td: ({ className, children, ...props }: React.ComponentProps<"td">) => (
 		<td
 			className={cn(
 				"whitespace-nowrap px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right",
 				className
 			)}
 			{...props}
-		/>
+		>
+			{children}
+		</td>
 	),
 	figcaption: ({ className, children, ...props }: React.ComponentProps<"figcaption">) => {
 		return (
@@ -149,11 +153,16 @@ const defaultMdxComponents = {
 	}
 }
 
+const demoComponents = {
+	ButtonDemo: ButtonDemo
+}
+
 /**
  * Custom MDX components, ready to use in .mdx files
  */
 export const mdxComponents = {
 	...defaultMdxComponents,
+	...demoComponents,
 	figure: ({
 		className,
 		__language__,
@@ -244,9 +253,9 @@ export const mdxComponents = {
 			<code
 				className={cn(
 					isCodeBlock
-						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-1 font-mono text-sm [scrollbar-width:none]"
-						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] text-foreground dark:border-zinc-800 dark:bg-white/10",
-					isInstallationCodeBlock && "select-all",
+						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none]"
+						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] align-middle text-foreground leading-6 dark:border-zinc-800 dark:bg-white/10",
+					isInstallationCodeBlock && "select-all pt-1",
 					className
 				)}
 				{...props}
@@ -281,7 +290,11 @@ export const mdxComponents = {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>
-					<Button size="icon-sm" variant="ghost" className="ml-0 hover:bg-transparent">
+					<Button
+						size="icon-sm"
+						variant="ghost"
+						className="ml-0 align-middle hover:bg-transparent"
+					>
 						<InfoCircle />
 					</Button>
 				</PopoverTrigger>
@@ -290,5 +303,6 @@ export const mdxComponents = {
 				</PopoverContent>
 			</Popover>
 		)
-	}
+	},
+	ComponentPreview: ComponentPreview
 }

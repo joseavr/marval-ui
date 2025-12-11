@@ -75,7 +75,7 @@ export default async function ComponentPage(props: {
 	return (
 		<div data-id="docs-rightside-divided-in-two" className="flex items-stretch xl:w-full">
 			<article className="flex min-w-0 flex-1 flex-col gap-8 pt-4">
-				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-8">
+				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-12">
 					<header data-id="mdx-header" className="flex w-full flex-col gap-3.5">
 						<Breadcrumb className="mb-3.5">
 							<BreadcrumbList>
@@ -121,7 +121,10 @@ export default async function ComponentPage(props: {
 								/>
 
 								<ButtonGroup>
-									<CopyMarkdownButton text={parseMarkdown(markdownRaw)} animationDuration={2500}/>
+									<CopyMarkdownButton
+										text={parseMarkdown(markdownRaw)}
+										animationDuration={2500}
+									/>
 
 									<ButtonGroupSeparator />
 
