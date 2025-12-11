@@ -25,7 +25,7 @@ export function AppHeader() {
 							className="hidden w-full flex-1 gap-3 md:flex md:w-auto md:flex-none"
 						>
 							{/* TODO: add more features */}
-							<CommandMenu tree={pageTree} />
+							{/* <CommandMenu tree={pageTree} /> */}
 							<LayoutToggle variant="ghost" size="icon" />
 							<GitHubLink variant="ghost" size="icon" />
 						</div>
