@@ -201,6 +201,10 @@
 	}
 }
 
+@utility no-scrollbar {
+  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+}
+
 /* ----------------REHYPE STYLES---------------- */
 [data-rehype-pretty-code-figure] code {
 	counter-reset: line;
