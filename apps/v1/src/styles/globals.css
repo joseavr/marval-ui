@@ -3,6 +3,16 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* 
+Design Tokens
+- background  -> base color
+- foreground  -> text color
+- accent  	  -> focus color, highlights, derived from primary usually darker
+- muted 		  -> to deemphasize borders, separators
+- primary 	  -> cta, action buttons
+- secondary   -> 
+*/
+
 @theme inline {
 	--breakpoint-3xl: 1600px;
 	--breakpoint-4xl: 2000px;
@@ -39,6 +49,8 @@
 	/* 30 */
 	--color-card: var(--card);
 	--color-card-foreground: var(--card-foreground);
+
+	--color-card-code: var(--card-code);
 
 	--color-popover: var(--popover);
 	--color-popover-foreground: var(--popover-foreground);
@@ -89,7 +101,7 @@
 
 	/* shadcn variables	 */
 	--radius: 0.625rem;
-	--background: oklch(1 0 0);
+	--background: oklch(0.995 0 0);
 	--foreground: oklch(0.145 0 0);
 	--card: oklch(1 0 0);
 	--card-foreground: oklch(0.145 0 0);
@@ -120,6 +132,7 @@
 	--sidebar-accent-foreground: oklch(0.205 0 0);
 	--sidebar-border: oklch(0.922 0 0);
 	--sidebar-ring: oklch(0.708 0 0);
+	--card-code: oklch(0.978 0 0);
 }
 /* Dark theme */
 .dark {
@@ -154,6 +167,7 @@
 	--sidebar-accent-foreground: oklch(0.985 0 0);
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
+	--card-code: oklch(0.19 0 90);
 }
 
 @layer base {
@@ -202,7 +216,7 @@
 }
 
 @utility no-scrollbar {
-  @apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
+	@apply [scrollbar-width:none] [&::-webkit-scrollbar]:hidden;
 }
 
 /* ----------------REHYPE STYLES---------------- */
@@ -214,7 +228,7 @@
 	@apply px-6 py-1;
 }
 code[data-line-numbers] {
-  counter-reset: line;
+	counter-reset: line;
 }
 [data-rehype-pretty-code-figure] [data-line-numbers] > [data-line]::before {
 	counter-increment: line;

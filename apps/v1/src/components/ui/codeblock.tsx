@@ -58,7 +58,7 @@ function CodeBlockRoot({
 		>
 			<figure
 				className={cn(
-					"group/codeblock relative my-4 rounded-lg bg-secondary  font-geist-mono",
+					"group/codeblock relative my-4 rounded-lg bg-card-code font-geist-mono",
 					className
 				)}
 				{...props}
@@ -149,7 +149,7 @@ function CodeBlockContentWithExpand({ children }: { children: React.ReactNode })
 				className={cn(
 					" h-full w-full overflow-hidden",
 					!isExpanded &&
-						"max-h-96 [mask-image:linear-gradient(to_top,transparent,white_60%,white_100%,transparent)]"
+						"max-h-96 mask-[linear-gradient(to_top,transparent,white_60%,white_100%,transparent)]"
 				)}
 			>
 				{children}

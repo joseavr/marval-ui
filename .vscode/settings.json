@@ -12,9 +12,6 @@
 		"source.organizeImports.biome": "explicit",
 		"source.fixAll.biome": "explicit"
 	},
-
-  // Support Tailwindcss inside these functions 
-  "tailwindCSS.classFunctions": ["cn", "cva", "clsx"],
 	"editor.tabSize": 2,
 	"git.autofetch": true,
 	"editor.suggest.insertMode": "replace",
@@ -27,5 +24,9 @@
 
 	// language settings
 	"typescript.updateImportsOnFileMove.enabled": "always",
-	"javascript.updateImportsOnFileMove.enabled": "always"
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"tailwindCSS.files.exclude": ["**/src/ui/**"],
+	"tailwindCSS.emmetCompletions": true,
+  "tailwindCSS.classFunctions": ["cn", "cva", "clsx"], // support Tailwindcss inside these functions 
+
 }
