@@ -1,5 +1,6 @@
 "use client"
 
+import { useAtomValue } from "jotai"
 import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -9,10 +10,12 @@ import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { sidebar_data } from "@/lib/config"
 import { cn } from "@/lib/utils"
+import { layoutAtom } from "@/store/layout-atom"
 
 export function DocsSideBar() {
 	const [hoveredItem, setHoveredItem] = useState<string | null>(null)
 	const pathname = usePathname()
+	const layout = useAtomValue(layoutAtom)
 
 	return (
 		<aside
@@ -21,7 +24,7 @@ export function DocsSideBar() {
 		>
 			<ScrollArea>
 				<nav
-					className="flex flex-col gap-8"
+					className={cn("flex flex-col gap-8", layout === "zen" && "invisible")}
 					style={
 						{
 							"--icon-container-size": "1.25rem", // 20px
@@ -112,7 +115,7 @@ export function DocsSideBar() {
 							})}
 						</ul>
 					))}
-					<div className="-bottom-1 sticky z-10 h-16 shrink-0 bg-gradient-to-t from-background via-background/80 to-background/50 blur-xs" />
+					<div className="-bottom-1 sticky z-10 h-16 shrink-0 bg-linear-to-t from-background via-background/80 to-background/50 blur-xs" />
 				</nav>
 			</ScrollArea>
 		</aside>

@@ -3,7 +3,9 @@ import "@/styles/globals.css"
 
 import { Outfit } from "next/font/google"
 
+import { Providers } from "@/components/shared/app-providers"
 import { TailwindIndicator } from "@/components/shared/tailwind-indicator"
+import { cn } from "@/lib/utils"
 
 export const metadata: Metadata = {
 	title: "Marval UI",
@@ -21,9 +23,13 @@ export default function RootLayout({
 	children: React.ReactNode
 }>) {
 	return (
-		<html lang="en" className={outfit.className}>
+		<html
+			lang="en"
+			className={cn(outfit.className, "light")}
+			style={{ colorScheme: "light" }}
+		>
 			<body>
-				{children}
+				<Providers>{children}</Providers>
 				<TailwindIndicator align="bottom-right" />
 			</body>
 		</html>

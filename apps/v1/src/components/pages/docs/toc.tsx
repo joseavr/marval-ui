@@ -1,6 +1,7 @@
 "use client"
 
 import { Menu03 } from "@untitledui/icons"
+import { useAtomValue } from "jotai"
 import React from "react"
 
 import { Button } from "@/components/ui/button"
@@ -11,6 +12,7 @@ import {
 	DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
+import { layoutAtom } from "@/store/layout-atom"
 
 function useActiveItem(itemIds: string[]) {
 	const [activeId, setActiveId] = React.useState<string | null>(null)
@@ -66,6 +68,7 @@ export function DocsTableOfContents({
 		[toc]
 	)
 	const activeHeading = useActiveItem(itemIds)
+	const layout = useAtomValue(layoutAtom)
 
 	if (!toc?.length) {
 		return null
@@ -99,7 +102,13 @@ export function DocsTableOfContents({
 	}
 
 	return (
-		<div className={cn("flex flex-col gap-2 p-4 pt-0 text-sm", className)}>
+		<div
+			className={cn(
+				"flex flex-col gap-2 p-4 pt-0 text-sm",
+				layout === "zen" && "invisible",
+				className
+			)}
+		>
 			<p className="sticky top-0 flex h-6 items-center justify-start gap-1 bg-background text-muted-foreground text-sm [&>svg]:size-3.5">
 				<Menu03 /> On this page
 			</p>
