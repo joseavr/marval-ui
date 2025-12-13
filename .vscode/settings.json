@@ -25,7 +25,7 @@
 	// language settings
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"javascript.updateImportsOnFileMove.enabled": "always",
-	"tailwindCSS.files.exclude": ["**/src/ui/**"],
+	"tailwindCSS.files.exclude": ["**/src/components/ui/**"],
 	"tailwindCSS.emmetCompletions": true,
   "tailwindCSS.classFunctions": ["cn", "cva", "clsx"], // support Tailwindcss inside these functions 
 
