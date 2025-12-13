@@ -27,9 +27,10 @@ import { Button } from "@/components/ui/button"
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
+
 // export async function generateStaticParams() {
 // 	try {
-// 		const files = await import("fs/promises");
+// 		const files = await import("node:fs/promises");
 // 		const entries = await files.readdir(componentsDir, {
 // 			withFileTypes: true,
 // 		});
@@ -42,6 +43,31 @@ import { mdxComponents } from "@/lib/mdx-components"
 // 		return [];
 // 	}
 // }
+
+
+// export async function generateMetadata(props: {
+//   params: Promise<{ slug: string[] }>
+// }) {
+//   const params = await props.params
+//   const page = source.getPage(params.slug)
+
+//   if (!page) {
+//     notFound()
+//   }
+
+//   const doc = page.data
+
+//   if (!doc.title || !doc.description) {
+//     notFound()
+//   }
+
+//   return {}
+// }
+
+export function generateStaticParams() {
+  return source.generateParams()
+}
+
 
 export default async function ComponentPage(props: {
 	params: Promise<{ slug: string[] | undefined }>
