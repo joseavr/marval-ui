@@ -22,7 +22,7 @@ const buttonVariants = cva(
 				// "brand-destructive": "",
 			},
 			size: {
-				sm: "h-7 gap-1.5 px-3 has-[>svg]:px-2.5 text-xs [&_svg]:size-3.5!",
+				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg]:size-3.5!",
 				default: "h-8 px-4 py-2 has-[>svg]:px-3",
 				lg: "h-9 px-6 has-[>svg]:px-4",
 				"icon-sm": "size-7 [&_svg]:size-3.5!",
