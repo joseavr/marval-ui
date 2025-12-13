@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-import { CommandMenu } from "@/components/pages/docs/command-menu"
+import { SpotlightSearch } from "@/components/pages/docs/spotlight-search"
 import { DynamicThemeToggle } from "@/components/shared/dynamic-theme-toggle"
 import { GitHubLink } from "@/components/shared/github-link"
 import { LayoutToggle } from "@/components/shared/layout-toggle"
@@ -25,8 +25,7 @@ export function AppHeader() {
 							data-id="right-content"
 							className="hidden w-full flex-1 gap-3 md:flex md:w-auto md:flex-none"
 						>
-							{/* TODO: add more features */}
-							<CommandMenu tree={pageTree} />
+							<SpotlightSearch tree={pageTree} />
 							<LayoutToggle variant="ghost" size="icon" />
 							<GitHubLink variant="ghost" size="icon" />
 							<DynamicThemeToggle />

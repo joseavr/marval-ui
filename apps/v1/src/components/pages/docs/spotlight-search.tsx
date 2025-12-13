@@ -30,7 +30,7 @@ import { Spinner } from "@/components/ui/spinner"
 import type { source } from "@/lib/fumadocs"
 import { cn } from "@/lib/utils"
 
-export function CommandMenu({
+export function SpotlightSearch({
 	tree,
 	blocks,
 	navItems,
