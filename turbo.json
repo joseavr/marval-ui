@@ -5,12 +5,8 @@
       "dependsOn": ["^build"],
       "outputs": [
         ".output",
-        ".source/**",
         ".next/**",
-        "dist/**",
-        "out",
-        "build",
-        ".vercel"
+        "dist/**"
       ]
     },
     "dev": {
