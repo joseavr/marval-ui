@@ -3,7 +3,14 @@
 
 import { RefreshCcw01 } from "@untitledui/icons"
 import type React from "react"
-import { createContext, useContext, useReducer, useState } from "react"
+import {
+	createContext,
+	forwardRef,
+	useContext,
+	useReducer,
+	useRef,
+	useState
+} from "react"
 
 import { SettingIcon } from "@/components/icons/setting-icon"
 import { Button } from "@/components/ui/button"
@@ -63,13 +70,7 @@ function ComponentPreview({
 								className="absolute top-0 left-0 w-full"
 							>
 								<div className="flex items-center justify-end gap-2 p-4">
-									<Button
-										variant="secondary"
-										size="icon"
-										onClick={() => setKey((prev) => prev + 1)}
-									>
-										<RefreshCcw01 />
-									</Button>
+									<RerenderComponentButton onClick={() => setKey((prev) => prev + 1)} />
 									<ComponentPreviewInspectorPopover />
 								</div>
 							</div>
@@ -84,6 +85,40 @@ function ComponentPreview({
 		</div>
 	)
 }
+
+const RerenderComponentButton = forwardRef<
+	HTMLButtonElement,
+	React.ComponentProps<"button">
+>(({ className, onClick }, ref) => {
+	const iconRef = useRef<SVGSVGElement | null>(null)
+
+	const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+		if (!onClick) return
+		onClick(e)
+
+		const iconElement = iconRef.current
+		if (!iconElement) return
+		// Restart animation
+		iconElement.classList.remove("animate-rotate")
+		// Force reflow by accessing layout property
+		void (iconElement.parentElement?.offsetWidth ?? iconElement.getBoundingClientRect().width)
+		// Animate
+		iconElement.classList.add("animate-rotate")
+	}
+
+	return (
+		<Button
+			ref={ref}
+			className={className}
+			variant="secondary"
+			size="icon"
+			onClick={handleClick}
+		>
+			<RefreshCcw01 ref={iconRef} />
+		</Button>
+	)
+})
+RerenderComponentButton.displayName = "RerenderComponentButton"
 
 function ComponentPreviewDemo({
 	align = "center",
@@ -225,9 +260,9 @@ type ComponentPreviewDemoContextType = {
 	properties: ComponentProperties
 }
 
-const ComponentPreviewDemoContext = createContext<ComponentPreviewDemoContextType | undefined>(
-	undefined
-)
+const ComponentPreviewDemoContext = createContext<
+	ComponentPreviewDemoContextType | undefined
+>(undefined)
 
 function ComponentPreviewDemoProvider({
 	demoName,
@@ -260,9 +295,4 @@ function useComponentPreviewDemoContext() {
 	return context
 }
 
-
-export {
-	ComponentPreview,
-	ComponentPreviewDemoProvider,
-	useComponentPreviewDemoContext
-}
+export { ComponentPreview, ComponentPreviewDemoProvider, useComponentPreviewDemoContext }
