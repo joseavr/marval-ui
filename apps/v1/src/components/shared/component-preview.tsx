@@ -263,7 +263,6 @@ function useComponentPreviewDemoContext() {
 
 export {
 	ComponentPreview,
-	ComponentPreviewDemoContext,
 	ComponentPreviewDemoProvider,
 	useComponentPreviewDemoContext
 }

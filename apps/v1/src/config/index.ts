@@ -12,7 +12,7 @@ type AppSidebarDataType = {
 	items: Array<{ label: string; url: string; disabled?: boolean }>
 }[]
 
-export const sidebar_data: AppSidebarDataType = [
+const SidebarConfig: AppSidebarDataType = [
 	{
 		groupLabel: "overview",
 		icon: MenuIcon,
@@ -75,3 +75,17 @@ export const sidebar_data: AppSidebarDataType = [
 		]
 	}
 ]
+
+export const AppConfig = {
+	name: "Marval UI",
+	url: "",
+	ogImage: "",
+	description: "",
+	links: {
+		github: "https://github.com/joseavr/marval-ui",
+		twitter: "",
+		discord: "",
+		instagram: ""
+	},
+	sidebar: SidebarConfig
+}

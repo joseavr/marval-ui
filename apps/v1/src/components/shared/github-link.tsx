@@ -3,7 +3,7 @@ import Link from "next/link"
 import { GithubIcon } from "@/components/icons/github-icon"
 import { Button, type ButtonVariantProps } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { AppConfig } from "@/config/app"
+import { AppConfig } from "@/config"
 
 export function GitHubLink({
 	className,

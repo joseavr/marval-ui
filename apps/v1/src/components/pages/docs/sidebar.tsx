@@ -8,9 +8,11 @@ import { useState } from "react"
 
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { sidebar_data } from "@/lib/config"
+import { AppConfig } from "@/config"
 import { cn } from "@/lib/utils"
 import { layoutAtom } from "@/store/layout-atom"
+
+const Sidebar = AppConfig.sidebar
 
 export function DocsSideBar() {
 	const [hoveredItem, setHoveredItem] = useState<string | null>(null)
@@ -32,7 +34,7 @@ export function DocsSideBar() {
 						} as React.CSSProperties
 					}
 				>
-					{sidebar_data.map(({ items, groupLabel, icon: GroupIcon }) => (
+					{Sidebar.map(({ items, groupLabel, icon: GroupIcon }) => (
 						<ul key={groupLabel}>
 							<p className="mb-2 inline-flex">
 								<span className="relative flex items-center gap-2 text-muted-foreground">
