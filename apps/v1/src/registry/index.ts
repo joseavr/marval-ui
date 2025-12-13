@@ -10,6 +10,9 @@ type PropertyConfig =
 			type: "boolean"
 			default: boolean
 	  }
+  // | {
+  //   type: "children"
+  // }
 
 type ComponentProperties = Record<string, PropertyConfig>
 
@@ -45,8 +48,6 @@ const Index = {
 			default: false
 		}
 	}
-	// "tree-demo": {},
-	// "file-upload-demo": {}
 } satisfies Record<string, ComponentProperties>
 
 export { type PropertyConfig, type ComponentProperties, Index }

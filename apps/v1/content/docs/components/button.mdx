@@ -1,6 +1,6 @@
 ---
 title: Button
-description: A button component built with React and Tailwind CSS, featuring multiple variants, sizes, and full accessibility support.
+description: An extended button component from Shadcn with more variants.
 isPublished: true
 releaseDate: 2025-12-5
 metadata:
@@ -27,8 +27,6 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 
 export function ButtonDemo() {
-	const [value, setValue] = useState(0)
-
 	return (
 		<div className="flex flex-wrap items-center gap-2 md:flex-row">
 			<Button variant="outline">Button {value}</Button>
@@ -36,7 +34,6 @@ export function ButtonDemo() {
 				variant="outline"
 				size="icon"
 				aria-label="Submit"
-				onClick={() => setValue((prev) => prev + 1)}
 			>
 				<ArrowUpIcon />
 			</Button>
