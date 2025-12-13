@@ -285,14 +285,14 @@ export const mdxComponents = {
 			{...props}
 		/>
 	),
-InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"button">) => {
+	Info: ({ className, children, ...props }: React.ComponentProps<"button">) => {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>
 					<Button
 						size="icon-sm"
 						variant="ghost"
-						className="ml-0 align-middle hover:bg-transparent"
+						className={cn("ml-0 align-middle hover:bg-transparent", className)}
 						{...props}
 					>
 						<InfoCircle />
