@@ -18,6 +18,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { cn } from "@/lib/utils"
 import { ButtonDemo } from "@/registry/demo/button-demo"
 
+const demoComponents = {
+	ButtonDemo: ButtonDemo
+}
+
 const defaultMdxComponents = {
 	h1: ({ className, ...props }: React.ComponentProps<"h1">) => (
 		<h1
@@ -97,7 +101,6 @@ const defaultMdxComponents = {
 	hr: ({ ...props }: React.ComponentProps<"hr">) => (
 		<hr className="my-4 md:my-8" {...props} />
 	),
-	// TODO
 	table: ({ className, ...props }: React.ComponentProps<"table">) => (
 		<div className="no-scrollbar my-6 w-full overflow-y-auto rounded-lg border">
 			<table
@@ -151,10 +154,6 @@ const defaultMdxComponents = {
 			</figcaption>
 		)
 	}
-}
-
-const demoComponents = {
-	ButtonDemo: ButtonDemo
 }
 
 /**
@@ -286,7 +285,7 @@ export const mdxComponents = {
 			{...props}
 		/>
 	),
-	InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"button">) => {
+InfoTooltip: ({ className, children, ...props }: React.ComponentProps<"button">) => {
 		return (
 			<Popover>
 				<PopoverTrigger asChild>

@@ -30,4 +30,12 @@ const PopoverContent = React.forwardRef<
 ))
 PopoverContent.displayName = PopoverPrimitive.Content.displayName
 
-export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
+const PopoverClose = ({className, children, ref, asChild = false, ...props}: {  ref?: React.Ref<HTMLButtonElement>, className?: string, asChild?: boolean, children?: React.ReactNode}) => {
+	return (
+		<PopoverPrimitive.Close ref={ref} asChild={asChild} {...props} className={className}>
+			{children}
+		</PopoverPrimitive.Close>
+	)
+}
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor, PopoverClose }
