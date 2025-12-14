@@ -15,6 +15,7 @@ import { GithubIcon } from "@/components/icons/github-icon"
 import { IssueOpenIcon } from "@/components/icons/issue-icon"
 import { CopyMarkdownButton } from "@/components/pages/docs/copy-markdown-button"
 import { DocsTableOfContents } from "@/components/pages/docs/toc"
+import { ExternalLink } from "@/components/shared/external-link"
 import { InlineCode } from "@/components/shared/typography"
 import {
 	Breadcrumb,
@@ -189,10 +190,10 @@ export default async function ComponentPage(props: {
 											size="default"
 											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
-											<a href={metadata.github.repoUrl.url}>
+											<ExternalLink href={metadata.github.repoUrl.url}>
 												<GithubIcon />
 												<span>{metadata.github.repoUrl.label}</span>
-											</a>
+											</ExternalLink>
 										</Button>
 
 										<Button
@@ -201,10 +202,10 @@ export default async function ComponentPage(props: {
 											size="default"
 											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
-											<a href={metadata.github.openIssuesUrl}>
+											<ExternalLink href={metadata.github.openIssuesUrl}>
 												<BugIcon />
 												<span>Issue</span>
-											</a>
+											</ExternalLink>
 										</Button>
 
 										<Button
@@ -213,10 +214,10 @@ export default async function ComponentPage(props: {
 											size="default"
 											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
-											<a href={metadata.github.repoUrl.url}>
+											<ExternalLink href={metadata.github.repoUrl.url}>
 												<IssueOpenIcon />
 												<span>Open Issues 200</span>
-											</a>
+											</ExternalLink>
 										</Button>
 									</div>
 								</div>
@@ -229,10 +230,10 @@ export default async function ComponentPage(props: {
 											size="default"
 											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
-											<a href={metadata.editPageUrl}>
+											<ExternalLink href={metadata.editPageUrl}>
 												<Edit05 />
 												<span>Edit on GitHub</span>
-											</a>
+											</ExternalLink>
 										</Button>
 									</span>
 								</div>
@@ -246,9 +247,9 @@ export default async function ComponentPage(props: {
 												size="default"
 												className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 											>
-												<a href={person.url}>
+												<ExternalLink href={person.url}>
 													<span>{person.name}</span>
-												</a>
+												</ExternalLink>
 											</Button>
 										</span>
 									</div>
