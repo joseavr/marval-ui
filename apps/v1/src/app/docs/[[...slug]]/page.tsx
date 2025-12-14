@@ -68,6 +68,7 @@ export default async function ComponentPage(props: {
 		description,
 		metadata,
 		toc,
+		releaseDate,
 		lastModified,
 		getText,
 		isPublished
@@ -265,7 +266,18 @@ export default async function ComponentPage(props: {
 					className="mx-auto mb-8 flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-12"
 				>
 					<div className="flex justify-between">
-						<div>Built by Jose Valdivia. Hire me please!</div>
+						<div>
+							Built by Jose Valdivia. Posted on:{" "}
+							<span>
+								<InlineCode className="font-bold text-xs">
+									{new Intl.DateTimeFormat("en-US", {
+										month: "2-digit",
+										day: "2-digit",
+										year: "numeric"
+									}).format(releaseDate)}
+								</InlineCode>
+							</span>{" "}
+						</div>
 						{!!lastModified && (
 							<div>
 								{"Last updated: "}
