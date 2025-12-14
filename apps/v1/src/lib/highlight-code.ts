@@ -12,40 +12,40 @@ export const transformers = [
 
 				if (raw.startsWith("npm install")) {
 					node.properties.__npm__ = raw
-					node.properties.__yarn__ = raw.replace("npm install", "yarn add")
-					node.properties.__pnpm__ = raw.replace("npm install", "pnpm add")
-					node.properties.__bun__ = raw.replace("npm install", "bun add")
+					node.properties.__yarn__ = raw.replaceAll("npm install", "yarn add")
+					node.properties.__pnpm__ = raw.replaceAll("npm install", "pnpm add")
+					node.properties.__bun__ = raw.replaceAll("npm install", "bun add")
 				}
 
 				if (raw.startsWith("npx create-")) {
 					node.properties.__npm__ = raw
-					node.properties.__yarn__ = raw.replace("npx create-", "yarn create ")
-					node.properties.__pnpm__ = raw.replace("npx create-", "pnpm create ")
-					node.properties.__bun__ = raw.replace("npx", "bunx --bun")
+					node.properties.__yarn__ = raw.replaceAll("npx create-", "yarn create ")
+					node.properties.__pnpm__ = raw.replaceAll("npx create-", "pnpm create ")
+					node.properties.__bun__ = raw.replaceAll("npx", "bunx --bun")
 				}
 
 				// npm create.
 				if (raw.startsWith("npm create")) {
 					node.properties.__npm__ = raw
-					node.properties.__yarn__ = raw.replace("npm create", "yarn create")
-					node.properties.__pnpm__ = raw.replace("npm create", "pnpm create")
-					node.properties.__bun__ = raw.replace("npm create", "bun create")
+					node.properties.__yarn__ = raw.replaceAll("npm create", "yarn create")
+					node.properties.__pnpm__ = raw.replaceAll("npm create", "pnpm create")
+					node.properties.__bun__ = raw.replaceAll("npm create", "bun create")
 				}
 
 				// npx.
 				if (raw.startsWith("npx")) {
 					node.properties.__npm__ = raw
-					node.properties.__yarn__ = raw.replace("npx", "yarn")
-					node.properties.__pnpm__ = raw.replace("npx", "pnpm dlx")
-					node.properties.__bun__ = raw.replace("npx", "bunx --bun")
+					node.properties.__yarn__ = raw.replaceAll("npx", "yarn")
+					node.properties.__pnpm__ = raw.replaceAll("npx", "pnpm dlx")
+					node.properties.__bun__ = raw.replaceAll("npx", "bunx --bun")
 				}
 
 				// npm run.
 				if (raw.startsWith("npm run")) {
 					node.properties.__npm__ = raw
-					node.properties.__yarn__ = raw.replace("npm run", "yarn")
-					node.properties.__pnpm__ = raw.replace("npm run", "pnpm")
-					node.properties.__bun__ = raw.replace("npm run", "bun")
+					node.properties.__yarn__ = raw.replaceAll("npm run", "yarn")
+					node.properties.__pnpm__ = raw.replaceAll("npm run", "pnpm")
+					node.properties.__bun__ = raw.replaceAll("npm run", "bun")
 				}
 			}
 		}
