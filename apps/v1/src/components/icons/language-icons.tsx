@@ -21,7 +21,7 @@ const react = ({ className, ...props }: React.ComponentProps<"svg">) => {
 
 export const DEVICONS: Record<string, React.FC<React.ComponentProps<"svg">>> = {
 	bash: TerminalSquare,
-	javascript: ({ className, ...props }: React.ComponentProps<"svg">) => {
+	js: ({ className, ...props }: React.ComponentProps<"svg">) => {
 		return (
 			<svg
 				className={className}
@@ -41,7 +41,7 @@ export const DEVICONS: Record<string, React.FC<React.ComponentProps<"svg">>> = {
 			</svg>
 		)
 	},
-	typescript: ({ className, ...props }: React.ComponentProps<"svg">) => {
+	ts: ({ className, ...props }: React.ComponentProps<"svg">) => {
 		return (
 			<svg className={className} {...props} viewBox="0 0 256 256">
 				<title>TypescriptIcon</title>
@@ -56,5 +56,22 @@ export const DEVICONS: Record<string, React.FC<React.ComponentProps<"svg">>> = {
 		)
 	},
 	tsx: react,
-	jsx: react
+	jsx: react,
+	css: ({ className, ...props }: React.ComponentProps<"svg">) => {
+		return (
+			<svg viewBox="0 0 452 520" className={className} {...props}>
+				<title>CssIcon</title>
+				<path d="M41 460L0 0h451l-41 460-185 52" fill="#0c73b8" />
+				<path d="M226 472l149-41 35-394H226" fill="#30a9dc" />
+				<path
+					d="M226 208H94l5 57h127zm0-114H84l5 56h137zm0 261l-124-33 7 60 117 32z"
+					fill="#ecedee"
+				/>
+				<path
+					d="M226 265h69l-7 73-62 17v59l115-32 26-288H226v56h80l-6 58h-74z"
+					fill="#fff"
+				/>
+			</svg>
+		)
+	}
 }

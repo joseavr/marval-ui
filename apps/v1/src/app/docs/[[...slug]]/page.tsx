@@ -28,23 +28,7 @@ import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
 
-// export async function generateStaticParams() {
-// 	try {
-// 		const files = await import("node:fs/promises");
-// 		const entries = await files.readdir(componentsDir, {
-// 			withFileTypes: true,
-// 		});
-// 		return entries
-// 			.filter((entry) => entry.isFile() && entry.name.endsWith(".mdx"))
-// 			.map((entry) => ({
-// 				component: entry.name.replace(".mdx", ""),
-// 			}));
-// 	} catch {
-// 		return [];
-// 	}
-// }
-
-
+// TODO generateMetadata
 // export async function generateMetadata(props: {
 //   params: Promise<{ slug: string[] }>
 // }) {
@@ -65,9 +49,8 @@ import { mdxComponents } from "@/lib/mdx-components"
 // }
 
 export function generateStaticParams() {
-  return source.generateParams()
+	return source.generateParams()
 }
-
 
 export default async function ComponentPage(props: {
 	params: Promise<{ slug: string[] | undefined }>
@@ -86,7 +69,6 @@ export default async function ComponentPage(props: {
 		metadata,
 		toc,
 		lastModified,
-		releaseDate,
 		getText,
 		isPublished
 	} = document
@@ -103,36 +85,37 @@ export default async function ComponentPage(props: {
 			<article className="flex min-w-0 flex-1 flex-col gap-8 pt-4">
 				<div className="mx-auto flex w-full min-w-0 max-w-2xl flex-1 flex-col gap-12">
 					<header data-id="mdx-header" className="flex w-full flex-col gap-3.5">
-						<Breadcrumb className="mb-3.5">
-							<BreadcrumbList>
-								<BreadcrumbItem>
-									<BreadcrumbLink asChild className="relative">
-										<Link href="/docs">
-											<BookOpen01 className="peer z-10 size-3.5" />
-											<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
-										</Link>
-									</BreadcrumbLink>
-								</BreadcrumbItem>
-
-								{!!slug &&
-									slug.map((s, index, arr) => {
-										return (
-											<Fragment key={s}>
-												<BreadcrumbSeparator />
-												<BreadcrumbItem key={s}>
-													{index === arr.length - 1 ? (
-														<span className="font-medium text-foreground">{s}</span>
-													) : (
-														<BreadcrumbLink asChild>
-															<Link href={`/docs/${s}`}>{s}</Link>
-														</BreadcrumbLink>
-													)}
-												</BreadcrumbItem>
-											</Fragment>
-										)
-									})}
-							</BreadcrumbList>
-						</Breadcrumb>
+						<div className="flex justify-between">
+							<Breadcrumb className="mb-3.5">
+								<BreadcrumbList>
+									<BreadcrumbItem>
+										<BreadcrumbLink asChild className="relative">
+											<Link href="/docs">
+												<BookOpen01 className="peer z-10 size-3.5" />
+												<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
+											</Link>
+										</BreadcrumbLink>
+									</BreadcrumbItem>
+									{!!slug &&
+										slug.map((s, index, arr) => {
+											return (
+												<Fragment key={s}>
+													<BreadcrumbSeparator />
+													<BreadcrumbItem key={s}>
+														{index === arr.length - 1 ? (
+															<span className="font-medium text-foreground">{s}</span>
+														) : (
+															<BreadcrumbLink asChild>
+																<Link href={`/docs/${s}`}>{s}</Link>
+															</BreadcrumbLink>
+														)}
+													</BreadcrumbItem>
+												</Fragment>
+											)
+										})}
+								</BreadcrumbList>
+							</Breadcrumb>
+						</div>
 
 						<div className="flex flex-row items-center justify-between">
 							<h1 className="scroll-m-20 font-medium text-3xl tracking-tight sm:text-4xl">
@@ -291,7 +274,7 @@ export default async function ComponentPage(props: {
 										month: "2-digit",
 										day: "2-digit",
 										year: "numeric"
-									}).format(new Date())}
+									}).format(lastModified)}
 								</InlineCode>
 							</div>
 						)}

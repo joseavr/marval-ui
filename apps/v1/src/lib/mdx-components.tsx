@@ -1,9 +1,7 @@
-import { InfoCircle } from "@untitledui/icons"
-
 import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 import { ComponentPreview } from "@/components/shared/component-preview"
-import { Button } from "@/components/ui/button"
+import { Info } from "@/components/shared/info"
 import {
 	CodeBlock,
 	CodeBlockContentWithExpand,
@@ -14,7 +12,6 @@ import {
 	CodeBlockTabsContent,
 	CodeBlockTabsTrigger
 } from "@/components/ui/codeblock"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { cn } from "@/lib/utils"
 import { ButtonDemo } from "@/registry/demo/button-demo"
 
@@ -44,7 +41,7 @@ const defaultMdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"mt-12 scroll-m-28 font-medium text-xl tracking-tight",
+				"mt-12 scroll-m-28 font-medium text-lg tracking-tight",
 				"[&+p]:mt-4! [code]:*:text-xl",
 				className
 			)}
@@ -134,6 +131,8 @@ const defaultMdxComponents = {
 		<td
 			className={cn(
 				"whitespace-nowrap px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right",
+				// code styles
+				"[&>code]:border-transparent [&>code]:bg-primary-foreground! [&>code]:text-primary! [&>code]:text-xs",
 				className
 			)}
 			{...props}
@@ -254,7 +253,7 @@ export const mdxComponents = {
 					isCodeBlock
 						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none]"
 						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] align-middle text-foreground leading-6 dark:border-zinc-800 dark:bg-white/10",
-					isInstallationCodeBlock && "select-all pt-1",
+					isInstallationCodeBlock && "select-all pt-3",
 					className
 				)}
 				{...props}
@@ -273,7 +272,7 @@ export const mdxComponents = {
 	Step: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"mt-8 scroll-m-20 font-heading font-semibold text-xl tracking-tight",
+				"step mt-8 scroll-m-20 font-heading font-medium text-lg tracking-tight",
 				className
 			)}
 			{...props}
@@ -285,24 +284,6 @@ export const mdxComponents = {
 			{...props}
 		/>
 	),
-	Info: ({ className, children, ...props }: React.ComponentProps<"button">) => {
-		return (
-			<Popover>
-				<PopoverTrigger asChild>
-					<Button
-						size="icon-sm"
-						variant="ghost"
-						className={cn("ml-0 align-middle hover:bg-transparent", className)}
-						{...props}
-					>
-						<InfoCircle />
-					</Button>
-				</PopoverTrigger>
-				<PopoverContent className="rounded-xl px-3 py-2 text-sm">
-					{children}
-				</PopoverContent>
-			</Popover>
-		)
-	},
+	Info: Info,
 	ComponentPreview: ComponentPreview
 }

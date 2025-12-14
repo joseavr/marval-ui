@@ -1,4 +1,4 @@
-import type { ButtonVariantProps } from "@/components/ui/button"
+import type { ButtonVariantProps } from "@/registry/button"
 
 type PropertyConfig =
 	| {
@@ -10,15 +10,19 @@ type PropertyConfig =
 			type: "boolean"
 			default: boolean
 	  }
-  // | {
-  //   type: "children"
-  // }
+// | {
+//   type: "children"
+// }
 
 type ComponentProperties = Record<string, PropertyConfig>
 
 const Index = {
 	"button-demo": {
 		disabled: {
+			type: "boolean",
+			default: false
+		},
+    loading: {
 			type: "boolean",
 			default: false
 		},
@@ -30,7 +34,17 @@ const Index = {
 				"outline",
 				"secondary",
 				"ghost",
-				"link"
+				"link",
+				"brand-primary",
+				"brand-secondary",
+				"brand-tertiary",
+				"brand-neutral-primary",
+				"brand-neutral-secondary",
+				"brand-neutral-tertiary",
+        "brand-destructive-primary",
+        "brand-destructive-secondary",
+        "brand-destructive-tertiary"
+
 			] as NonNullable<ButtonVariantProps["variant"]>[],
 			default: "default" as Extract<ButtonVariantProps["variant"], "default">
 		},
