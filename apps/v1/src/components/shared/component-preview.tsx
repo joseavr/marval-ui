@@ -1,7 +1,8 @@
 /** biome-ignore-all lint/suspicious/noArrayIndexKey: It's fine to use array's index as key since we're not mutating the array */
 "use client"
 
-import { RefreshCcw01 } from "@untitledui/icons"
+import { DotsGrid, RefreshCcw01 } from "@untitledui/icons"
+import { useAtomValue, useSetAtom } from "jotai"
 import type React from "react"
 import {
 	createContext,
@@ -30,7 +31,9 @@ import {
 } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Toggle } from "@/components/ui/toggle"
 import { type ComponentProperties, Index } from "@/registry"
+import { gridAtom } from "@/store/grid-atom"
 
 interface ComponentPreviewProps {
 	demoName: keyof typeof Index
@@ -48,6 +51,8 @@ function ComponentPreview({
 	demoName
 }: ComponentPreviewProps) {
 	const [key, setKey] = useState(0)
+	const setWithGrid = useSetAtom(gridAtom)
+	const withGrid = useAtomValue(gridAtom)
 
 	if (!demoName)
 		throw new Error("component-preview.tsx:ComponentPreview - demoName must be provided")
@@ -61,14 +66,26 @@ function ComponentPreview({
 						<TabsTrigger value="code">Code</TabsTrigger>
 					</TabsList>
 					<TabsContent
+						data-grid={withGrid}
 						value="preview"
-						className="md:-mx-1 relative rounded-lg border data-[state=active]:border-border"
+						className="md:-mx-1 relative rounded-lg border data-[state=active]:border-border data-[grid=true]:bg-dotted"
 					>
 						<ComponentPreviewDemoProvider demoName={demoName}>
 							<div
 								data-id="component-preview-demo-header"
-								className="absolute top-0 left-0 w-full"
+								className="absolute top-0 left-0 flex w-full items-center justify-between"
 							>
+								<div className="flex items-center justify-start gap-2 p-4">
+									<Toggle
+										size="sm"
+										variant="default"
+										defaultChecked={withGrid}
+										pressed={withGrid}
+										onPressedChange={setWithGrid}
+									>
+										<DotsGrid />
+									</Toggle>
+								</div>
 								<div className="flex items-center justify-end gap-2 p-4">
 									<RerenderComponentButton onClick={() => setKey((prev) => prev + 1)} />
 									<ComponentPreviewInspectorPopover />
@@ -101,7 +118,9 @@ const RerenderComponentButton = forwardRef<
 		// Restart animation
 		iconElement.classList.remove("animate-rotate")
 		// Force reflow by accessing layout property
-		void (iconElement.parentElement?.offsetWidth ?? iconElement.getBoundingClientRect().width)
+		void (
+			iconElement.parentElement?.offsetWidth ?? iconElement.getBoundingClientRect().width
+		)
 		// Animate
 		iconElement.classList.add("animate-rotate")
 	}
