@@ -1,12 +1,19 @@
 "use client"
 
 import type { DialogProps } from "@radix-ui/react-dialog"
-import { ArrowRight as IconArrowRight } from "@untitledui/icons"
+import {
+	AlignLeft,
+	BookOpen01,
+	ArrowRight as IconArrowRight,
+	Tool02
+} from "@untitledui/icons"
 import { useDocsSearch } from "fumadocs-core/search/client"
-import { CornerDownLeftIcon, SquareDashedIcon } from "lucide-react"
+import { BoxesIcon, CornerDownLeftIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import * as React from "react"
 
+import { AtomIcon } from "@/components/icons/atom-icon"
+import { SnippetIcon } from "@/components/icons/snippet-icon"
 import { Button } from "@/components/ui/button"
 import {
 	Command,
@@ -25,7 +32,6 @@ import {
 	DialogTrigger
 } from "@/components/ui/dialog"
 import { Kbd, KbdGroup } from "@/components/ui/kbd"
-import { Separator } from "@/components/ui/separator"
 import { Spinner } from "@/components/ui/spinner"
 import type { source } from "@/lib/fumadocs"
 import { cn } from "@/lib/utils"
@@ -44,43 +50,14 @@ export function SpotlightSearch({
 }) {
 	const router = useRouter()
 	const [open, setOpen] = React.useState(false)
-	const [selectedType, setSelectedType] = React.useState<
-		"color" | "page" | "component" | "block" | null
-	>(null)
-	const [copyPayload, setCopyPayload] = React.useState("")
-
-	const { search, setSearch, query } = useDocsSearch({
-		type: "fetch"
+	const {
+		search,
+		setSearch: handleSearchChange,
+		query
+	} = useDocsSearch({
+		type: "fetch",
+		delayMs: 500
 	})
-
-	// Track search queries with debouncing to avoid excessive tracking.
-	const searchTimeoutRef = React.useRef<NodeJS.Timeout | undefined>(undefined)
-
-	const handleSearchChange = React.useCallback(
-		(value: string) => {
-			// Clear existing timeout.
-			if (searchTimeoutRef.current) {
-				clearTimeout(searchTimeoutRef.current)
-			}
-
-			// Set new timeout to debounce both search and tracking.
-			searchTimeoutRef.current = setTimeout(() => {
-				setSearch(value)
-				// trackSearchQuery(value)
-			}, 500)
-
-			// Cleanup timeout on unmount.
-			return () => {
-				if (searchTimeoutRef.current) {
-					clearTimeout(searchTimeoutRef.current)
-				}
-			}
-		},
-		[
-			setSearch
-			//  trackSearchQuery
-		]
-	)
 
 	const runCommand = React.useCallback((command: () => unknown) => {
 		setOpen(false)
@@ -139,7 +116,7 @@ export function SpotlightSearch({
 					<DialogDescription>Search for a command to run...</DialogDescription>
 				</DialogHeader>
 				<Command
-					className="**:data-[slot=command-input]:!h-9 **:data-[slot=command-input-wrapper]:!h-9 rounded-none bg-transparent **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-input **:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input]:py-0"
+					className="rounded-none bg-transparent **:data-[slot=command-input-wrapper]:mb-0 **:data-[slot=command-input-wrapper]:h-9! **:data-[slot=command-input]:h-9! **:data-[slot=command-input-wrapper]:rounded-md **:data-[slot=command-input-wrapper]:border **:data-[slot=command-input-wrapper]:border-input **:data-[slot=command-input-wrapper]:bg-input/50 **:data-[slot=command-input]:py-0"
 					filter={(value, search, keywords) => {
 						handleSearchChange(search)
 						const extendValue = `${value} ${keywords?.join(" ") || ""}`
@@ -164,17 +141,13 @@ export function SpotlightSearch({
 						{navItems && navItems.length > 0 && (
 							<CommandGroup
 								heading="Pages"
-								className="!p-0 [&_[cmdk-group-heading]]:!p-3 [&_[cmdk-group-heading]]:!pb-1 [&_[cmdk-group-heading]]:scroll-mt-16"
+								className="p-0! **:[[cmdk-group-heading]]:scroll-mt-16 **:[[cmdk-group-heading]]:p-3! **:[[cmdk-group-heading]]:pb-1!"
 							>
 								{navItems.map((item) => (
 									<CommandMenuItem
 										key={item.href}
 										value={`Navigation ${item.label}`}
 										keywords={["nav", "navigation", item.label.toLowerCase()]}
-										onHighlight={() => {
-											setSelectedType("page")
-											setCopyPayload("")
-										}}
 										onSelect={() => {
 											runCommand(() => router.push(item.href))
 										}}
@@ -189,12 +162,18 @@ export function SpotlightSearch({
 							<CommandGroup
 								key={group.$id}
 								heading={group.name}
-								className="!p-0 [&_[cmdk-group-heading]]:!p-3 [&_[cmdk-group-heading]]:!pb-1 [&_[cmdk-group-heading]]:scroll-mt-16"
+								className="p-0! **:[[cmdk-group-heading]]:scroll-mt-16 **:[[cmdk-group-heading]]:p-3! **:[[cmdk-group-heading]]:pb-1!"
 							>
 								{group.type === "folder" &&
 									group.children.map((item) => {
+										// fix type: `isPublished` is manually added @fumadocs.ts
+										const typedItem = item as typeof item & { isPublished: boolean }
 										if (item.type === "page") {
+											if (typedItem.isPublished === false) return null
 											const isComponent = item.url.includes("/components/")
+											const isUtils = item.url.includes("/utils/")
+											const isHooks = item.url.includes("/hooks/")
+											const isSnippets = item.url.includes("/snippets/")
 
 											return (
 												<CommandMenuItem
@@ -208,9 +187,15 @@ export function SpotlightSearch({
 													}}
 												>
 													{isComponent ? (
-														<div className="aspect-square size-4 rounded-full border border-muted-foreground border-dashed" />
+														<BoxesIcon className="size-4" />
+													) : isUtils ? (
+														<Tool02 className="size-4" />
+													) : isHooks ? (
+														<AtomIcon className="size-4" />
+													) : isSnippets ? (
+														<SnippetIcon className="size-4" />
 													) : (
-														<IconArrowRight />
+														<BookOpen01 />
 													)}
 													{item.name}
 												</CommandMenuItem>
@@ -221,59 +206,18 @@ export function SpotlightSearch({
 							</CommandGroup>
 						))}
 
-						{blocks?.length ? (
-							<CommandGroup
-								heading="Blocks"
-								className="!p-0 [&_[cmdk-group-heading]]:!p-3"
-							>
-								{blocks.map((block) => (
-									<CommandMenuItem
-										key={block.name}
-										value={block.name}
-										keywords={[
-											"block",
-											block.name,
-											block.description,
-											...block.categories
-										]}
-										onSelect={() => {
-											runCommand(() =>
-												router.push(`/blocks/${block.categories[0]}#${block.name}`)
-											)
-										}}
-									>
-										<SquareDashedIcon />
-										{block.description}
-										<span className="ml-auto font-mono font-normal text-muted-foreground text-xs tabular-nums">
-											{block.name}
-										</span>
-									</CommandMenuItem>
-								))}
-							</CommandGroup>
-						) : null}
 						<SearchResults open={open} setOpen={setOpen} query={query} search={search} />
 					</CommandList>
 				</Command>
-				<div className="absolute inset-x-0 bottom-0 z-20 flex h-10 items-center gap-2 rounded-b-xl border-t border-t-neutral-100 bg-neutral-50 px-4 font-medium text-muted-foreground text-xs dark:border-t-neutral-700 dark:bg-neutral-800">
+				<div
+					data-id="command-footer"
+					className="absolute inset-x-0 bottom-0 z-20 flex h-10 items-center gap-2 rounded-b-xl border-t border-t-neutral-100 bg-neutral-50 px-4 font-medium text-muted-foreground text-xs dark:border-t-neutral-700 dark:bg-neutral-800"
+				>
 					<div className="flex items-center gap-2">
 						<CommandMenuKbd>
 							<CornerDownLeftIcon />
 						</CommandMenuKbd>{" "}
-						{selectedType === "page" || selectedType === "component"
-							? "Go to Page"
-							: null}
-						{selectedType === "color" ? "Copy OKLCH" : null}
 					</div>
-					{copyPayload && (
-						<>
-							<Separator orientation="vertical" className="h-4!" />
-							<div className="flex items-center gap-1">
-								<CommandMenuKbd>⌘</CommandMenuKbd>
-								<CommandMenuKbd>C</CommandMenuKbd>
-								{copyPayload}
-							</div>
-						</>
-					)}
 				</div>
 			</DialogContent>
 		</Dialog>
@@ -296,7 +240,7 @@ function CommandMenuItem({
 		<CommandItem
 			ref={ref}
 			className={cn(
-				"!px-3 h-9 rounded-md border border-transparent font-medium data-[selected=true]:border-input data-[selected=true]:bg-input/50",
+				"h-9 rounded-md border border-transparent px-3! font-medium data-[selected=true]:border-input data-[selected=true]:bg-input/50",
 				className
 			)}
 			{...props}
@@ -331,12 +275,13 @@ function SearchResults({
 	search: string
 }) {
 	const router = useRouter()
-
 	const uniqueResults =
 		query.data && Array.isArray(query.data)
 			? query.data.filter(
 					(item, index, self) =>
+						// if content is text and has <= 1 words
 						!(item.type === "text" && item.content.trim().split(/\s+/).length <= 1) &&
+						// get only unique content
 						index === self.findIndex((t) => t.content === item.content)
 				)
 			: []
@@ -355,7 +300,7 @@ function SearchResults({
 
 	return (
 		<CommandGroup
-			className="!px-0 [&_[cmdk-group-heading]]:!p-3 [&_[cmdk-group-heading]]:!pb-1 [&_[cmdk-group-heading]]:scroll-mt-16"
+			className="px-0! **:[[cmdk-group-heading]]:scroll-mt-16 **:[[cmdk-group-heading]]:p-3! **:[[cmdk-group-heading]]:pb-1!"
 			heading="Search Results"
 		>
 			{uniqueResults.map((item) => {
@@ -367,11 +312,14 @@ function SearchResults({
 							router.push(item.url)
 							setOpen(false)
 						}}
-						className="!px-3 h-9 rounded-md border border-transparent font-normal data-[selected=true]:border-input data-[selected=true]:bg-input/50"
+						className="group flex h-9 flex-row gap-2 border border-transparent px-3! data-[selected=true]:border-input data-[selected=true]:bg-input/50"
 						keywords={[item.content]}
 						value={`${item.content} ${item.type}`}
 					>
-						<div className="line-clamp-1 text-sm">{item.content}</div>
+						<AlignLeft className="size-4" />
+						<div className="line-clamp-1 w-full rounded-md font-normal text-sm">
+							{item.content}
+						</div>
 					</CommandItem>
 				)
 			})}

@@ -7,7 +7,7 @@ import {
 } from "@untitledui/icons"
 import { findNeighbour } from "fumadocs-core/page-tree"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { Fragment } from "react"
 
 import { BugIcon } from "@/components/icons/bug-icon"
@@ -58,8 +58,11 @@ export default async function ComponentPage(props: {
 }) {
 	const { slug } = await props.params
 	const page = source.getPage(slug)
-	if (!page) {
+	if (!page || !page.data.isPublished) {
 		return notFound()
+	}
+	if(page.url === "/docs") {
+		redirect("/docs/introduction")
 	}
 	const neighbourPages = findNeighbour(source.pageTree, page.url)
 	const document = page.data
@@ -72,10 +75,8 @@ export default async function ComponentPage(props: {
 		releaseDate,
 		lastModified,
 		getText,
-		isPublished
 	} = document
 
-	if (!isPublished) return notFound()
 	const markdownRaw = await getText("raw")
 	const parseMarkdown = (text: string) => {
 		const draftIndex = text.indexOf("---", 4)
