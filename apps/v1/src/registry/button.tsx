@@ -24,9 +24,9 @@ const buttonVariants = cva(
 				"brand-primary":
 					"bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary",
 				"brand-secondary":
-					"bg-primary-foreground text-primary hover:bg-[color-mix(in_srgb,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 active:bg-primary-foreground",
+					"bg-primary-foreground text-primary hover:bg-[color-mix(in_oklab,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 active:bg-primary-foreground dark:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20 dark:hover:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/30",
 				"brand-tertiary":
-					"bg-transparent text-primary hover:bg-primary-foreground active:bg-[color-mix(in_srgb,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20",
+					"bg-transparent text-primary hover:bg-primary-foreground active:bg-[color-mix(in_srgb,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20",
 
 				"brand-neutral-primary":
 					"bg-secondary text-secondary-foreground hover:bg-secondary-foreground/10 active:bg-secondary",
@@ -36,11 +36,11 @@ const buttonVariants = cva(
 					"bg-transparent text-secondary-foreground hover:bg-secondary active:bg-secondary-foreground/10",
 
 				"brand-destructive-primary":
-					"bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive",
+					"bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive dark:bg-[color-mix(in_oklab,var(--color-destructive)_60%,var(--color-destructive-foreground)_100%)] dark:text-white",
 				"brand-destructive-secondary":
-					"bg-destructive-foreground text-destructive hover:bg-[color-mix(in_srgb,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 active:bg-destructive-foreground",
+					"bg-destructive-foreground text-destructive hover:bg-[color-mix(in_oklab,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 active:bg-destructive-foreground dark:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30",
 				"brand-destructive-tertiary":
-					"bg-transparent text-destructive hover:bg-destructive-foreground active:bg-[color-mix(in_srgb,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20"
+					"bg-transparent text-destructive hover:bg-destructive-foreground active:bg-[color-mix(in_srgb,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20"
 			},
 			size: {
 				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg]:size-3.5!",
