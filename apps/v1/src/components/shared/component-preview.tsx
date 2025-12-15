@@ -15,6 +15,13 @@ import {
 
 import { SettingIcon } from "@/components/icons/setting-icon"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+	DragWheelControls,
+	NumberInputBase,
+	NumberInputRoot
+} from "@/components/ui/number-input"
 import {
 	Popover,
 	PopoverClose,
@@ -202,33 +209,82 @@ function ComponentPreviewInspectorPopover() {
 									</div>
 								)
 							}
+							if (property.type === "array") {
+								return (
+									<div
+										key={propertyLabel}
+										className="grid grid-cols-3 items-center gap-4"
+									>
+										<label htmlFor={propertyLabel}>{propertyLabel}</label>
+										<Select
+											value={state[propertyLabel] as string}
+											onValueChange={(value: string) => {
+												dispatch({
+													type: "set",
+													key: propertyLabel,
+													value: value
+												})
+											}}
+										>
+											<SelectTrigger className="w-[180px]">
+												<SelectValue placeholder={`Select ${propertyLabel}`} />
+											</SelectTrigger>
+											<SelectContent>
+												{property.enum?.map((option, index) => {
+													return (
+														<SelectGroup key={index}>
+															<SelectItem value={option}>{option}</SelectItem>
+														</SelectGroup>
+													)
+												})}
+											</SelectContent>
+										</Select>
+									</div>
+								)
+							}
 
+							if (property.type === "number") {
+								return (
+									<div
+										key={propertyLabel}
+										className="grid grid-cols-3 items-center gap-4"
+									>
+										<Label htmlFor={propertyLabel}>{propertyLabel}</Label>
+										<NumberInputRoot
+											onValueChange={(value) => {
+												dispatch({
+													type: "set",
+													key: propertyLabel,
+													value: value
+												})
+											}}
+										>
+											<DragWheelControls>
+												<NumberInputBase
+													placeholder="Your placeholder here"
+													className="w-24 text-right"
+													id={propertyLabel}
+												/>
+											</DragWheelControls>
+										</NumberInputRoot>
+									</div>
+								)
+							}
+
+							// property.type === "input"
 							return (
 								<div key={propertyLabel} className="grid grid-cols-3 items-center gap-4">
-									<label htmlFor={propertyLabel}>{propertyLabel}</label>
-									<Select
-										value={state[propertyLabel] as string}
-										onValueChange={(value: string) => {
+									<Label htmlFor={propertyLabel}>{propertyLabel}</Label>
+									<Input
+										id={propertyLabel}
+										onChange={(e) => {
 											dispatch({
 												type: "set",
 												key: propertyLabel,
-												value: value
+												value: e.target.value
 											})
 										}}
-									>
-										<SelectTrigger className="w-[180px]">
-											<SelectValue placeholder={`Select ${propertyLabel}`} />
-										</SelectTrigger>
-										<SelectContent>
-											{property.enum?.map((option, index) => {
-												return (
-													<SelectGroup key={index}>
-														<SelectItem value={option}>{option}</SelectItem>
-													</SelectGroup>
-												)
-											})}
-										</SelectContent>
-									</Select>
+									/>
 								</div>
 							)
 						})}
