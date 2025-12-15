@@ -9,7 +9,7 @@ import { ToolIcon } from "@/components/icons/tool-icon"
 type AppSidebarDataType = {
 	groupLabel: string
 	icon: React.FC<SVGProps<SVGSVGElement>>
-	items: Array<{ label: string; url: string; disabled?: boolean }>
+	items: Array<{ label: string; href: string; disabled?: boolean }>
 }[]
 
 const SidebarConfig: AppSidebarDataType = [
@@ -17,44 +17,44 @@ const SidebarConfig: AppSidebarDataType = [
 		groupLabel: "overview",
 		icon: MenuIcon,
 		items: [
-			{ label: "Introduction", url: "/docs/introduction" },
-			{ label: "Installation", url: "/docs/installation" },
-			// { label: "Roadmap", url: "/docs/roadmap", disabled: true },
-			{ label: "Changelog", url: "/docs/changelog", disabled: true },
-			// { label: "MCP", url: "/docs/mcp", disabled: true }
+			{ label: "Introduction", href: "/docs/introduction" },
+			{ label: "Installation", href: "/docs/installation" },
+			// { label: "Roadmap", href: "/docs/roadmap", disabled: true },
+			{ label: "Changelog", href: "/docs/changelog", disabled: true }
+			// { label: "MCP", href: "/docs/mcp", disabled: true }
 		]
 	},
 	{
 		groupLabel: "components",
 		icon: ComponentIcon,
 		items: [
-			{ label: "Button", url: "/docs/components/button" },
-			// { label: "Tree", url: "/docs/components/tree", disabled: true },
-			{ label: "Dropzone", url: "/docs/components/upload", disabled: true },
-			{ label: "File Upload", url: "/docs/components/file-upload", disabled: true },
-			{ label: "Timeline", url: "/docs/components/timeline", disabled: true },
-			// { label: "Spoiler", url: "/docs/components/spoiler", disabled: true },
+			{ label: "Button", href: "/docs/components/button" },
+			// { label: "Tree", href: "/docs/components/tree", disabled: true },
+			{ label: "Dropzone", href: "/docs/components/upload", disabled: true },
+			{ label: "File Upload", href: "/docs/components/file-upload", disabled: true },
+			{ label: "Timeline", href: "/docs/components/timeline", disabled: true },
+			// { label: "Spoiler", href: "/docs/components/spoiler", disabled: true },
 			// {
 			// 	label: "Inifinty Scroll",
-			// 	url: "/docs/components/infinity-scroll",
+			// 	href: "/docs/components/infinity-scroll",
 			// 	disabled: true
 			// },
-			// { label: "QR Code", url: "/docs/components/qr", disabled: true },
-			// { label: "Video Player", url: "/docs/components/video-player", disabled: true },
-			{ label: "Sortable List", url: "/docs/components/sortable-list", disabled: true }
-			// { label: "Tour", url: "/docs/components/tour", disabled: true }
+			// { label: "QR Code", href: "/docs/components/qr", disabled: true },
+			// { label: "Video Player", href: "/docs/components/video-player", disabled: true },
+			{ label: "Sortable List", href: "/docs/components/sortable-list", disabled: true }
+			// { label: "Tour", href: "/docs/components/tour", disabled: true }
 		]
 	},
 	{
 		groupLabel: "utils",
 		icon: ToolIcon,
-		items: [{ label: "Rate Limit", url: "/docs/utils/rate-limit", disabled: true }]
+		items: [{ label: "Rate Limit", href: "/docs/utils/rate-limit", disabled: true }]
 	},
 	{
 		groupLabel: "hooks",
 		icon: AtomIcon,
 		items: [
-			{ label: "Network Status", url: "/docs/hooks/network-status", disabled: true }
+			{ label: "Network Status", href: "/docs/hooks/network-status", disabled: true }
 		]
 	},
 	{
@@ -63,7 +63,7 @@ const SidebarConfig: AppSidebarDataType = [
 		items: [
 			{
 				label: "Typescript Cheatsheet",
-				url: "/docs/snippets/typescript-cheatsheet",
+				href: "/docs/snippets/typescript-cheatsheet",
 				disabled: true
 			}
 		]

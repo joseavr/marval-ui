@@ -52,14 +52,14 @@ export function DocsSideBar() {
 								</span>
 							</p>
 							{items.map((i) => {
-								const isHovered = hoveredItem === i.url
-								const isActive = pathname === i.url
+								const isHovered = hoveredItem === i.href
+								const isActive = pathname === i.href
 								const isDisabled = Boolean(i.disabled)
 								return (
 									<li
 										className="group"
 										key={i.label}
-										onMouseEnter={() => setHoveredItem(i.url ?? "")}
+										onMouseEnter={() => setHoveredItem(i.href ?? "")}
 										onMouseLeave={() => setHoveredItem(null)}
 									>
 										<Button
@@ -73,7 +73,7 @@ export function DocsSideBar() {
 											)}
 											disabled={isDisabled}
 										>
-											<Link href={i.url} tabIndex={isDisabled ? -1 : undefined}>
+											<Link href={i.href} tabIndex={isDisabled ? -1 : undefined}>
 												<span className="pl-3.5">{i.label}</span>
 												<span
 													id="thread-vertical-line"
