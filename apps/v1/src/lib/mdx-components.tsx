@@ -1,5 +1,6 @@
 import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
+import { Code } from "@/components/shared/code"
 import { ComponentPreview } from "@/components/shared/component-preview"
 import { Info } from "@/components/shared/info"
 import {
@@ -16,7 +17,8 @@ import { cn } from "@/lib/utils"
 import { ButtonDemo } from "@/registry/demo/button-demo"
 
 const demoComponents = {
-	ButtonDemo: ButtonDemo
+	ButtonDemo: ButtonDemo,
+	Code: Code
 }
 
 const defaultMdxComponents = {
@@ -130,9 +132,9 @@ const defaultMdxComponents = {
 	td: ({ className, children, ...props }: React.ComponentProps<"td">) => (
 		<td
 			className={cn(
-				"whitespace-nowrap px-4 py-2 text-left [[align=center]]:text-center [[align=right]]:text-right",
+				"whitespace-nowrap px-4 py-2 text-left [&>code]:text-xs [[align=center]]:text-center [[align=right]]:text-rights",
 				// code styles
-				"[&>code]:border-transparent [&>code]:bg-primary-foreground! [&>code]:text-primary! [&>code]:text-xs",
+				// "[&>code]:border-transparent [&>code]:bg-primary-foreground! [&>code]:text-primary! [&>code]:text-xs",
 				className
 			)}
 			{...props}
