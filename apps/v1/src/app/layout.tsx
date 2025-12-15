@@ -29,6 +29,7 @@ export default function RootLayout({
 			className={cn(outfit.className, "light")}
 			style={{ colorScheme: "light" }}
 			suppressHydrationWarning
+			data-scroll-behavior="smooth"
 		>
 			<body>
 				<ThemeProvider
@@ -36,7 +37,7 @@ export default function RootLayout({
 					defaultTheme="system"
 					enableSystem
 					disableTransitionOnChange
-					themes={['light', 'dark']}
+					themes={["light", "dark"]}
 				>
 					<Providers>{children}</Providers>
 				</ThemeProvider>
