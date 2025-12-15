@@ -61,21 +61,14 @@ export default async function ComponentPage(props: {
 	if (!page || !page.data.isPublished) {
 		return notFound()
 	}
-	if(page.url === "/docs") {
+	if (page.url === "/docs") {
 		redirect("/docs/introduction")
 	}
 	const neighbourPages = findNeighbour(source.pageTree, page.url)
 	const document = page.data
 	const MDX = document?.body
-	const {
-		title,
-		description,
-		metadata,
-		toc,
-		releaseDate,
-		lastModified,
-		getText,
-	} = document
+	const { title, description, metadata, toc, releaseDate, lastModified, getText } =
+		document
 
 	const markdownRaw = await getText("raw")
 	const parseMarkdown = (text: string) => {
@@ -176,7 +169,7 @@ export default async function ComponentPage(props: {
 							</div>
 						</div>
 
-						<span className="font-medium text-lg text-muted-foreground">
+						<span className="text-balance text-[1.05rem] text-muted-foreground sm:text-base">
 							{description}
 						</span>
 
