@@ -1,6 +1,6 @@
 import type { SVGProps } from "react"
 
-export function IssueOpenIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
+export function OpenIssueIcon({ className, ...props }: SVGProps<SVGSVGElement>) {
 	return (
 		<svg
 			className={className}

@@ -1,9 +1,10 @@
 export function ExternalLink({
 	href,
 	children,
-	className,
 	...props
-}: React.ComponentProps<"a">) {
+}: React.ComponentProps<"a"> & {
+	href: string
+}) {
 	return (
 		<a href={href} target="_blank" rel="noreferrer" {...props}>
 			{children}

@@ -8,12 +8,12 @@ import {
 import { findNeighbour } from "fumadocs-core/page-tree"
 import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
-import { Fragment } from "react"
+import { Fragment, Suspense } from "react"
 
 import { BugIcon } from "@/components/icons/bug-icon"
 import { GithubIcon } from "@/components/icons/github-icon"
-import { IssueOpenIcon } from "@/components/icons/issue-icon"
 import { CopyMarkdownButton } from "@/components/pages/docs/copy-markdown-button"
+import { GitHubOpenIssuesLink } from "@/components/pages/docs/github-open-issues-button"
 import { DocsTableOfContents } from "@/components/pages/docs/toc"
 import { ExternalLink } from "@/components/shared/external-link"
 import { InlineCode } from "@/components/shared/typography"
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
+import { Skeleton } from "@/components/ui/skeleton"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
 
@@ -196,23 +197,18 @@ export default async function ComponentPage(props: {
 											size="default"
 											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
 										>
-											<ExternalLink href={metadata.github.openIssuesUrl}>
+											<ExternalLink href={metadata.github.createIssueUrl}>
 												<BugIcon />
 												<span>Issue</span>
 											</ExternalLink>
 										</Button>
 
-										<Button
-											asChild
-											variant="ghost"
-											size="default"
-											className="flex h-6 items-center gap-1 px-1.5! font-normal hover:underline"
-										>
-											<ExternalLink href={metadata.github.repoUrl.url}>
-												<IssueOpenIcon />
-												<span>Open Issues 200</span>
-											</ExternalLink>
-										</Button>
+										<Suspense fallback={<Skeleton className="w-[135px]" />}>
+											<GitHubOpenIssuesLink
+												query={title}
+												href={metadata.github.openIssuesUrl}
+											/>
+										</Suspense>
 									</div>
 								</div>
 								<div className="flex gap-2">
