@@ -187,7 +187,7 @@ export function SpotlightSearch({
 													}}
 												>
 													{isComponent ? (
-														<BoxesIcon className="size-4" />
+														<BoxesIcon className="size-4 stroke-1" />
 													) : isUtils ? (
 														<Tool02 className="size-4" />
 													) : isHooks ? (
