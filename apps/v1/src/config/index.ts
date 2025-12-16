@@ -29,6 +29,7 @@ const SidebarConfig: AppSidebarDataType = [
 		icon: ComponentIcon,
 		items: [
 			{ label: "Button", href: "/docs/components/button" },
+			{ label: "Copy Button", href: "/docs/components/copy-button" },
 			// { label: "Tree", href: "/docs/components/tree", disabled: true },
 			{ label: "Dropzone", href: "/docs/components/upload", disabled: true },
 			{ label: "File Upload", href: "/docs/components/file-upload", disabled: true },

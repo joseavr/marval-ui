@@ -12,7 +12,7 @@ const codeVariants = cva(
 				default: "bg-accent text-foreground dark:border-zinc-800 dark:bg-white/10",
 				prop: "bg-primary-foreground text-primary dark:bg-primary/20 dark:text-blue-500",
 				function: "bg-destructive-foreground text-destructive",
-				variable: "text-[#005CC5] dark:text-[#79B8FF]"
+				variable: "p-0 text-[#005CC5] dark:text-[#79B8FF]"
 			}
 		},
 		defaultVariants: {

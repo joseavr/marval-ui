@@ -1,4 +1,5 @@
 import type { ButtonVariantProps } from "@/registry/button"
+import type { CopyButtonVariantProps } from "@/registry/copy-button"
 
 type PropertyConfig =
 	| {
@@ -10,9 +11,17 @@ type PropertyConfig =
 			type: "boolean"
 			default: boolean
 	  }
-// | {
-//   type: "children"
-// }
+	| {
+			type: "input"
+			default: string
+	  }
+	| {
+			type: "number"
+			default: number
+	  }
+  // | {
+  //   type: "children" 
+  // }
 
 type ComponentProperties = Record<string, PropertyConfig>
 
@@ -22,7 +31,7 @@ const Index = {
 			type: "boolean",
 			default: false
 		},
-    loading: {
+		loading: {
 			type: "boolean",
 			default: false
 		},
@@ -41,25 +50,56 @@ const Index = {
 				"brand-neutral-primary",
 				"brand-neutral-secondary",
 				"brand-neutral-tertiary",
-        "brand-destructive-primary",
-        "brand-destructive-secondary",
-        "brand-destructive-tertiary"
-
+				"brand-destructive-primary",
+				"brand-destructive-secondary",
+				"brand-destructive-tertiary"
 			] as NonNullable<ButtonVariantProps["variant"]>[],
-			default: "default" as Extract<ButtonVariantProps["variant"], "default">
+			default: "default" satisfies Extract<ButtonVariantProps["variant"], "default">
 		},
 		size: {
 			type: "array",
 			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as NonNullable<
 				ButtonVariantProps["size"]
 			>[],
-			default: "default" as Extract<ButtonVariantProps["size"], "default">
+			default: "default" satisfies Extract<ButtonVariantProps["size"], "default">
 		}
 	},
-	"switch-demo": {
-		checked: {
-			type: "boolean",
-			default: false
+	"copy-button-demo": {
+		textToCopy: {
+			type: "input",
+			default: "Merry Christmas 🎄⛄❄️"
+		},
+		animationDuration: {
+			type: "number",
+			default: 2000
+		},
+		variant: {
+			type: "array",
+			enum: [
+				"default",
+				"destructive",
+				"outline",
+				"secondary",
+				"ghost",
+				"link",
+				"brand-primary",
+				"brand-secondary",
+				"brand-tertiary",
+				"brand-neutral-primary",
+				"brand-neutral-secondary",
+				"brand-neutral-tertiary",
+				"brand-destructive-primary",
+				"brand-destructive-secondary",
+				"brand-destructive-tertiary"
+			] as NonNullable<CopyButtonVariantProps["variant"]>[],
+			default: "outline" satisfies Extract<CopyButtonVariantProps["variant"], "outline">
+		},
+		size: {
+			type: "array",
+			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as NonNullable<
+				CopyButtonVariantProps["size"]
+			>[],
+			default: "sm" satisfies Extract<CopyButtonVariantProps["size"], "sm">
 		}
 	}
 } satisfies Record<string, ComponentProperties>

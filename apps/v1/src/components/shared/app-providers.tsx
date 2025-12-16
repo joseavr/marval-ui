@@ -1,8 +1,13 @@
-// ./components/providers.js
 "use client"
 
 import { Provider } from "jotai"
 
+import { Toaster } from "@/components/ui/sonner"
 export const Providers = ({ children }: { children: React.ReactNode }) => {
-	return <Provider>{children}</Provider>
+	return (
+		<Provider>
+			{children}
+			<Toaster />
+		</Provider>
+	)
 }

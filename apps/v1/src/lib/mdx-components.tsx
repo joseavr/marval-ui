@@ -2,6 +2,7 @@ import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 import { Code } from "@/components/shared/code"
 import { ComponentPreview } from "@/components/shared/component-preview"
+import { ExternalLink } from "@/components/shared/external-link"
 import { Info } from "@/components/shared/info"
 import {
 	CodeBlock,
@@ -15,10 +16,11 @@ import {
 } from "@/components/ui/codeblock"
 import { cn } from "@/lib/utils"
 import { ButtonDemo } from "@/registry/demo/button-demo"
+import { CopyButtonDemo } from "@/registry/demo/copy-button-demo"
 
 const demoComponents = {
 	ButtonDemo: ButtonDemo,
-	Code: Code
+	CopyButtonDemo: CopyButtonDemo
 }
 
 const defaultMdxComponents = {
@@ -194,7 +196,7 @@ export const mdxComponents = {
 						<CodeBlockHeaderItem align="left">
 							{Icon && <Icon className="inline-flex size-4" />}
 							{__filepath__ && (
-								<span className="font-geist-sans text-foreground text-sm dark:text-muted-foreground">
+								<span className="select-all font-geist-sans text-foreground text-sm dark:text-muted-foreground">
 									{__filepath__}
 								</span>
 							)}
@@ -287,5 +289,7 @@ export const mdxComponents = {
 		/>
 	),
 	Info: Info,
-	ComponentPreview: ComponentPreview
+	ComponentPreview: ComponentPreview,
+	Code: Code,
+	ExternalLink: ExternalLink
 }

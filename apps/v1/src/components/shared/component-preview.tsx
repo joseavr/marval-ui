@@ -192,7 +192,7 @@ function ComponentPreviewInspectorPopover() {
 								return (
 									<div
 										key={propertyLabel}
-										className="grid grid-cols-3 items-center gap-4"
+										className="grid grid-cols-3 items-center gap-12"
 									>
 										<label htmlFor={propertyLabel}>{propertyLabel}</label>
 										<Switch
@@ -213,7 +213,7 @@ function ComponentPreviewInspectorPopover() {
 								return (
 									<div
 										key={propertyLabel}
-										className="grid grid-cols-3 items-center gap-4"
+										className="grid grid-cols-3 items-center gap-12"
 									>
 										<label htmlFor={propertyLabel}>{propertyLabel}</label>
 										<Select
@@ -226,7 +226,7 @@ function ComponentPreviewInspectorPopover() {
 												})
 											}}
 										>
-											<SelectTrigger className="w-[180px]">
+											<SelectTrigger className="w-[180px]" size="sm">
 												<SelectValue placeholder={`Select ${propertyLabel}`} />
 											</SelectTrigger>
 											<SelectContent>
@@ -247,10 +247,11 @@ function ComponentPreviewInspectorPopover() {
 								return (
 									<div
 										key={propertyLabel}
-										className="grid grid-cols-3 items-center gap-4"
+										className="grid grid-cols-3 items-center gap-12"
 									>
 										<Label htmlFor={propertyLabel}>{propertyLabel}</Label>
 										<NumberInputRoot
+											value={state[propertyLabel] as number}
 											onValueChange={(value) => {
 												dispatch({
 													type: "set",
@@ -261,9 +262,9 @@ function ComponentPreviewInspectorPopover() {
 										>
 											<DragWheelControls>
 												<NumberInputBase
-													placeholder="Your placeholder here"
-													className="w-24 text-right"
 													id={propertyLabel}
+													placeholder="Your placeholder here"
+													className="h-7 w-24 text-right"
 												/>
 											</DragWheelControls>
 										</NumberInputRoot>
@@ -273,10 +274,12 @@ function ComponentPreviewInspectorPopover() {
 
 							// property.type === "input"
 							return (
-								<div key={propertyLabel} className="grid grid-cols-3 items-center gap-4">
+								<div key={propertyLabel} className="grid grid-cols-3 items-center gap-12">
 									<Label htmlFor={propertyLabel}>{propertyLabel}</Label>
 									<Input
 										id={propertyLabel}
+										type="text"
+										value={state[propertyLabel] as string}
 										onChange={(e) => {
 											dispatch({
 												type: "set",
@@ -284,6 +287,7 @@ function ComponentPreviewInspectorPopover() {
 												value: e.target.value
 											})
 										}}
+										className="h-7 w-[180px]"
 									/>
 								</div>
 							)
