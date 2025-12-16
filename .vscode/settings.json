@@ -27,6 +27,11 @@
 	"javascript.updateImportsOnFileMove.enabled": "always",
 	"tailwindCSS.files.exclude": ["**/src/components/ui/**"],
 	"tailwindCSS.emmetCompletions": true,
-  "tailwindCSS.classFunctions": ["cn", "cva", "clsx"], // support Tailwindcss inside these functions 
+	"tailwindCSS.classFunctions": [
+		"cn",
+		"cva",
+		"clsx"
+	],
+	"typescript.tsdk": "node_modules/typescript/lib", // support Tailwindcss inside these functions 
 
 }

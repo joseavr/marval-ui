@@ -1,0 +1,33 @@
+---
+title: Typescript Cheatseet
+description: A handful typescript cheatsheet.
+isPublished: true
+releaseDate: 2025-12-16
+metadata:
+  github:
+    repoUrl:
+      label: "registry/typescript-cheatsheeet"
+      url: "https://github.com/joseavr/marval-ui/blob/main/apps/v1/src/registry/typescript-cheatsheeet.tsx"
+    createIssueUrl: "https://github.com/joseavr/marval-ui/issues/new/choose"
+    openIssuesUrl: "https://github.com/joseavr/marval-ui/issues?q=is%3Aopen%20(is%3Aissue%20in%3Atitle%20Typescript%20Cheatsheeet)"
+  editPageUrl: "https://github.com/joseavr/marval-ui/edit/main/apps/v1/content/docs/components/typescript-cheatsheeet.mdx"
+  credits:
+    - name: wevdevsimplify
+      url: https://blog.webdevsimplified.com/2025-10/typescript-utility-types/
+---
+
+## `Pick<Obj, Keys>`
+
+```ts twoslash
+interface User {
+  id: string
+  name: string
+  email: string
+  age: number
+}
+
+type UserPreview = Pick<User, "name" | "email">
+//     ^?
+```
+
+

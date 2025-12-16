@@ -9,7 +9,8 @@ import { rehypePrettyCode } from "rehype-pretty-code";
 import rehypeSlug from "rehype-slug";
 import { visit } from 'unist-util-visit';
 import * as z from "zod";
-
+import { rehypeCodeDefaultOptions } from 'fumadocs-core/mdx-plugins';
+import { transformerTwoslash } from 'fumadocs-twoslash';
 
 // Define the paths of Fumadocs mdx files and schemas
 export const docs = defineDocs({
@@ -79,7 +80,17 @@ export default defineConfig({
         },
       ])
       return plugins
-    }
+    },
+    rehypeCodeOptions: {
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark',
+      },
+      transformers: [
+        ...(rehypeCodeDefaultOptions.transformers ?? []),
+        transformerTwoslash(),
+      ],
+    },
   },
 });
 

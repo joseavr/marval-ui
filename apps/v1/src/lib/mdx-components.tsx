@@ -1,3 +1,6 @@
+import * as Twoslash from "fumadocs-twoslash/ui"
+import type { MDXComponents } from "mdx/types"
+
 import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 import { Code } from "@/components/shared/code"
@@ -162,7 +165,8 @@ const defaultMdxComponents = {
 /**
  * Custom MDX components, ready to use in .mdx files
  */
-export const mdxComponents = {
+export const mdxComponents: MDXComponents = {
+	...Twoslash,
 	...defaultMdxComponents,
 	...demoComponents,
 	figure: ({
