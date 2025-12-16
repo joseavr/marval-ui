@@ -11,12 +11,11 @@ metadata:
     createIssueUrl: "https://github.com/joseavr/marval-ui/issues/new/choose"
     openIssuesUrl: "https://github.com/joseavr/marval-ui/issues?q=is%3Aopen%20(is%3Aissue%20in%3Atitle%20Typescript%20Cheatsheeet)"
   editPageUrl: "https://github.com/joseavr/marval-ui/edit/main/apps/v1/content/docs/components/typescript-cheatsheeet.mdx"
-  credits:
-    - name: wevdevsimplify
-      url: https://blog.webdevsimplified.com/2025-10/typescript-utility-types/
 ---
 
 ## `Pick<Obj, Keys>`
+
+Creates a new object type from the original containing only the specified keys.
 
 ```ts twoslash
 interface User {
@@ -27,6 +26,299 @@ interface User {
 }
 
 type UserPreview = Pick<User, "name" | "email">
+// type UserPreview = { name: string; email: string }
+```
+
+```tsx
+function UserProfileCard(user: Pick<User, "name" | "email">) {
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      <p>{user.email}</p>
+    </div>
+  )
+}
+```
+
+## `Omit<Obj, Keys>`
+
+Opposite of Pick. Creates a new object type **excluding** the specified keys from the original.
+
+```ts
+interface User {
+  id: string
+  name: string
+  email: string
+  age: number
+}
+
+type NewUserForm = Omit<User, "id">
+// type NewUserForm = { name: string; email: string; age: number }
+```
+
+```tsx
+function UserForm(user: Omit<User, "id">) {
+  return (
+    <form>
+      <input type="text" defaultValue={user.name} />
+      <input type="email" defaultValue={user.email} />
+      <input type="number" defaultValue={user.age} />
+    </form>
+  )
+}
+```
+
+## `Record<Keys, Value>`
+
+Builds a new object type specifying the `keys` and `values`.
+
+```ts
+type Role = "admin" | "user" | "guest"
+
+const permissions: Record<Role, boolean> = {
+  admin: true,
+  user: true,
+  guest: false,
+}
+```
+
+## `Partial<Type>`
+
+Makes **every** property optional.
+
+```ts
+type User = {
+  id: string
+  email: string
+  name: string
+}
+
+type PartialUser = Partial<User>
+// ^= {id?, email?, name?}
+```
+
+```ts
+function updateUser(id: string, input: Partial<User>) {
+  ...
+}
+```
+
+## `Required<Type>`
+
+Makes **every** property of an object mandatory
+
+```ts twoslash
+type Config = {
+  apiKey?: string
+  timeout?: number
+}
+
+type RequiredConfig = Required<Config>
+// type RequiredConfig = {apiKey: string, timeout: number}
+```
+
+```ts
+function bootstrap(config: Required<Config>) {
+  ...
+}
+```
+
+## `Readonly<Type>`
+
+Data cannot be mutated.
+
+```ts
+type Env = {
+  NODE_ENV: string
+  PORT: number
+}
+
+const env: Readonly<Env> = {
+  NODE_ENV: "production",
+  PORT: 3000,
+}
+```
+
+Alternatively use `as const` to infer specific literal types and object shape with `satisfies` 
+
+```ts
+const env:  = {
+  NODE_ENV: "production",
+  PORT: 3000,
+} as const satisfies Env
+```
+
+## `NonNullable<Type>`
+
+Removes `null` and `undefined` from a type.
+
+```ts
+type MaybeString = string | undefined | null
+type DefinitelyString = NonNullable<MaybeString>
+//   ^= string
+```
+
+## `Extract<Union, Subset>`
+
+Extract members of an union type.
+
+```ts
+type Event =
+  | { type: "click"; x: number }
+  | { type: "submit"; formId: string }
+  | { type: "hover"; element: string }
+
+type SubmitEvent = Extract<Event, { type: "submit" }>
+// ^= { type: "submit", formId: string }
+```
+
+## `Exclude<Union, Subset>`
+
+Exclude members of an union type
+```ts
+type Status = "idle" | "loading" | "success" | "error"
+
+type NonIdleStatus = Exclude<Status, "idle">
+// ^= "loading" | "success" | "error"
 ```
 
 
+## `ReturnType<Func>`
+
+```ts
+function createUser() {
+  return { id: "1", role: "admin" as const }
+}
+
+type User = ReturnType<typeof createUser>
+//   ^=  { id, role }
+```
+
+## `Awaited<Type>`
+
+Unwraps a promise.
+
+```ts
+async function getUserId(username: string) {
+  return await db.user...
+}
+
+type UserId= Awaited<ReturnType<typeof getUserId>>
+// ^= { id: string }
+```
+
+## `Parameters<Func>`
+
+Extracts a function's parameters as a tuple.
+
+```ts
+function log(message: string, level?: "info" | "error") {
+  ...
+}
+
+type LogArgs = Parameters<typeof log>
+// ^= [message: string, level?: "info" | "error" | undefined][message, level]
+```
+
+```ts
+function proxyLog(...args: LogArgs) {
+  log(...args)
+}
+```
+
+## `ConstructorParameters<Class>`
+
+Extracts the arguments of a class constructor.
+
+```ts
+class Database {
+  constructor(public host: string, public port: number) {}
+}
+
+type DatabaseArgs = ConstructorParameters<typeof Database>
+//   ^= [string, number]
+```
+
+```ts
+class Database {
+  constructor(public host: string, public port: number) {}
+}
+
+function createDatabase(...args: ConstructorParameters<typeof Database>) {
+  return new Database(...args)
+}
+
+const db = createDatabase("db.internal", 5432)
+```
+
+## `InstanceType<Class>`
+
+Returns the instance type of a class, just like `ReturnType`.
+
+```ts
+class Logger {
+  log(message: string) {
+    console.log(message)
+  }
+}
+
+type LoggerInstance = InstanceType<typeof Logger>
+//   ^= Logger
+```
+
+## `Uppercase<Str>`
+
+```ts
+type Method = Uppercase<"get" | "post">
+// ^= "GET" | "POST"
+```
+
+## `Lowercase<Str>`
+
+```ts
+type Event = Lowercase<"CLICK" | "SUBMIT">
+// ^= "click" | "submit"
+```
+
+## `Capitalize<Str>`
+
+```ts
+type Action = Capitalize<"create" | "update">
+// ^= "Create" | "Update"
+```
+
+## `Uncapitalize<Str>`
+
+```ts
+type Key = Uncapitalize<"UserId">
+// ^= "userId"
+```
+
+### Use cases
+
+1.
+```ts
+type Route = "get-user" | "create-post"
+
+type HandlerName =
+  Capitalize<Replace<Route, "-", " ">>
+// "Get user" | "Create post"
+```
+
+2.
+```ts
+type ConfigKey = "dbUrl" | "apiKey"
+
+type EnvKey = Uppercase<ConfigKey>
+// "DBURL" | "APIKEY"
+```
+
+3. 
+```ts
+type ClassNames = "Logger" | "Database" | "UserService"
+
+type InstanceNames = ClassNames extends `${infer Name}`
+  ? `${Uncapitalize<Name>}Instance`
+  : never
+//  ^= "loggerInstance" | "databaseInstance" | "userServiceInstance"
+```

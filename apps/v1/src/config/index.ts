@@ -64,8 +64,7 @@ const SidebarConfig: AppSidebarDataType = [
 		items: [
 			{
 				label: "Typescript Cheatsheet",
-				href: "/docs/snippets/typescript-cheatsheet",
-				disabled: true
+				href: "/docs/snippets/typescript-cheatsheet"
 			}
 		]
 	}
