@@ -339,7 +339,7 @@ import { CopyButton, ClipboardIcon } from "@/components/marval-ui/copy-button"
 
 ### With toast
 
-Toast will be loaded dynamically. If you don't want to have Toast, don't include it as props.
+Toast will be loaded dynamically. If you don't want to have Toast, don't include `toastOptions` in props.
 
 ```tsx
 <CopyButton
@@ -374,7 +374,7 @@ import { Check, Copy06 } from "@untitledui/icons"
 | <Code variant="prop">animationDuration?</Code> <Info>Duration in milliseconds (ms) for the copy animation.</Info>    |  <Code>number</Code>    |   <Code variant="variable">2000</Code>      |
 | <Code variant="prop">toasterOptions?</Code> <Info>Configuration for the copy success toast notification.</Info>    | <Code>Toaster</Code> <Info>{`type Toaster = { title?: string; duration?: number; description?: string }`}</Info>    |   —     |
 | <Code variant="prop">variant?</Code> <Info>The style variant of the button.</Info> | <Code>enum</Code> <Info className="font-mono">"default" \| "destructive" \| "outline" \| "secondary" \| "ghost" \| "link" \| "brand-primary" \| "brand-secondary" \| "brand-tertiary" \| "brand-neutral-primary" \| "brand-neutral-secondary" \| "brand-neutral-tertiary" \| "brand-destructive-primary" \| "brand-destructive-secondary" \| "brand-destructive-tertiary"</Info>  | <Code variant="variable">"default"</Code> | 
-| <Code variant="prop">size?</Code> | <Code>enum</Code> <Info className="font-mono">"default" \| "sm" \| "lg" \| "icon"</Info> | <Code variant="variable">"default"</Code> |
+| <Code variant="prop">size?</Code> | <Code>enum</Code> <Info className="font-mono">"default" \| "sm" \| "lg" \| "icon" \| "icon-sm" \| "icon-lg"</Info> | <Code variant="variable">"default"</Code> |
 | <Code variant="prop">className?</Code> | <Code>string</Code> | — |
 
 ### ClipboardIcon
