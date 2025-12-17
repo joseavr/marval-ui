@@ -22,7 +22,7 @@ export function GitHubOpenIssuesLink({
 
 	useEffect(() => {
 		const controller = new AbortController()
-		
+
 		async function fetchIssues() {
 			try {
 				const q = `repo:joseavr/marval-ui is:issue is:open in:title ${query}`
@@ -39,10 +39,11 @@ export function GitHubOpenIssuesLink({
 				if (!res.ok) console.error("GitHub API error: no count returned")
 
 				const data = await res.json()
-				console.log('\nCONSOLE Github Data:\n', data, '\n\n')
 				setCount(data.total_count)
-			} catch {
-				console.error("Error 500 at GitHubOpenIssuesLink")
+			} catch (e) {
+				// Ignore AbortError - it's expected when the component unmounts or query changes because of React
+				if (e instanceof Error && e.name === "AbortError") return
+				console.error("Error at GitHubOpenIssuesLink: ", e)
 			}
 		}
 
