@@ -1,4 +1,3 @@
-import * as Twoslash from "fumadocs-twoslash/ui"
 import type { MDXComponents } from "mdx/types"
 
 import { DEVICONS } from "@/components/icons/language-icons"
@@ -170,7 +169,6 @@ const defaultMdxComponents = {
  * Custom MDX components, ready to use in .mdx files
  */
 export const mdxComponents: MDXComponents = {
-	...Twoslash,
 	...defaultMdxComponents,
 	...demoComponents,
 	figure: ({
