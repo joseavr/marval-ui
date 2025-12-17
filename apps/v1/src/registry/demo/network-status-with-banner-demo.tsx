@@ -63,7 +63,7 @@ function NetworkStatusBanner({
 	return (
 		<div
 			{...props}
-			className="fixed bottom-0 left-0 z-20 flex h-7 w-full items-center justify-center text-white transition-all data-[show=false]:translate-y-[20px] data-[show=true]:translate-y-0 data-[online=false]:bg-red-500 data-[online=true]:bg-green-500 data-[show=false]:opacity-0 data-[show=true]:opacity-100"
+			className="fixed bottom-0 left-0 z-20 flex h-7 w-full items-center justify-center text-white transition data-[show=false]:translate-y-[40px] data-[show=true]:translate-y-0 data-[online=false]:bg-red-500 data-[online=true]:bg-green-500 data-[show=false]:opacity-0 data-[show=true]:opacity-100"
 		>
 			<div>{status ? "Back online" : "No internet connection"}</div>
 		</div>
