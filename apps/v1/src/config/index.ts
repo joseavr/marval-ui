@@ -55,7 +55,7 @@ const SidebarConfig: AppSidebarDataType = [
 		groupLabel: "hooks",
 		icon: AtomIcon,
 		items: [
-			{ label: "Network Status", href: "/docs/hooks/network-status", disabled: true }
+			{ label: "Network Status", href: "/docs/hooks/network-status" }
 		]
 	},
 	{

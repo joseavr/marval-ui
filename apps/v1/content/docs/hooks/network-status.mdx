@@ -1,0 +1,348 @@
+---
+title: Network Status
+description: A hook to show the current network status.
+isPublished: true
+releaseDate: 2025-12-16
+metadata:
+  github:
+    repoUrl:
+      label: "registry/use-network-status"
+      url: "https://github.com/joseavr/marval-ui/blob/main/apps/v1/src/registry/use-network-status.tsx"
+    createIssueUrl: "https://github.com/joseavr/marval-ui/issues/new/choose"
+    openIssuesUrl: "https://github.com/joseavr/marval-ui/issues?q=is%3Aopen%20(is%3Aissue%20in%3Atitle%20Network%20Status)"
+  editPageUrl: "https://github.com/joseavr/marval-ui/edit/main/apps/v1/content/docs/components/use-network-status.mdx"
+  credits:
+    - name: Damien Schneider
+      url: https://github.com/damien-schneider
+---
+
+<ComponentPreview demoComponent={<NetworkStatusDemo/>}>
+
+```tsx
+"use client"
+
+import { useEffect, useState } from "react"
+
+import { useNetworkStatus } from "@/hooks/use-network-status"
+
+export function NetworkStatusDemo() {
+	// Workaround to make it work in SSR
+	const [mounted, setMounted] = useState(false)
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+	if (!mounted) return <div>Loading...</div>
+
+	return (
+		<section className="flex flex-col gap-2">
+			<p className="font-medium text-xl">useNetworkStatus</p>
+			<NetworkInformation />
+		</section>
+	)
+}
+
+// recommended to use this hook after component rendered in client
+// to avoid errors thrown by this hook.
+function NetworkInformation() {
+	const { online } = useNetworkStatus()
+
+	return <p>Status: {online ? "Online" : "Offline"}</p>
+}
+
+```
+
+</ComponentPreview>
+
+
+## Installation
+
+<Steps>
+<Step>Install missing packages</Step>
+
+```bash showHeader
+npm install react
+```
+
+<Step>Copy and paste</Step>
+
+```ts showLineNumbers showHeader showExpand filepath="src/hooks/use-network-status.ts"
+"use client"
+
+import { useRef, useSyncExternalStore } from "react"
+
+declare global {
+	interface Navigator {
+		connection?: NetworkInformation
+		mozConnection?: NetworkInformation
+		webkitConnection?: NetworkInformation
+	}
+}
+
+interface NetworkInformation extends EventTarget {
+	readonly type?: string
+	readonly effectiveType?: string
+	readonly downlink?: number
+	readonly downlinkMax?: number
+	readonly rtt?: number
+	readonly saveData?: boolean
+	onchange?: (this: NetworkInformation, ev: Event) => void
+	addEventListener(
+		type: "change",
+		listener: (this: NetworkInformation, ev: Event) => void,
+		options?: boolean | AddEventListenerOptions
+	): void
+	removeEventListener(
+		type: "change",
+		listener: (this: NetworkInformation, ev: Event) => void,
+		options?: boolean | EventListenerOptions
+	): void
+}
+
+export interface NetworkState {
+	/**
+	 * Indicates whether the device is currently online.
+	 * - `true` if the device has an active network connection, `false` otherwise.
+	 */
+	online: boolean
+	/**
+	 * Bandwidth of the connection in megabits per second (Mbps).
+	 * Only available when the Network Information API is supported.
+	 */
+	downlink?: number
+	/**
+	 * Theoretical maximum bandwidth of the connection in megabits per second (Mbps).
+	 * Only available when the Network Information API is supported.
+	 */
+	downlinkMax?: number
+	/**
+	 * The effective type of the connection.
+	 * - Possible values: "slow-2g", "2g", "3g", "4g".
+	 * Only available when the Network Information API is supported.
+	 */
+	effectiveType?: string
+	/**
+	 * The round-trip time: time it takes for a packet to travel from the device to the server and back.
+	 * - in milliseconds (ms)
+	 * Only available when the Network Information API is supported.
+	 */
+	rtt?: number
+	/**
+	 * Indicates whether the user has enabled data saver mode.
+	 * - `true` if data saver is enabled, `false` otherwise.
+	 * Only available when the Network Information API is supported.
+	 */
+	saveData?: boolean
+	/**
+	 * The type of network connection.
+	 * - Possible values: "bluetooth", "cellular", "ethernet", "none", "wifi", "wimax", "other", "unknown".
+	 * Only available when the Network Information API is supported.
+	 */
+	type?: string
+}
+
+function isShallowEqual(object1: NetworkState, object2: NetworkState): boolean {
+	const keys1 = Object.keys(object1) as Array<keyof NetworkState>
+	const keys2 = Object.keys(object2) as Array<keyof NetworkState>
+
+	if (keys1.length !== keys2.length) {
+		return false
+	}
+
+	for (const key of keys1) {
+		if (object1[key] !== object2[key]) {
+			return false
+		}
+	}
+
+	return true
+}
+
+const getConnection = (): NetworkInformation | undefined => {
+	return navigator?.connection || navigator?.mozConnection || navigator?.webkitConnection
+}
+
+const useNetworkStateSubscribe = (callback: () => void): (() => void) => {
+	window.addEventListener("online", callback, { passive: true })
+	window.addEventListener("offline", callback, { passive: true })
+
+	const connection = getConnection()
+
+	if (connection) {
+		connection.addEventListener("change", callback, { passive: true })
+	}
+
+	return () => {
+		window.removeEventListener("online", callback)
+		window.removeEventListener("offline", callback)
+
+		if (connection) {
+			connection.removeEventListener("change", callback)
+		}
+	}
+}
+
+const getNetworkStateServerSnapshot = (): never => {
+	throw new Error("useNetworkState is a client-only hook")
+}
+
+export function useNetworkStatus(): NetworkState {
+	const cache = useRef<NetworkState>({ online: true })
+
+	const getSnapshot = (): NetworkState => {
+		const online = navigator.onLine
+		const connection = getConnection()
+
+		const nextState: NetworkState = {
+			online,
+			downlink: connection?.downlink,
+			downlinkMax: connection?.downlinkMax,
+			effectiveType: connection?.effectiveType,
+			rtt: connection?.rtt,
+			saveData: connection?.saveData,
+			type: connection?.type
+		}
+
+		if (isShallowEqual(cache.current, nextState)) {
+			return cache.current
+		}
+		cache.current = nextState
+		return nextState
+	}
+
+	return useSyncExternalStore(
+		useNetworkStateSubscribe,
+		getSnapshot,
+		getNetworkStateServerSnapshot
+	)
+}
+
+```
+
+<Step>Use hook</Step>
+
+```ts
+import { useNetworkStatus } from "@/hooks/use-network-status"
+
+function App() {
+  const { 
+    online,
+    downlink, 
+    downlinkMax, 
+    effectiveType, 
+    rtt,
+    saveData,
+    type
+  } = useNetworkStatus()
+
+  return (
+    <>
+      <p>{'Online Status: '}</p>
+      <p>{online}</p>
+    </>
+  )
+}
+```
+
+</Steps>
+
+## Usage
+
+```ts
+import { useNetworkStatus } from "@/hooks/use-network-status"
+```
+
+```ts
+const { 
+  online,
+  downlink, 
+  downlinkMax, 
+  effectiveType, 
+  rtt,
+  saveData,
+  type
+} = useNetworkStatus()
+```
+
+### With banner
+
+Show a **network status banner** like YouTube’s. Disconnect Wi-Fi to trigger it.
+
+<ComponentPreview demoComponent={<NetworkStatusWithBannerDemo/>}>
+
+```tsx showLineNumbers {59-71}
+"use client"
+
+import { useEffect, useRef, useState } from "react"
+
+import { useNetworkStatus } from "@/hooks/use-network-status"
+
+export function NetworkStatusWithBannerDemo() {
+	// Workaround to make it work in SSR
+	const [mounted, setMounted] = useState(false)
+	useEffect(() => {
+		setMounted(true)
+	}, [])
+	if (!mounted) return <div>Loading...</div>
+
+	return (
+		<section className="flex flex-col gap-2">
+			<p className="font-medium text-xl">useNetworkStatus</p>
+			{mounted && <NetworkInformation />}
+		</section>
+	)
+}
+
+function NetworkInformation() {
+	const { online } = useNetworkStatus()
+	const prevNetworkStatusRef = useRef<boolean | null>(null)
+	const [showBanner, setShowBanner] = useState(false)
+
+	useEffect(() => {
+		let timeoutId: NodeJS.Timeout
+
+		// if prev status differs from current, show banner
+		if (
+			prevNetworkStatusRef.current !== null &&
+			prevNetworkStatusRef.current !== online
+		) {
+			setShowBanner(true)
+
+			// Hide after 5 seconds
+			timeoutId = setTimeout(() => {
+				setShowBanner(false)
+			}, 5000)
+		}
+
+		// Update the previous value
+		prevNetworkStatusRef.current = online
+
+		return () => clearTimeout(timeoutId)
+	}, [online])
+
+	return (
+		<div className="flex gap-1">
+			<p className="font-medium text-neutral-500 tracking-tight">{`Current status:`}</p>
+			<p>{`${online}`}</p>
+			<NetworkStatusBanner data-show={showBanner} data-online={online} status={online} />
+		</div>
+	)
+}
+
+function NetworkStatusBanner({
+	status,
+	...props
+}: React.ComponentProps<"div"> & { status: boolean }) {
+	return (
+		<div
+			className="fixed bottom-0 left-0 z-20 flex h-7 w-full items-center justify-center text-white transition-all data-[show=false]:translate-y-[20px] data-[show=true]:translate-y-0 data-[online=false]:bg-red-500 data-[online=true]:bg-green-500 data-[show=false]:opacity-0 data-[show=true]:opacity-100"
+			{...props}
+		>
+			<div>{status ? "Online" : "No internet connection"}</div>
+		</div>
+	)
+}
+
+```
+
+</ComponentPreview>
+

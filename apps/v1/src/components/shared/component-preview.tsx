@@ -61,9 +61,6 @@ function ComponentPreview({
 	const setWithGrid = useSetAtom(gridAtom)
 	const withGrid = useAtomValue(gridAtom)
 
-	if (!demoName)
-		throw new Error("component-preview.tsx:ComponentPreview - demoName must be provided")
-
 	return (
 		<div className={`w-full flex-1 *:data-[slot=alert]:first:mt-0 ${className ?? ""}`}>
 			<div className="relative mt-4 mb-12 flex flex-col gap-2">
@@ -73,35 +70,41 @@ function ComponentPreview({
 						<TabsTrigger value="code">Code</TabsTrigger>
 					</TabsList>
 					<TabsContent
-						data-grid={withGrid}
+						data-grid={!demoName ? false : withGrid}
 						value="preview"
 						className="md:-mx-1 relative rounded-lg border data-[state=active]:border-border data-[grid=true]:bg-dotted"
 					>
-						<ComponentPreviewDemoProvider demoName={demoName}>
-							<div
-								data-id="component-preview-demo-header"
-								className="absolute top-0 left-0 flex w-full items-center justify-between"
-							>
-								<div className="flex items-center justify-start gap-2 p-4">
-									<Toggle
-										size="sm"
-										variant="default"
-										defaultChecked={withGrid}
-										pressed={withGrid}
-										onPressedChange={setWithGrid}
-									>
-										<DotsGrid />
-									</Toggle>
+						{demoName ? (
+							<ComponentPreviewDemoProvider demoName={demoName}>
+								<div
+									data-id="component-preview-demo-header"
+									className="absolute top-0 left-0 flex w-full items-center justify-between"
+								>
+									<div className="flex items-center justify-start gap-2 p-4">
+										<Toggle
+											size="sm"
+											variant="default"
+											defaultChecked={withGrid}
+											pressed={withGrid}
+											onPressedChange={setWithGrid}
+										>
+											<DotsGrid />
+										</Toggle>
+									</div>
+									<div className="flex items-center justify-end gap-2 p-4">
+										<RerenderComponentButton onClick={() => setKey((prev) => prev + 1)} />
+										<ComponentPreviewInspectorPopover />
+									</div>
 								</div>
-								<div className="flex items-center justify-end gap-2 p-4">
-									<RerenderComponentButton onClick={() => setKey((prev) => prev + 1)} />
-									<ComponentPreviewInspectorPopover />
-								</div>
-							</div>
+								<ComponentPreviewDemo align={align} key={key}>
+									{demoComponent}
+								</ComponentPreviewDemo>
+							</ComponentPreviewDemoProvider>
+						) : (
 							<ComponentPreviewDemo align={align} key={key}>
 								{demoComponent}
 							</ComponentPreviewDemo>
-						</ComponentPreviewDemoProvider>
+						)}
 					</TabsContent>
 					<TabsContent value="code">{children}</TabsContent>
 				</Tabs>
