@@ -99,7 +99,7 @@ const Index = {
 			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as NonNullable<
 				CopyButtonVariantProps["size"]
 			>[],
-			default: "sm" satisfies Extract<CopyButtonVariantProps["size"], "sm">
+			default: "icon-sm" satisfies Extract<CopyButtonVariantProps["size"], "icon-sm">
 		}
 	}
 } satisfies Record<string, ComponentProperties>
