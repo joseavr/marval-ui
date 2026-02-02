@@ -22,7 +22,7 @@ export function DocsSideBar() {
 	return (
 		<aside
 			data-id="docs-leftside"
-			className="sticky top-(--header-height) flex h-[calc(100svh-var(--header-height)-var(--footer-height))] min-w-(--sidebar-width) max-w-(--sidebar-width) flex-1 flex-col pt-4 text-sm"
+			className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] min-w-(--sidebar-width) max-w-(--sidebar-width) flex-1 flex-col pt-4 text-sm md:flex"
 		>
 			<ScrollArea hideScrollbar>
 				<nav

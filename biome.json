@@ -57,7 +57,7 @@
 					"level": "warn",
 					"fix": "safe",
 					"options": {
-						"attributes": ["className"],
+						"attributes": ["class", "className"],
 						"functions": ["cn", "clsx", "cva"]
 					}
 				}

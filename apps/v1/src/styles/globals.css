@@ -8,16 +8,6 @@
 	}
 }
 
-/* 
-Design Tokens
-- background  -> base color
-- foreground  -> text color
-- accent  	  -> focus color, highlights, derived from primary usually darker
-- muted 		  -> to deemphasize borders, separators
-- primary 	  -> cta, action buttons
-- secondary   -> 
-*/
-
 @theme inline {
 	--breakpoint-3xl: 1600px;
 	--breakpoint-4xl: 2000px;
@@ -51,11 +41,9 @@ Design Tokens
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-xs: calc(var(--radius) - 6px);
 
-	/* 60% */
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
 
-	/* 30 */
 	--color-card: var(--card);
 	--color-card-foreground: var(--card-foreground);
 
@@ -64,11 +52,9 @@ Design Tokens
 	--color-popover: var(--popover);
 	--color-popover-foreground: var(--popover-foreground);
 
-	/* 10%: buttons, cta */
 	--color-primary: var(--primary);
 	--color-primary-foreground: var(--primary-foreground);
 
-	/* 10% */
 	--color-secondary: var(--secondary);
 	--color-secondary-foreground: var(--secondary-foreground);
 
