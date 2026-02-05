@@ -72,7 +72,7 @@ function ComponentPreview({
 					<TabsContent
 						data-grid={!demoName ? false : withGrid}
 						value="preview"
-						className="md:-mx-1 relative rounded-lg border data-[state=active]:border-border data-[grid=true]:bg-dotted"
+						className="relative rounded-lg border data-[state=active]:border-border data-[grid=true]:bg-dotted md:-mx-1"
 					>
 						{demoName ? (
 							<ComponentPreviewDemoProvider demoName={demoName}>

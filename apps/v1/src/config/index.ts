@@ -31,8 +31,7 @@ const SidebarConfig: AppSidebarDataType = [
 			{ label: "Button", href: "/docs/components/button" },
 			{ label: "Copy Button", href: "/docs/components/copy-button" },
 			// { label: "Tree", href: "/docs/components/tree", disabled: true },
-			{ label: "Dropzone", href: "/docs/components/upload", disabled: true },
-			{ label: "File Upload", href: "/docs/components/file-upload", disabled: true },
+			{ label: "File Upload", href: "/docs/components/file-upload" },
 			{ label: "Timeline", href: "/docs/components/timeline", disabled: true },
 			// { label: "Spoiler", href: "/docs/components/spoiler", disabled: true },
 			// {

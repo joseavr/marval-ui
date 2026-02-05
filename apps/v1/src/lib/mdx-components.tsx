@@ -21,12 +21,14 @@ import { ButtonDemo } from "@/registry/demo/button-demo"
 import { CopyButtonDemo } from "@/registry/demo/copy-button-demo"
 import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
+import { FileUploadDemo } from "@/registry/demo/file-upload-demo"
 
 const demoComponents = {
-	ButtonDemo: ButtonDemo,
-	CopyButtonDemo: CopyButtonDemo,
-	NetworkStatusDemo: NetworkStatusDemo,
-	NetworkStatusWithBannerDemo: NetworkStatusWithBannerDemo
+	ButtonDemo,
+	CopyButtonDemo,
+	NetworkStatusDemo,
+	NetworkStatusWithBannerDemo,
+	FileUploadDemo 
 }
 
 const defaultMdxComponents = {

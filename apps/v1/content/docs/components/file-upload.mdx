@@ -1,7 +1,7 @@
 ---
 title: File Upload
-description: ""
-isPublished: false
+description: "A file upload component with drag and drop, image previewing, and progress tracking."
+isPublished: true
 releaseDate: 2025-12-16
 metadata:
   github:
@@ -12,3 +12,62 @@ metadata:
     openIssuesUrl: "https://github.com/joseavr/marval-ui/issues?q=is%3Aopen%20(is%3Aissue%20in%3Atitle%20File%20Upload)"
   editPageUrl: "https://github.com/joseavr/marval-ui/edit/main/apps/v1/content/docs/components/file-upload.mdx"
 ---
+
+
+
+<ComponentPreview demoComponent={<FileUploadDemo/>} align="start" demoName="file-upload-demo">
+```tsx
+export function FileUploadDemo() {
+	const Icon = fileTypeIcons.jpg
+	return (
+		<div className="w-full max-w-lg">
+			<FileList>
+				<FileItem failed={false}>
+					<FileItemMedia>
+						<Icon />
+					</FileItemMedia>
+
+					<FileItemContent className="relative">
+						<FileItemActions className="-mt-1 -mr-1 absolute top-0 right-0">
+							<Button
+								variant="brand-tertiary"
+								size="icon-sm"
+								className="self-start"
+							>
+								<Trash2 />
+							</Button>
+						</FileItemActions>
+						<FileItemName>Example dashboard screenshot.jpg</FileItemName>
+						<FileItemMeta>
+							<FileItemSize size={100000} />
+							<Separator
+								orientation="vertical"
+								className="rounded-t-full rounded-b-full"
+							/>
+							<FileItemStatus status={"in_progress"} />
+						</FileItemMeta>
+
+						<FileItemProgressBar
+							className="mt-1 flex-1"
+							labelPosition="right"
+							max={100}
+							min={0}
+							value={90}
+						/>
+					</FileItemContent>
+				</FileItem>
+			</FileList>
+		</div>
+	)
+}
+```
+</ComponentPreview>
+
+## Installation
+
+## Usage
+
+
+## API Reference
+
+

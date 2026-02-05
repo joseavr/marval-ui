@@ -19,9 +19,9 @@ type PropertyConfig =
 			type: "number"
 			default: number
 	  }
-  // | {
-  //   type: "children" 
-  // }
+// | {
+//   type: "children"
+// }
 
 type ComponentProperties = Record<string, PropertyConfig>
 
@@ -100,6 +100,28 @@ const Index = {
 				CopyButtonVariantProps["size"]
 			>[],
 			default: "icon-sm" satisfies Extract<CopyButtonVariantProps["size"], "icon-sm">
+		}
+	},
+	"file-upload-demo": {
+		maxFiles: {
+			type: "number",
+			default: 2
+		},
+		maxSize: {
+			type: "number",
+			default: 1024 * 5
+		},
+		multiple: {
+			type: "boolean",
+			default: true
+		},
+		accept: {
+			type: "input",
+			default: ""
+		},
+		disabled: {
+			type: "boolean",
+			default: false
 		}
 	}
 } satisfies Record<string, ComponentProperties>
