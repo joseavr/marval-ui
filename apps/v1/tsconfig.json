@@ -31,7 +31,8 @@
     "**/*.ts", 
     "**/*.tsx", 
     "**/*.css",
-    "**/*.tailwindcss"
+    "**/*.tailwindcsss", 
+    "src/types/**/*.ts"  
   ],
   "exclude": ["node_modules"]
 }
