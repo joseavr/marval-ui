@@ -393,23 +393,26 @@ interface FileUploadProps {
 	 */
 	className?: string
 	/**
-	 * The controlled files currently being managed. Use this prop for controlled usage. Should be used in conjunction with `onValueChange`.
+	 * The controlled files currently being managed.
+	 * - Use this prop for controlled usage.
+	 * - Should be used in conjunction with `onValueChange`.
 	 */
 	value: File[]
 	/**
-	 * Event handler called when files are added, removed, or changed. Should be used in conjunction with `value`.
+	 * Callback called when files are added or removed.
+	 * - Should be used in conjunction with `value`.
 	 */
 	onValueChange: (files: File[] | ((prevFiles: File[]) => File[])) => void
 	/**
-	 * Event handler called when files are accepted after all validation checks.
+	 * Callback called when all files are accepted after validation checks.
 	 */
 	onAcceptFiles?: (files: File[]) => void
 	/**
-	 * Event handler called when a file is accepted.
+	 * Callback called when a file is accepted.
 	 */
 	onAcceptFile?: (file: File) => void
 	/**
-	 * Event handler called when a file is rejected.
+	 * Callback called when a file is rejected.
 	 */
 	onRejectFile?: (
 		file: File,
@@ -419,11 +422,16 @@ interface FileUploadProps {
 		}
 	) => void
 	/**
-	 * Custom validation callback for each file. Return a string with the error message or return null/undefined for valid file. This overrides default validation `message` from `onFileReject`.
+	 * Custom validation callback for each file.
+	 *
+	 * - Must return a string with the error message or return null/undefined for valid file.
+	 * - Overrides default validation `message` from `onFileReject`.
 	 */
 	onFileValidate?: (file: File) => string | null | undefined
 	/**
-	 * Event handler for uploading files. Use to upload files to a storage bucket or other thrid party service.
+	 * Callback for uploading files.
+	 *
+	 * - Use for uploading files to a storage bucket or other thrid party service.
 	 */
 	onUpload?: (
 		files: File[],
@@ -434,7 +442,7 @@ interface FileUploadProps {
 		}
 	) => Promise<void> | void
 	/**
-	 * Whether `onUpload` should be called immediately after all validation checks.
+	 * Whether `onUpload` should be called immediately right after dropping files and all validation checks pass.
 	 */
 	autoUpload?: boolean
 	/**
@@ -446,22 +454,18 @@ interface FileUploadProps {
 	 */
 	maxSize?: number
 	/**
-	 * The name attribute for the file input element. Useful when using the component in a uncontrolled form.
-	 *
-	 * See more about uncontrolled forms at https://joseavr.com/notes/form-in-react
-	 */
-	name?: string
-	/**
-	 * Whether to render the component with a custom child.
-	 */
-	asChild?: boolean
-	/**
 	 * Specifies the accepted file types. MIME types or file extensions.
 	 * - Accept specific MIME types: `accept="image/png,image/jpeg"`
 	 * - Accept file extensions: `accept=".png,.jpg,.pdf"`
 	 * - Accept multiple types: `accept="image/*,.pdf,.doc,video/mpeg,application/pdf"`
 	 */
 	accept?: string
+	/**
+	 * The name attribute for the file input element.
+	 * - Useful when using the component in a uncontrolled form.
+	 * - See more about uncontrolled forms at https://joseavr.com/notes/form-in-react
+	 */
+	name?: string
 	/**
 	 * Whether dropping or uploading files is disabled.
 	 */
@@ -474,6 +478,10 @@ interface FileUploadProps {
 	 * Whether a value must be provided for the input before form submission.
 	 */
 	required?: boolean
+	/**
+	 * Whether to render the component with a custom child.
+	 */
+	asChild?: boolean
 }
 function FileUploadRoot(props: FileUploadProps) {
 	const {
@@ -730,6 +738,24 @@ function FileUploadRoot(props: FileUploadProps) {
 	)
 }
 
+interface FileUploadDropzoneProps
+	extends Pick<
+		React.ComponentProps<"div">,
+		| "children"
+		| "className"
+		| "onClick"
+		| "onDragOver"
+		| "onDragEnter"
+		| "onDragLeave"
+		| "onDragEnd"
+		| "onDrop"
+		| "onPaste"
+		| "onKeyDown"
+	> {
+	asChild?: boolean
+	variant?: "dropzone" | "wrapper"
+	renderOverlay?: React.ReactNode
+}
 function FileUploadDropzone({
 	asChild,
 	variant = "dropzone",
@@ -745,23 +771,7 @@ function FileUploadDropzone({
 	children,
 	renderOverlay,
 	...props
-}: Pick<
-	React.ComponentProps<"div">,
-	| "children"
-	| "className"
-	| "onClick"
-	| "onDragOver"
-	| "onDragEnter"
-	| "onDragLeave"
-	| "onDragEnd"
-	| "onDrop"
-	| "onPaste"
-	| "onKeyDown"
-> & {
-	asChild?: boolean
-	variant?: "dropzone" | "wrapper"
-	renderOverlay?: React.ReactNode
-}) {
+}: FileUploadDropzoneProps) {
 	const context = useFileUploadContext("file-upload-dropzone")
 
 	const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
@@ -952,19 +962,112 @@ function FileUploadTrigger({
 	)
 }
 
+function FileUploadItemDelete({
+	children,
+	asChild = false,
+	className,
+	onClick,
+	...props
+}: React.ComponentProps<"button"> & {
+	asChild?: boolean
+}) {
+	const rootContext = useFileUploadContext("file-upload-item-delete")
+	const itemContext = useItemContext("file-upload-item-delete")
+
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		onClick?.(event)
+		if (event.defaultPrevented) return
+
+		const fileToRemove = itemContext.fileState.file
+		rootContext.dispatch({
+			type: "SET_DELETED_FILE",
+			file: fileToRemove,
+			fileState: itemContext.fileState
+		})
+		rootContext.onValueChange((prev) => prev.filter((f) => f !== fileToRemove))
+	}
+
+	const ItemDeletePrimitive = asChild ? Slot : "button"
+
+	return (
+		<ItemDeletePrimitive
+			type="button"
+			data-slot="file-upload-item-delete"
+			aria-controls={itemContext.id}
+			aria-label="Delete file"
+			aria-describedby={itemContext.nameId}
+			className={cn("text-muted-foreground [&_svg]:size-4!", className)}
+			onClick={handleClick}
+			{...props}
+		>
+			{children ?? <Trash2Icon />}
+		</ItemDeletePrimitive>
+	)
+}
+
+function FileUploadItemRetry({
+	asChild = false,
+	children,
+	onClick,
+	...props
+}: React.ComponentProps<"button"> & {
+	asChild?: boolean
+}) {
+	const rootContext = useFileUploadContext("file-upload-item-retry")
+	const itemContext = useItemContext("file-upload-item-retry")
+	const file = itemContext.fileState.file
+
+	const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		onClick?.(event)
+		if (!itemContext.fileState || event.defaultPrevented || rootContext.disabled) return
+
+		await rootContext.onUploadFiles([file])
+	}
+
+	const RetryPrimitive = asChild ? Slot : "button"
+
+	return (
+		<RetryPrimitive
+			type="button"
+			data-slot="file-upload-item-retry"
+			aria-controls={itemContext.id}
+			aria-label="Retry file"
+			aria-describedby={itemContext.nameId}
+			onClick={handleClick}
+			{...props}
+		>
+			{children ?? (
+				<span className="text-destructive text-sm hover:underline">Try again</span>
+			)}
+		</RetryPrimitive>
+	)
+}
+
 function FileUploadList({
+	children: childrenProp,
+	orientation = "vertical",
+	direction = "normal",
 	className,
 	asChild,
-	orientation = "vertical",
-	children: childrenProp,
-	direction = "normal",
 	...props
 }: {
-	className?: string
+	/**
+	 * A children is **required**
+	 * - **Important**: the direct children of `FileUploadList` must be `FileUploadItem[]` otherwise throws error.
+	 */
 	children: React.ReactNode
-	asChild?: boolean
+	/**
+	 * Displays the list either vertical or horizontal
+	 * @default "vertical"
+	 */
 	orientation?: "vertical" | "horizontal"
+	/**
+	 * Displays the list either reversed or normal
+	 * @default "normal"
+	 */
 	direction?: "normal" | "reverse"
+	className?: string
+	asChild?: boolean
 }) {
 	const rootContext = useFileUploadContext("file-upload-list")
 	const shouldRender = rootContext.fileMap.size > 0
@@ -1025,6 +1128,7 @@ function useItemContext(consumerName: string) {
 }
 
 interface FileUploadItemProps {
+	/** Can either render with children or without children. */
 	children?: React.ReactNode
 	className?: string
 }
@@ -1113,87 +1217,6 @@ function FileUploadItemInternal({
 	)
 }
 
-function FileUploadItemDelete({
-	children,
-	asChild = false,
-	className,
-	onClick,
-	...props
-}: React.ComponentProps<"button"> & {
-	asChild?: boolean
-}) {
-	const rootContext = useFileUploadContext("file-upload-item-delete")
-	const itemContext = useItemContext("file-upload-item-delete")
-
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		onClick?.(event)
-		if (event.defaultPrevented) return
-
-		const fileToRemove = itemContext.fileState.file
-		rootContext.dispatch({
-			type: "SET_DELETED_FILE",
-			file: fileToRemove,
-			fileState: itemContext.fileState
-		})
-		rootContext.onValueChange((prev) => prev.filter((f) => f !== fileToRemove))
-	}
-
-	const ItemDeletePrimitive = asChild ? Slot : "button"
-
-	return (
-		<ItemDeletePrimitive
-			type="button"
-			data-slot="file-upload-item-delete"
-			aria-controls={itemContext.id}
-			aria-label="Delete file"
-			aria-describedby={itemContext.nameId}
-			className={cn("text-muted-foreground [&_svg]:size-4!", className)}
-			onClick={handleClick}
-			{...props}
-		>
-			{children ?? <Trash2Icon />}
-		</ItemDeletePrimitive>
-	)
-}
-
-function FileUploadItemRetry({
-	asChild = false,
-	children,
-	onClick,
-	...props
-}: React.ComponentProps<"button"> & {
-	asChild?: boolean
-}) {
-	const rootContext = useFileUploadContext("file-upload-item-retry")
-	const itemContext = useItemContext("file-upload-item-retry")
-	const file = itemContext.fileState.file
-
-	const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-		onClick?.(event)
-		if (!itemContext.fileState || event.defaultPrevented || rootContext.disabled) return
-
-		await rootContext.onUploadFiles([file])
-	}
-
-	const RetryPrimitive = asChild ? Slot : "button"
-
-	return (
-		<RetryPrimitive
-			type="button"
-			data-slot="file-upload-item-retry"
-			aria-controls={itemContext.id}
-			aria-label="Retry file"
-			aria-describedby={itemContext.nameId}
-			onClick={handleClick}
-			{...props}
-		>
-			{children ?? (
-				<span className="text-destructive text-sm hover:underline">Try again</span>
-			)}
-		</RetryPrimitive>
-	)
-}
-
 function FileUploadItemName({ className }: { className?: string }) {
 	const { fileState, nameId } = useItemContext("file-upload-item-name")
 	if (!fileState) return null
@@ -1270,8 +1293,7 @@ function FileUploadItemErrorMessage({ className }: { className?: string }) {
 
 function FileUploadItemMetadata({
 	children,
-	className,
-	...props
+	className
 }: {
 	children?: React.ReactNode
 	className?: string
@@ -1280,7 +1302,6 @@ function FileUploadItemMetadata({
 		<div
 			data-slot="file-upload-item-metadata"
 			className={cn("flex min-w-0 flex-1 flex-col", className)}
-			{...props}
 		>
 			{children ?? (
 				<>
@@ -1317,6 +1338,7 @@ function FileUploadItemPreview({
 	children,
 	...props
 }: {
+	/** An optional callback to render a custom file preview, overriding the default one. */
 	render?: (
 		file: { fileObject: File; type: string; extension: string },
 		fallback: () => React.ReactNode
@@ -1353,6 +1375,7 @@ function FileUploadItemPreview({
 
 function FileUploadItemProgress({
 	variant = "linear",
+	fillVariant = "bottom-t-top",
 	size = 40,
 	forceMount,
 	className,
@@ -1360,7 +1383,22 @@ function FileUploadItemProgress({
 	children,
 	...props
 }: {
+	/**
+	 * Different layout styles for the Progress bar.
+	 * @default "linear"
+	 */
 	variant?: "linear" | "fill" | "circular"
+	/**
+	 * Styles how the `fill` progress variant fills the bar. Only applies when variant is `fill`
+	 * - `bottom-t-top`: fills vertically from bottom to top.
+	 * - `left-t-right`: fills horizontally from left to right.
+	 * @default "bottom-t-top"
+	 */
+	fillVariant?: "bottom-t-top" | "left-t-right"
+	/**
+	 * The size (in pixels) of the circular progress. Only applies when variant is `circular`.
+	 * @default 40
+	 */
 	size?: number
 	forceMount?: boolean
 	className?: string
@@ -1403,7 +1441,7 @@ function FileUploadItemProgress({
 			)
 		case "fill": {
 			const progressPercentage = itemContext.fileState.progress
-			const topInset = 100 - progressPercentage
+			const inset = 100 - progressPercentage
 			return (
 				<ItemProgressPrimitive
 					role="progressbar"
@@ -1418,7 +1456,10 @@ function FileUploadItemProgress({
 						className
 					)}
 					style={{
-						clipPath: `inset(${topInset}% 0% 0% 0%)`
+						clipPath:
+							fillVariant === "bottom-t-top"
+								? `inset(${inset}% 0% 0% 0%)`
+								: `inset(0% ${inset}% 0% 0%)`
 					}}
 				/>
 			)
@@ -1577,7 +1618,7 @@ function FileUploadItemProgressWithLabel({
 	}
 }
 
-function FileUploadItemMedia({
+function FileUploadMedia({
 	className,
 	variant = "default",
 	...props
@@ -1593,7 +1634,7 @@ function FileUploadItemMedia({
 
 	return (
 		<div
-			data-slot="dropzone-media"
+			data-slot="file-upload-media"
 			className={cn(
 				"flex shrink-0 items-center justify-center gap-2 self-start [&_svg]:pointer-events-none",
 				variants[variant]
@@ -1620,6 +1661,7 @@ export {
 	FileUploadItemProgressLabel,
 	FileUploadItemDelete,
 	FileUploadItemRetry,
-	FileUploadItemMedia,
-	getFileSizeFromBytes
+	FileUploadMedia,
+	getFileSizeFromBytes,
+	type FileUploadProps
 }

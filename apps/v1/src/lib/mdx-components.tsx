@@ -3,6 +3,7 @@ import type { MDXComponents } from "mdx/types"
 import { DEVICONS } from "@/components/icons/language-icons"
 import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-button"
 import { Code } from "@/components/shared/code"
+import { ComponentApiTable } from "@/components/shared/component-api-table"
 import { ComponentPreview } from "@/components/shared/component-preview"
 import { ExternalLink } from "@/components/shared/external-link"
 import { Info } from "@/components/shared/info"
@@ -19,16 +20,28 @@ import {
 import { cn } from "@/lib/utils"
 import { ButtonDemo } from "@/registry/demo/button-demo"
 import { CopyButtonDemo } from "@/registry/demo/copy-button-demo"
+import { FileUploadDemo } from "@/registry/demo/file-upload-demo"
+import { FileUploadWithChatDemo } from "@/registry/demo/file-upload-with-chat-demo"
+import { FileUploadWithCircularDemo } from "@/registry/demo/file-upload-with-circular-demo"
+import { FileUploadWithDirectUploadDemo } from "@/registry/demo/file-upload-with-direct-upload-demo"
+import { FileUploadWithFillDemo } from "@/registry/demo/file-upload-with-fill-demo"
+import { FileUploadWithFormDemo } from "@/registry/demo/file-upload-with-form-demo"
+import { FileUploadWithValidationDemo } from "@/registry/demo/file-upload-with-validation-demo"
 import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
-import { FileUploadDemo } from "@/registry/demo/file-upload-demo"
 
 const demoComponents = {
 	ButtonDemo,
 	CopyButtonDemo,
 	NetworkStatusDemo,
 	NetworkStatusWithBannerDemo,
-	FileUploadDemo 
+	FileUploadDemo,
+	FileUploadWithValidationDemo,
+	FileUploadWithDirectUploadDemo,
+	FileUploadWithFillDemo,
+	FileUploadWithCircularDemo,
+	FileUploadWithChatDemo,
+	FileUploadWithFormDemo
 }
 
 const defaultMdxComponents = {
@@ -53,7 +66,7 @@ const defaultMdxComponents = {
 	h3: ({ className, ...props }: React.ComponentProps<"h3">) => (
 		<h3
 			className={cn(
-				"mt-12 scroll-m-28 font-medium text-lg tracking-tight",
+				"mt-12 scroll-m-28 font-medium text-xl tracking-tight",
 				"[&+p]:mt-4! [code]:*:text-xl",
 				className
 			)}
@@ -173,6 +186,7 @@ const defaultMdxComponents = {
 export const mdxComponents: MDXComponents = {
 	...defaultMdxComponents,
 	...demoComponents,
+	ComponentApiTable,
 	figure: ({
 		className,
 		__language__,
@@ -263,7 +277,7 @@ export const mdxComponents: MDXComponents = {
 			<code
 				className={cn(
 					isCodeBlock
-						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none]"
+						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none] [&>span[data-line]]:min-w-max [&>span[data-line]]:overflow-visible"
 						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] align-middle text-foreground leading-6 dark:border-zinc-800 dark:bg-white/10",
 					isInstallationCodeBlock && "select-all pt-3",
 					className
