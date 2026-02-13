@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { ButtonGroup, ButtonGroupSeparator } from "@/components/ui/button-group"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { source } from "@/lib/fumadocs"
 import { mdxComponents } from "@/lib/mdx-components"
@@ -89,7 +90,7 @@ export default async function ComponentPage(props: {
 										<BreadcrumbLink asChild className="relative">
 											<Link href="/docs">
 												<BookOpen01 className="peer z-10 size-3.5" />
-												<span className="-z-10 -inset-2 absolute rounded-full transition-colors peer-hover:bg-accent" />
+												<span className="absolute -inset-2 -z-10 rounded-full transition-colors peer-hover:bg-accent" />
 											</Link>
 										</BreadcrumbLink>
 									</BreadcrumbItem>
@@ -287,11 +288,12 @@ export default async function ComponentPage(props: {
 
 			<aside
 				data-id="toc"
-				className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 pt-4 text-sm xl:flex"
+				className="sticky top-(--header-height) hidden h-[calc(100svh-var(--header-height)-var(--footer-height))] w-72 min-w-72 max-w-72 pt-4 text-sm xl:flex"
 			>
-				<div className="flex-1">
+				<ScrollArea hideScrollbar>
 					<DocsTableOfContents toc={toc} variant="list" />
-				</div>
+					<div className="sticky -bottom-1 z-10 h-16 shrink-0 bg-linear-to-t from-background via-background/80 to-background/50 blur-xs" />
+				</ScrollArea>
 			</aside>
 		</div>
 	)

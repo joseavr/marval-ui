@@ -55,7 +55,7 @@ export interface FileUploadProps {
 	/**
 	 * Custom validation callback for each file.
 	 *
-	 * - Must return a string with the error message or return null/undefined for valid file. 
+	 * - Must return a string with the error message or return null/undefined for valid file.
 	 * - Overrides default validation `message` from `onFileReject`.
 	 */
 	onFileValidate?: (file: File) => string | null | undefined
@@ -195,6 +195,14 @@ export interface FileUploadRetryProps {
 	asChild?: boolean
 }
 
+export interface FileUploadSubmit {
+	/** Whether to merge props with direct child.  */
+	asChild?: boolean
+	/** The children of the component */
+	children?: React.ReactNode
+	className?: string
+}
+
 export interface FileUploadListProps {
 	/**
 	 * A children is **required**
@@ -253,6 +261,10 @@ export interface FileUploadItemProps {
 export interface FileUploadItemNameProps {
 	/** The class name of the component */
 	className?: boolean
+	/** Control the maximum length of the file name to be displayed.
+	 * - When filename length exceeds (`maxVisibleChars` + 3), show half from the start and half from the end with "..." in between. 
+	 */
+	maxVisibleChars?: number
 }
 
 export interface FileUploadItemSizeProps {

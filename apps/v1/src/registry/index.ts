@@ -105,11 +105,11 @@ const Index = {
 	"file-upload-demo": {
 		maxFiles: {
 			type: "number",
-			default: 2
+			default: 5
 		},
 		maxSize: {
 			type: "number",
-			default: 1024 * 5
+			default: 1024 * 1024 * 10
 		},
 		multiple: {
 			type: "boolean",

@@ -18,10 +18,10 @@ export function FileUploadDemo() {
 	const [files, setFiles] = useState<File[]>([])
 	const { state } = useComponentPreviewDemoContext()
 	return (
-		<div className="mt-20 w-full max-w-md">
+		<div className="mx-auto mt-20 max-w-md">
 			<FileUpload
-				value={files}
-				onValueChange={setFiles}
+				files={files}
+				onFilesChange={setFiles}
 				maxFiles={state.maxFiles as number}
 				maxSize={state.maxSize as number}
 				accept={state.accept as string}

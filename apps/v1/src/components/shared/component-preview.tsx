@@ -160,7 +160,7 @@ function ComponentPreviewDemo({
 		<div
 			data-id="component-preview-demo"
 			data-align={align}
-			className="flex min-h-[450px] w-full justify-center p-10 data-[align=start]:items-start data-[align=end]:items-end data-[align=center]:items-center"
+			className="flex h-fit max-h-fit min-h-[450px] w-full justify-center p-10 data-[align=start]:items-start data-[align=end]:items-end data-[align=center]:items-center"
 		>
 			{children}
 		</div>

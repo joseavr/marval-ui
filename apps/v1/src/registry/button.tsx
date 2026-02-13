@@ -43,12 +43,13 @@ const buttonVariants = cva(
 					"bg-transparent text-destructive hover:bg-destructive-foreground active:bg-[color-mix(in_oklab,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20"
 			},
 			size: {
-				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg]:size-3.5!",
+				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-3.5!",
 				default: "h-8 px-4 py-2 has-[>svg]:px-3",
 				lg: "h-9 px-6 has-[>svg]:px-4",
-				"icon-sm": "size-7 [&_svg]:size-3.5!",
-				icon: "size-8 [&_svg]:size-4!",
-				"icon-lg": "size-9 [&_svg]:size-4!"
+				icon: "size-8 [&_svg:not([class*='size-'])]:size-4",
+				"icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
+				"icon-sm": "size-7 [&_svg:not([class*='size-'])]:size-3.5",
+				"icon-lg": "size-9 [&_svg:not([class*='size-'])]:size-4"
 			}
 		},
 		defaultVariants: {

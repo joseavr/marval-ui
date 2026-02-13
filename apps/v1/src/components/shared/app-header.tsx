@@ -16,8 +16,9 @@ export function AppHeader() {
 				<div className="h-(--header-height) pt-3">
 					<div className="flex h-8 items-start justify-between">
 						<div data-id="left-content">
-							<Link href="/" className="h-8 font-bold text-xl">
-								marval ui
+							<Link href="/" className="flex h-8 gap-1 font-bold text-xl">
+								<span>marval</span>
+								<span className="text-muted-foreground">ui</span>
 							</Link>
 						</div>
 

@@ -83,7 +83,7 @@ export function DocsSideBar() {
 													{isActive && (
 														<motion.span
 															layoutId="active-indicator-vertical-line"
-															className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-[9px] z-11 h-[56%] w-[3px] rounded-full bg-primary"
+															className="pointer-events-none absolute top-1/2 left-[9px] z-11 h-[56%] w-[3px] -translate-y-1/2 rounded-full bg-primary"
 															initial={{ opacity: 0 }}
 															animate={{ opacity: 1 }}
 															exit={{ opacity: 0 }}
@@ -99,7 +99,7 @@ export function DocsSideBar() {
 													{isHovered && (
 														<motion.span
 															layoutId="hover-indicator-vertical-line"
-															className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-[9px] z-10 h-[56%] w-[3px] rounded-full bg-neutral-300 dark:bg-neutral-600"
+															className="pointer-events-none absolute top-1/2 left-[9px] z-10 h-[56%] w-[3px] -translate-y-1/2 rounded-full bg-neutral-300 dark:bg-neutral-600"
 															initial={{ opacity: 0 }}
 															animate={{ opacity: 1 }}
 															exit={{ opacity: 0 }}
@@ -118,7 +118,7 @@ export function DocsSideBar() {
 							})}
 						</ul>
 					))}
-					<div className="-bottom-1 sticky z-10 h-16 shrink-0 bg-linear-to-t from-background via-background/80 to-background/50 blur-xs" />
+					<div className="sticky -bottom-1 z-10 h-16 shrink-0 bg-linear-to-t from-background via-background/80 to-background/50 blur-xs" />
 				</nav>
 			</ScrollArea>
 		</aside>

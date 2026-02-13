@@ -26,6 +26,7 @@ import { FileUploadWithCircularDemo } from "@/registry/demo/file-upload-with-cir
 import { FileUploadWithDirectUploadDemo } from "@/registry/demo/file-upload-with-direct-upload-demo"
 import { FileUploadWithFillDemo } from "@/registry/demo/file-upload-with-fill-demo"
 import { FileUploadWithFormDemo } from "@/registry/demo/file-upload-with-form-demo"
+import { FileUploadWithSubmitDemo } from "@/registry/demo/file-upload-with-submit-demo"
 import { FileUploadWithValidationDemo } from "@/registry/demo/file-upload-with-validation-demo"
 import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
@@ -41,7 +42,8 @@ const demoComponents = {
 	FileUploadWithFillDemo,
 	FileUploadWithCircularDemo,
 	FileUploadWithChatDemo,
-	FileUploadWithFormDemo
+	FileUploadWithFormDemo,
+	FileUploadWithSubmitDemo
 }
 
 const defaultMdxComponents = {
@@ -276,9 +278,10 @@ export const mdxComponents: MDXComponents = {
 		return (
 			<code
 				className={cn(
-					isCodeBlock
-						? "wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none] [&>span[data-line]]:min-w-max [&>span[data-line]]:overflow-visible"
-						: "relative rounded-lg border border-border bg-accent px-[0.3rem] py-[0.2rem] align-middle text-foreground leading-6 dark:border-zinc-800 dark:bg-white/10",
+					isCodeBlock &&
+						"wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none] [&>span[data-line]]:min-w-max [&>span[data-line]]:overflow-visible",
+					!isCodeBlock &&
+						"relative mx-px inline-block rounded-md border border-border bg-accent px-1 py-[0.12rem] align-baseline text-foreground leading-[1.2] dark:border-zinc-800 dark:bg-white/10",
 					isInstallationCodeBlock && "select-all pt-3",
 					className
 				)}

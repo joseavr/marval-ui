@@ -1,13 +1,15 @@
 "use client"
 
+// TODO cancel upload
+
 import { Slot } from "@radix-ui/react-slot"
 import {
-	CheckCircleIcon,
 	FileArchiveIcon,
 	FileCogIcon,
-	Trash2Icon,
+	FileX,
+	Upload,
 	UploadCloudIcon,
-	XCircleIcon
+	XIcon
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import React, {
@@ -19,7 +21,8 @@ import React, {
 	useEffect,
 	useId,
 	useReducer,
-	useRef
+	useRef,
+	useState
 } from "react"
 
 import { cn } from "@/lib/utils"
@@ -135,6 +138,22 @@ const fileTypeToIcon = {
 } as const
 
 /**
+ * Truncates a filename if it exceeds the specified number of visible characters.
+ * - If truncation is necessary, it takes half the visible characters from the start and half from the end, inserting "..." in between.
+ * - The output will always be at most (maxVisibleChars + 3) characters long.
+ */
+function truncateText(name: string, maxVisibleChars: number) {
+	let filename = name.trim()
+	if (filename.length > maxVisibleChars + 3) {
+		const half = Math.floor(maxVisibleChars / 2)
+		const left = filename.slice(0, half)
+		const right = filename.slice(-half)
+		filename = `${left}...${right}`
+	}
+	return filename
+}
+
+/**
  * Returns an SVG component that renders an icon based on the file type or extension.
  */
 function getFileIcon(file: File) {
@@ -231,7 +250,7 @@ type ErrorReason =
 interface FileState {
 	file: File
 	progress: number
-	status: "idle" | "uploading" | "success" | "error"
+	status: "idle" | "uploading" | "success" | "error" | "cancelled"
 	error?: string
 }
 
@@ -257,6 +276,8 @@ type InternalState = {
 	isDraggingOver: boolean
 	/** Whether the current file set violates validation rules. */
 	isInvalid: boolean
+	/** Abort controllers for ongoing uploads to enable cancellation */
+	abortControllerMap: Map<File, AbortController>
 }
 
 const initialState: InternalState = {
@@ -264,7 +285,8 @@ const initialState: InternalState = {
 	deletedFileMap: new Map<File, FileState>(),
 	urlCache: new Map<File, string>(),
 	isDraggingOver: false,
-	isInvalid: false
+	isInvalid: false,
+	abortControllerMap: new Map<File, AbortController>()
 }
 
 type Actions =
@@ -273,6 +295,7 @@ type Actions =
 	| { type: "SET_UPLOAD_PROGRESS"; file: File; progress: number }
 	| { type: "SET_UPLOAD_SUCCESS"; file: File }
 	| { type: "SET_UPLOAD_ERROR"; file: File; error: string }
+	| { type: "SET_UPLOAD_CANCELLED"; file: File }
 	| { type: "SET_DRAG_OVER"; isDraggingOver: boolean }
 	| { type: "SET_INVALID"; isInvalid: boolean }
 
@@ -282,6 +305,7 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 			const internalFileMap = new Map(state.fileMap)
 			const urlCacheMap = new Map(state.urlCache)
 			const deletedFileMap = new Map(state.deletedFileMap)
+			const abortControllerMap = new Map(state.abortControllerMap)
 			let shouldResetDeletedFileMap = false
 
 			// add new files
@@ -302,6 +326,12 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 						URL.revokeObjectURL(cachedUrl)
 						urlCacheMap.delete(fileToDelete)
 					}
+					// Clean up abort controller for removed files
+					const abortController = abortControllerMap.get(fileToDelete)
+					if (abortController) {
+						abortController.abort()
+						abortControllerMap.delete(fileToDelete)
+					}
 				}
 			}
 
@@ -314,14 +344,18 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 				fileMap: internalFileMap,
 				urlCache: urlCacheMap,
 				deletedFileMap: deletedFileMap,
+				abortControllerMap: abortControllerMap,
 				...(action.files.length === 0 ? { isInvalid: false } : {})
 			}
 		}
 
 		case "SET_DELETED_FILE": {
+			const fileMap = new Map(state.fileMap)
 			const deletedFileMap = new Map(state.deletedFileMap)
 			deletedFileMap.set(action.file, action.fileState)
-			return { ...state, deletedFileMap: deletedFileMap }
+			fileMap.delete(action.file)
+
+			return { ...state, fileMap: fileMap, deletedFileMap: deletedFileMap }
 		}
 
 		case "SET_UPLOAD_PROGRESS": {
@@ -346,6 +380,15 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 			return { ...state, fileMap: files }
 		}
 
+		case "SET_UPLOAD_CANCELLED": {
+			const files = new Map(state.fileMap)
+			const fileState = files.get(action.file)
+			if (fileState) {
+				files.set(action.file, { ...fileState, status: "cancelled", progress: 0 })
+			}
+			return { ...state, fileMap: files }
+		}
+
 		case "SET_DRAG_OVER":
 			return { ...state, isDraggingOver: action.isDraggingOver }
 
@@ -361,14 +404,14 @@ type FileUploadContextValue = {
 	value: File[]
 	fileMap: InternalState["fileMap"]
 	deletedFileMap: InternalState["deletedFileMap"]
+	abortControllerMap: InternalState["abortControllerMap"]
 	isDraggingOver: InternalState["isDraggingOver"]
 	isInvalid: InternalState["isInvalid"]
 	disabled: boolean | undefined
 	urlCache: Map<File, string>
 	dispatch: Dispatch<Actions>
-	onUploadAllFiles: () => Promise<void>
 	onUploadFiles: (files: File[]) => Promise<void>
-	onValueChange: FileUploadProps["onValueChange"]
+	onValueChange: FileUploadProps["onFilesChange"]
 	meta: {
 		rootInputRef: RefObject<HTMLInputElement | null>
 		rootInputId: string
@@ -397,12 +440,12 @@ interface FileUploadProps {
 	 * - Use this prop for controlled usage.
 	 * - Should be used in conjunction with `onValueChange`.
 	 */
-	value: File[]
+	files: File[]
 	/**
 	 * Callback called when files are added or removed.
 	 * - Should be used in conjunction with `value`.
 	 */
-	onValueChange: (files: File[] | ((prevFiles: File[]) => File[])) => void
+	onFilesChange: (files: File[] | ((prevFiles: File[]) => File[])) => void
 	/**
 	 * Callback called when all files are accepted after validation checks.
 	 */
@@ -485,8 +528,8 @@ interface FileUploadProps {
 }
 function FileUploadRoot(props: FileUploadProps) {
 	const {
-		value,
-		onValueChange,
+		files: value,
+		onFilesChange: onValueChange,
 		onAcceptFiles,
 		onAcceptFile,
 		onRejectFile,
@@ -514,15 +557,18 @@ function FileUploadRoot(props: FileUploadProps) {
 
 	const [state, dispatch] = useReducer(reducer, initialState)
 	const fileInputRef = useRef<HTMLInputElement>(null)
+	// Use useRef on urlCache to prevent dependencies in useffect
+	const urlCacheRef = useRef(state.urlCache)
+	urlCacheRef.current = state.urlCache
 
-	// clean up orphan Blob URLs on unmount to prevent memory leaks
+	// clean up orphan Blob URLs on unmount only to prevent memory leaks
 	useEffect(() => {
 		return () => {
-			for (const cachedUrl of state.urlCache.values()) {
+			for (const cachedUrl of urlCacheRef.current.values()) {
 				URL.revokeObjectURL(cachedUrl)
 			}
 		}
-	}, [state.urlCache])
+	}, [])
 
 	// sync internal states with value after "add" and "delete" files
 	useEffect(() => {
@@ -531,11 +577,22 @@ function FileUploadRoot(props: FileUploadProps) {
 
 	const handleUploadFiles = async (files: File[]) => {
 		for (const file of files) {
+			// Create a new AbortController for each file upload
+			const abortController = new AbortController()
+			state.abortControllerMap.set(file, abortController)
+
 			dispatch({ type: "SET_UPLOAD_PROGRESS", file, progress: 0 })
 		}
 		try {
 			await onUpload?.(files, {
 				onProgress: (file: File, progress: number) => {
+					// Check if upload was cancelled
+					const abortController = state.abortControllerMap.get(file)
+					if (abortController?.signal.aborted) {
+						dispatch({ type: "SET_UPLOAD_CANCELLED", file })
+						return
+					}
+
 					// TODO: Fix performance issue: dozens of store updates per frame
 					dispatch({
 						type: "SET_UPLOAD_PROGRESS",
@@ -544,9 +601,16 @@ function FileUploadRoot(props: FileUploadProps) {
 					})
 				},
 				onSuccess: (file) => {
-					dispatch({ type: "SET_UPLOAD_SUCCESS", file })
+					const abortController = state.abortControllerMap.get(file)
+					if (!abortController?.signal.aborted) {
+						// Remove abort controller on success
+						state.abortControllerMap.delete(file)
+						dispatch({ type: "SET_UPLOAD_SUCCESS", file })
+					}
 				},
 				onError: (file, error) => {
+					// Remove abort controller on error
+					state.abortControllerMap.delete(file)
 					dispatch({
 						type: "SET_UPLOAD_ERROR",
 						file,
@@ -557,6 +621,8 @@ function FileUploadRoot(props: FileUploadProps) {
 		} catch (error) {
 			const errorMessage = error instanceof Error ? error.message : "Upload failed"
 			for (const file of files) {
+				// Remove abort controller on error
+				state.abortControllerMap.delete(file)
 				dispatch({
 					type: "SET_UPLOAD_ERROR",
 					file,
@@ -607,7 +673,7 @@ function FileUploadRoot(props: FileUploadProps) {
 
 			if (acceptedTypes) {
 				const fileType = file.type || ""
-				const fileExtension = file.name.split(".").pop() || ""
+				const fileExtension = `.${file.name.split(".").pop()}`
 
 				const isAccepted = acceptedTypes.some(
 					(type) =>
@@ -658,10 +724,10 @@ function FileUploadRoot(props: FileUploadProps) {
 		if (acceptedFiles.length > 0) {
 			dispatch({ type: "SET_INVALID", isInvalid: false })
 
-			onValueChange([...acceptedFiles, ...value])
+			onValueChange([...value, ...acceptedFiles])
 
 			if (onAcceptFiles) {
-				onAcceptFiles([...acceptedFiles, ...value])
+				onAcceptFiles([...value, ...acceptedFiles])
 			}
 
 			if (autoUpload && onUpload) {
@@ -670,11 +736,6 @@ function FileUploadRoot(props: FileUploadProps) {
 				})
 			}
 		}
-	}
-
-	const handleUploadAllFiles = async () => {
-		const files = Array.from(state.fileMap.keys())
-		await handleUploadFiles(files)
 	}
 
 	const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -687,13 +748,13 @@ function FileUploadRoot(props: FileUploadProps) {
 		value,
 		urlCache: state.urlCache,
 		fileMap: state.fileMap,
+		abortControllerMap: state.abortControllerMap,
 		deletedFileMap: state.deletedFileMap,
 		isDraggingOver: state.isDraggingOver,
 		isInvalid: state.isInvalid,
 		disabled,
 		dispatch,
 		onValueChange,
-		onUploadAllFiles: handleUploadAllFiles,
 		onUploadFiles: handleUploadFiles,
 		meta: {
 			rootInputRef: fileInputRef,
@@ -738,20 +799,7 @@ function FileUploadRoot(props: FileUploadProps) {
 	)
 }
 
-interface FileUploadDropzoneProps
-	extends Pick<
-		React.ComponentProps<"div">,
-		| "children"
-		| "className"
-		| "onClick"
-		| "onDragOver"
-		| "onDragEnter"
-		| "onDragLeave"
-		| "onDragEnd"
-		| "onDrop"
-		| "onPaste"
-		| "onKeyDown"
-	> {
+interface FileUploadDropzoneProps extends React.ComponentProps<"div"> {
 	asChild?: boolean
 	variant?: "dropzone" | "wrapper"
 	renderOverlay?: React.ReactNode
@@ -843,32 +891,30 @@ function FileUploadDropzone({
 
 	const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 		onKeyDownProp?.(event)
-
-		if (event.defaultPrevented) return
-
-		if (event.key === "Enter" || event.key === " ") {
-			event.preventDefault()
-			const inputElement = context.meta.rootInputRef.current
-			if (!inputElement) return
-			inputElement.click()
-		}
 	}
 
 	const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+		// Don’t intercept clicks that should submit a form (let default action run)
+		const isSubmitButton =
+			(event.target instanceof HTMLButtonElement &&
+				(!event.target.hasAttribute("type") ||
+					event.target.getAttribute("type") === "submit")) ||
+			(event.target instanceof HTMLInputElement && event.target.type === "submit")
+		if (isSubmitButton) return
+
+		// Allow consumer-provided click handlers to run first.
 		onClickProp?.(event)
-
+		// If the consumer cancelled the event, respect it and stop here.
 		if (event.defaultPrevented) return
-
-		const inputElement = context.meta.rootInputRef.current
-		if (!inputElement) return
-		inputElement.click()
+		// Trigger the hidden input to open the native file selection.
+		context.meta.rootInputRef.current?.click()
 	}
 
 	const variants = {
 		dropzone: cn(
-			"flex select-none flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 hover:bg-accent/30 focus-visible:border-ring/50 data-dragging:border-primary/30 data-invalid:border-destructive data-dragging:bg-accent/30 data-invalid:ring-destructive/20"
+			"flex select-none flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 hover:bg-accent/30 focus-visible:border-ring/50 data-disabled:pointer-events-none data-dragging:border-primary/30 data-invalid:border-destructive data-dragging:bg-accent/30 data-invalid:ring-destructive/20"
 		),
-		wrapper: cn("border-0 bg-transparent p-0 hover:bg-transparent")
+		wrapper: cn("w-fit border-0 bg-transparent p-0 hover:bg-transparent")
 	}
 
 	const DropzonePrimitive = asChild ? Slot : "div"
@@ -885,7 +931,7 @@ function FileUploadDropzone({
 			data-disabled={context.disabled ? "" : undefined}
 			tabIndex={context.disabled ? undefined : 0}
 			className={cn(
-				"relative select-none outline-none transition-colors data-disabled:pointer-events-none",
+				"group/dropzone relative select-none outline-none transition-colors",
 				variants[variant],
 				className
 			)}
@@ -899,28 +945,59 @@ function FileUploadDropzone({
 			onKeyDown={handleKeyDown}
 			{...props}
 		>
-			{variant === "wrapper" ? (
+			{variant === "dropzone" ? (
 				<>
-					<div className="absolute top-0 left-0 z-0 size-full bg-background/50 opacity-0 backdrop-blur transition-opacity duration-200 ease-out data-dragging:z-10 data-dragging:opacity-100">
+					{children ?? (
+						<>
+							<div className="flex flex-col items-center gap-1">
+								<FileUploadMedia
+									variant="icon"
+									className="size-12 rounded-full bg-transparent"
+								>
+									<Upload className="size-6" />
+								</FileUploadMedia>
+								<span className="font-medium text-foreground text-sm">
+									Drag and drop files here
+								</span>
+								<span className="text-muted-foreground text-xs">
+									Or click to browse files
+								</span>
+							</div>
+							<FileUploadTrigger asChild>
+								<button
+									type="button"
+									className="mt-2 border border-border text-foreground dark:bg-input/30"
+								>
+									Browse files
+								</button>
+							</FileUploadTrigger>
+						</>
+					)}
+					{renderOverlay && (
+						<div
+							data-slot="dropzone-overlay"
+							className="absolute top-0 left-0 z-0 size-full bg-background/50 opacity-0 backdrop-blur transition-opacity duration-200 ease-out group-data-dragging/dropzone:z-10 group-data-dragging/dropzone:opacity-100"
+						>
+							{renderOverlay}
+						</div>
+					)}
+				</>
+			) : (
+				<>
+					<div
+						data-slot="dropzone-overlay"
+						className="absolute top-0 left-0 z-0 size-full bg-background/50 opacity-0 backdrop-blur transition-opacity duration-200 ease-out group-data-dragging/dropzone:z-10 group-data-dragging/dropzone:opacity-100"
+					>
 						{renderOverlay ?? (
-							<div className="flex flex-col items-center gap-1 text-center">
+							<div className="flex size-full flex-col items-center justify-center gap-1 text-center">
 								<div className="flex items-center justify-center rounded-full border p-2.5">
-									<UploadCloudIcon className="size-6 text-muted-foreground" />
+									<UploadCloudIcon className="size-4 text-muted-foreground" />
 								</div>
 								<p className="font-medium text-sm">Drag & drop files here</p>
 							</div>
 						)}
 					</div>
 					{children}
-				</>
-			) : (
-				<>
-					{children}
-					{renderOverlay && (
-						<div className="absolute top-0 left-0 z-0 size-full bg-background/50 opacity-0 backdrop-blur transition-opacity duration-200 ease-out data-dragging:z-10 data-dragging:opacity-100">
-							{renderOverlay}
-						</div>
-					)}
 				</>
 			)}
 		</DropzonePrimitive>
@@ -938,6 +1015,7 @@ function FileUploadTrigger({
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		onClick?.(event)
 		if (event.defaultPrevented) return
+		event.stopPropagation()
 		context.meta.rootInputRef.current?.click()
 	}
 
@@ -952,7 +1030,7 @@ function FileUploadTrigger({
 			disabled={context.disabled}
 			onClick={handleClick}
 			className={cn(
-				"inline-flex items-center justify-center rounded-md font-medium text-sm transition-colors",
+				"inline-flex items-center justify-center rounded-md px-2 py-1.5 font-medium text-sm transition-colors",
 				"focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
 				"disabled:pointer-events-none disabled:opacity-50 data-disabled:pointer-events-none data-disabled:opacity-50",
 				className
@@ -962,88 +1040,8 @@ function FileUploadTrigger({
 	)
 }
 
-function FileUploadItemDelete({
-	children,
-	asChild = false,
-	className,
-	onClick,
-	...props
-}: React.ComponentProps<"button"> & {
-	asChild?: boolean
-}) {
-	const rootContext = useFileUploadContext("file-upload-item-delete")
-	const itemContext = useItemContext("file-upload-item-delete")
-
-	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-		onClick?.(event)
-		if (event.defaultPrevented) return
-
-		const fileToRemove = itemContext.fileState.file
-		rootContext.dispatch({
-			type: "SET_DELETED_FILE",
-			file: fileToRemove,
-			fileState: itemContext.fileState
-		})
-		rootContext.onValueChange((prev) => prev.filter((f) => f !== fileToRemove))
-	}
-
-	const ItemDeletePrimitive = asChild ? Slot : "button"
-
-	return (
-		<ItemDeletePrimitive
-			type="button"
-			data-slot="file-upload-item-delete"
-			aria-controls={itemContext.id}
-			aria-label="Delete file"
-			aria-describedby={itemContext.nameId}
-			className={cn("text-muted-foreground [&_svg]:size-4!", className)}
-			onClick={handleClick}
-			{...props}
-		>
-			{children ?? <Trash2Icon />}
-		</ItemDeletePrimitive>
-	)
-}
-
-function FileUploadItemRetry({
-	asChild = false,
-	children,
-	onClick,
-	...props
-}: React.ComponentProps<"button"> & {
-	asChild?: boolean
-}) {
-	const rootContext = useFileUploadContext("file-upload-item-retry")
-	const itemContext = useItemContext("file-upload-item-retry")
-	const file = itemContext.fileState.file
-
-	const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-		onClick?.(event)
-		if (!itemContext.fileState || event.defaultPrevented || rootContext.disabled) return
-
-		await rootContext.onUploadFiles([file])
-	}
-
-	const RetryPrimitive = asChild ? Slot : "button"
-
-	return (
-		<RetryPrimitive
-			type="button"
-			data-slot="file-upload-item-retry"
-			aria-controls={itemContext.id}
-			aria-label="Retry file"
-			aria-describedby={itemContext.nameId}
-			onClick={handleClick}
-			{...props}
-		>
-			{children ?? (
-				<span className="text-destructive text-sm hover:underline">Try again</span>
-			)}
-		</RetryPrimitive>
-	)
-}
-
 function FileUploadList({
+	forceMount = false,
 	children: childrenProp,
 	orientation = "vertical",
 	direction = "normal",
@@ -1068,16 +1066,27 @@ function FileUploadList({
 	direction?: "normal" | "reverse"
 	className?: string
 	asChild?: boolean
+	forceMount?: boolean
 }) {
 	const rootContext = useFileUploadContext("file-upload-list")
-	const shouldRender = rootContext.fileMap.size > 0
+	const shouldRender = forceMount || rootContext.fileMap.size > 0
+
+	// Accounts for when there are non-FileUploadItem inside FileUploadList
+	// since we inject the files based on the index.
+	let shift = 0
 
 	const children = React.Children.map(childrenProp, (child, index) => {
-		if (!React.isValidElement<{ value?: File }>(child)) return child
-		if (child.type !== FileUploadItem) return child
+		if (!React.isValidElement<{ value?: File }>(child)) {
+			shift++
+			return child
+		}
+		if (child.type !== FileUploadItem) {
+			shift++
+			return child
+		}
 
 		return React.cloneElement(child, {
-			value: rootContext.value[index]
+			value: rootContext.value[index - shift]
 		})
 	})
 
@@ -1152,7 +1161,7 @@ function FileUploadItemInternal({
 	if (!value) return null
 	const fileState =
 		rootContext.fileMap.get(value) || rootContext.deletedFileMap.get(value)
-	console.log({ fileState })
+
 	if (!fileState) return null
 
 	const nameId = `file-name-${id}`
@@ -1161,13 +1170,15 @@ function FileUploadItemInternal({
 	const messageId = `file-message-${id}`
 	const hasChildren = Boolean(children)
 	const hasError = fileState.error !== undefined || fileState.status === "error"
-	const statusText = hasError
+	const statusTextForSR = hasError
 		? `Error: ${fileState.error}`
 		: fileState.status === "uploading"
 			? `Uploading: ${fileState.progress}% complete`
 			: fileState.status === "success"
 				? "Upload successful"
-				: "Ready to upload"
+				: fileState.status === "cancelled"
+					? "Upload cancelled"
+					: "Ready to upload"
 
 	const contextValue: FileUploadItemContextValue = {
 		fileState,
@@ -1182,6 +1193,7 @@ function FileUploadItemInternal({
 	return (
 		<FileUploadItemContext value={contextValue}>
 			<motion.li
+				data-slot="file-upload-item"
 				layout
 				initial={{ opacity: 0, translateY: -8 }}
 				animate={{ opacity: 1, translateY: 0 }}
@@ -1192,7 +1204,7 @@ function FileUploadItemInternal({
 				aria-describedby={`${nameId} ${sizeId} ${statusId} ${fileState ? messageId : ""}`}
 				data-error={hasError ? "" : undefined}
 				className={cn(
-					"relative flex list-none gap-2.5 rounded-xl p-4 transition-shadow duration-100 ease-linear",
+					"relative flex list-none gap-2.5 rounded-lg p-4 transition-shadow duration-100 ease-linear",
 					"ring-1 ring-border ring-inset data-error:ring-2 data-error:ring-destructive",
 					className
 				)}
@@ -1200,44 +1212,59 @@ function FileUploadItemInternal({
 				{hasChildren ? (
 					children
 				) : (
-					<div className="flex flex-1 flex-col gap-2.5">
+					<div className="flex w-full flex-col gap-2.5">
 						<div className="flex w-full items-center gap-2">
 							<FileUploadItemPreview />
 							<FileUploadItemMetadata />
-							<FileUploadItemDelete />
+							<div className="flex items-center gap-1">
+								<FileUploadItemCancel className="hidden data-[status=uploading]:flex" />
+								<FileUploadItemDelete className="flex data-[status=uploading]:hidden" />
+							</div>
 						</div>
 						<FileUploadItemProgressWithLabel forceMount labelPosition="right" />
 					</div>
 				)}
 				<span id={statusId} className="sr-only">
-					{statusText}
+					{statusTextForSR}
 				</span>
 			</motion.li>
 		</FileUploadItemContext>
 	)
 }
 
-function FileUploadItemName({ className }: { className?: string }) {
+function FileUploadItemName({
+	className,
+	maxVisibleChars
+}: {
+	/** When filename length exceeds (`maxVisibleChars` + 3), show half from the start and half from the end with "..." in between. */
+	maxVisibleChars?: number
+	className?: string
+}) {
 	const { fileState, nameId } = useItemContext("file-upload-item-name")
 	if (!fileState) return null
-
+	const filename = maxVisibleChars
+		? truncateText(fileState.file.name, maxVisibleChars)
+		: fileState.file.name.trim()
 	return (
 		<span
+			data-slot="file-upload-item-name"
 			id={nameId}
-			className={cn("truncate font-medium text-foreground text-sm", className)}
+			className={cn("w-full truncate font-medium text-foreground text-sm", className)}
 		>
-			{fileState.file.name}
+			{filename}
 		</span>
 	)
 }
 
 function FileUploadItemSize({ className }: { className?: string }) {
 	const { fileState, sizeId } = useItemContext("file-upload-item-size")
+	const fileStatus = fileState.status
 	if (!fileState) return null
 
 	return (
 		<span
 			id={sizeId}
+			data-status={fileStatus}
 			className={cn(
 				"truncate whitespace-nowrap text-muted-foreground text-sm",
 				className
@@ -1249,32 +1276,36 @@ function FileUploadItemSize({ className }: { className?: string }) {
 }
 
 function FileUploadItemStatus({
-	render
+	render,
+	className
 }: {
 	/** An optional callback with file status as parameter to render a custom component. */
 	render?: (status: FileState["status"]) => React.ReactNode
+	className?: string
 }) {
 	const itemContext = useItemContext("file-upload-item-status")
 	const fileStatus = itemContext.fileState.status
 
-	if (render) return render(fileStatus)
+	if (render)
+		return (
+			<div
+				data-slot="file-upload-item-status"
+				data-status={fileStatus}
+				className={className}
+			>
+				{render(fileStatus)}
+			</div>
+		)
 
-	return fileStatus === "error" ? (
-		<div className="flex items-center gap-1">
-			<XCircleIcon className="size-3.5 text-destructive" />
-			<span className="font-medium text-destructive text-sm">Failed</span>
-		</div>
-	) : fileStatus === "uploading" ? (
-		<div className="flex items-center gap-1 text-muted-foreground">
-			<UploadCloudIcon className="size-3.5 stroke-[2.5px]" />
-			<span className="font-medium text-sm">Uploading...</span>
-		</div>
-	) : fileStatus === "success" ? (
-		<div className="flex items-center gap-1">
-			<CheckCircleIcon className="size-3.5 stroke-[2.5px] text-green-700" />
-			<span className="font-medium text-green-700 text-sm">Completed</span>
-		</div>
-	) : null
+	return (
+		<span
+			data-slot="file-upload-item-status"
+			data-status={fileStatus}
+			className={cn("capitalize", className)}
+		>
+			{fileStatus}
+		</span>
+	)
 }
 
 function FileUploadItemErrorMessage({ className }: { className?: string }) {
@@ -1306,8 +1337,9 @@ function FileUploadItemMetadata({
 			{children ?? (
 				<>
 					<FileUploadItemName />
-					<div className="flex gap-2">
+					<div className="flex gap-2 text-muted-foreground text-sm">
 						<FileUploadItemSize />
+						-
 						<FileUploadItemStatus />
 					</div>
 					<FileUploadItemErrorMessage />
@@ -1356,7 +1388,7 @@ function FileUploadItemPreview({
 			data-slot="file-upload-item-preview"
 			className={cn(
 				"relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded border bg-accent/50",
-				"has-[>svg]:border-none has-[>svg]:bg-transparent [&>svg]:size-10",
+				"has-[>svg]:border-none has-[>svg]:bg-transparent [&>svg]:size-full",
 				className
 			)}
 			{...props}
@@ -1376,6 +1408,7 @@ function FileUploadItemPreview({
 function FileUploadItemProgress({
 	variant = "linear",
 	fillVariant = "bottom-t-top",
+	strokeWidth = 2,
 	size = 40,
 	forceMount,
 	className,
@@ -1400,6 +1433,7 @@ function FileUploadItemProgress({
 	 * @default 40
 	 */
 	size?: number
+	strokeWidth?: number
 	forceMount?: boolean
 	className?: string
 	asChild?: boolean
@@ -1425,13 +1459,13 @@ function FileUploadItemProgress({
 					aria-valuetext={`${progressValue}%`}
 					aria-labelledby={itemContext.nameId}
 					className={cn(
-						"relative flex h-1.5 w-full overflow-x-hidden rounded-full bg-muted",
+						"flex h-1.5 w-full overflow-x-hidden rounded-full bg-muted",
 						className
 					)}
 					{...props}
 				>
 					<div
-						data-slot="indicator"
+						data-slot="file-upload-progress-indicator"
 						className="h-full w-full flex-1 bg-primary transition-transform duration-300 ease-linear"
 						style={{
 							transform: `translateX(-${100 - progressValue}%)`
@@ -1452,7 +1486,7 @@ function FileUploadItemProgress({
 					aria-valuetext={`${progressValue}%`}
 					aria-labelledby={itemContext.nameId}
 					className={cn(
-						"absolute inset-0 bg-muted/50 transition-[clip-path] duration-300 ease-linear",
+						"absolute inset-0 bg-input transition-[clip-path] duration-300 ease-linear dark:bg-muted-foreground/50",
 						className
 					)}
 					style={{
@@ -1487,7 +1521,7 @@ function FileUploadItemProgress({
 				>
 					{children ?? (
 						<svg
-							className="-rotate-90 transform"
+							className="-rotate-90 transform overflow-visible"
 							width={size}
 							height={size}
 							viewBox={`0 0 ${size} ${size}`}
@@ -1496,15 +1530,17 @@ function FileUploadItemProgress({
 						>
 							<title>Circle SVG</title>
 							<circle
+								data-slot="progress-circular-inner"
 								className="text-primary/20"
-								strokeWidth="2"
+								strokeWidth={strokeWidth}
 								cx={size / 2}
 								cy={size / 2}
 								r={(size - 4) / 2}
 							/>
 							<circle
+								data-slot="progress-circular-outer"
 								className="text-primary transition-[stroke-dashoffset] duration-300 ease-linear"
-								strokeWidth="2"
+								strokeWidth={strokeWidth}
 								strokeLinecap="round"
 								strokeDasharray={circumference}
 								strokeDashoffset={strokeDashoffset}
@@ -1618,6 +1654,179 @@ function FileUploadItemProgressWithLabel({
 	}
 }
 
+function FileUploadItemDelete({
+	children,
+	asChild = false,
+	className,
+	onClick,
+	...props
+}: React.ComponentProps<"button"> & {
+	asChild?: boolean
+}) {
+	const rootContext = useFileUploadContext("file-upload-item-delete")
+	const itemContext = useItemContext("file-upload-item-delete")
+
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		onClick?.(event)
+		if (event.defaultPrevented) return
+
+		const fileToRemove = itemContext.fileState.file
+		rootContext.dispatch({
+			type: "SET_DELETED_FILE",
+			file: fileToRemove,
+			fileState: itemContext.fileState
+		})
+		rootContext.dispatch({
+			type: "SET_INVALID",
+			isInvalid: false
+		})
+		rootContext.onValueChange(rootContext.value.filter((f) => f !== fileToRemove))
+	}
+
+	const ItemDeletePrimitive = asChild ? Slot : "button"
+
+	return (
+		<ItemDeletePrimitive
+			type="button"
+			data-slot="file-upload-item-delete"
+			data-status={itemContext.fileState.status}
+			aria-controls={itemContext.id}
+			aria-label="Delete file"
+			aria-describedby={itemContext.nameId}
+			className={cn("text-muted-foreground", className)}
+			onClick={handleClick}
+			{...props}
+		>
+			{children ?? <XIcon className="size-4" />}
+		</ItemDeletePrimitive>
+	)
+}
+
+function FileUploadItemRetry({
+	asChild = false,
+	children,
+	onClick,
+	...props
+}: React.ComponentProps<"button"> & {
+	asChild?: boolean
+}) {
+	const rootContext = useFileUploadContext("file-upload-item-retry")
+	const itemContext = useItemContext("file-upload-item-retry")
+	const file = itemContext.fileState.file
+
+	const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+		onClick?.(event)
+		if (!itemContext.fileState || event.defaultPrevented || rootContext.disabled) return
+
+		await rootContext.onUploadFiles([file])
+	}
+
+	const RetryPrimitive = asChild ? Slot : "button"
+
+	return (
+		<RetryPrimitive
+			type="button"
+			data-slot="file-upload-item-retry"
+			aria-controls={itemContext.id}
+			aria-label="Retry file"
+			aria-describedby={itemContext.nameId}
+			onClick={handleClick}
+			{...props}
+		>
+			{children ?? (
+				<span className="text-destructive text-sm hover:underline">Try again</span>
+			)}
+		</RetryPrimitive>
+	)
+}
+
+function FileUploadItemCancel({
+	asChild = false,
+	children,
+	onClick,
+	className,
+	...props
+}: React.ComponentProps<"button"> & {
+	asChild?: boolean
+	className?: string
+}) {
+	const rootContext = useFileUploadContext("file-upload-item-cancel")
+	const itemContext = useItemContext("file-upload-item-cancel")
+	const file = itemContext.fileState.file
+	const abortControllerMap = rootContext.abortControllerMap
+
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		onClick?.(event)
+		if (event.defaultPrevented || rootContext.disabled) return
+
+		const abortController = abortControllerMap.get(file)
+		if (abortController) {
+			abortController.abort()
+			rootContext.dispatch({ type: "SET_UPLOAD_CANCELLED", file: file })
+		}
+	}
+
+	// Only show cancel button when file is uploading
+	if (itemContext.fileState.status !== "uploading") return null
+
+	const CancelPrimitive = asChild ? Slot : "button"
+
+	return (
+		<CancelPrimitive
+			type="button"
+			data-slot="file-upload-item-cancel"
+			data-status={itemContext.fileState.status}
+			aria-controls={itemContext.id}
+			aria-label="Cancel upload"
+			aria-describedby={itemContext.nameId}
+			onClick={handleClick}
+			className={cn("text-muted-foreground hover:text-foreground", className)}
+			{...props}
+		>
+			{children ?? <FileX className="size-4" />}
+		</CancelPrimitive>
+	)
+}
+
+function FileUploadSubmit({
+	className,
+	asChild = false,
+	children
+}: {
+	className?: string
+	children?: React.ReactNode
+	asChild?: boolean
+}) {
+	const rootContext = useFileUploadContext("file-upload-submit")
+	const files = rootContext.fileMap.keys().toArray()
+	const fileCount = rootContext.fileMap.size
+	const [loading, setLoading] = useState(false)
+
+	const handleClick = async () => {
+		setLoading(true)
+		await rootContext.onUploadFiles(files)
+		setLoading(false)
+	}
+
+	if (fileCount === 0) return null
+
+	const SubmitPrimitive = asChild ? Slot : "button"
+
+	return (
+		<SubmitPrimitive
+			type="button"
+			disabled={loading}
+			data-slot="file-upload-submit"
+			aria-label="Submit files"
+			aria-disabled={loading}
+			onClick={handleClick}
+			className={cn("relative", className)}
+		>
+			{children ?? <span className="text-sm">Upload files</span>}
+		</SubmitPrimitive>
+	)
+}
+
 function FileUploadMedia({
 	className,
 	variant = "default",
@@ -1625,10 +1834,11 @@ function FileUploadMedia({
 }: {
 	className?: string
 	variant: "default" | "icon" | "image"
+	children?: React.ReactNode
 }) {
 	const variants = {
 		default: "bg-transparent",
-		icon: "size-8 rounded-sm border bg-muted [&_svg:not([class*='size-'])]:size-4",
+		icon: "size-8 rounded-sm border bg-input/30 [&_svg:not([class*='size-'])]:size-4",
 		image: "size-10 overflow-hidden rounded-sm [&_img]:size-full [&_img]:object-cover"
 	}
 
@@ -1636,8 +1846,9 @@ function FileUploadMedia({
 		<div
 			data-slot="file-upload-media"
 			className={cn(
-				"flex shrink-0 items-center justify-center gap-2 self-start [&_svg]:pointer-events-none",
-				variants[variant]
+				"flex shrink-0 items-center justify-center gap-2 [&_svg]:pointer-events-none",
+				variants[variant],
+				className
 			)}
 			{...props}
 		/>
@@ -1661,7 +1872,10 @@ export {
 	FileUploadItemProgressLabel,
 	FileUploadItemDelete,
 	FileUploadItemRetry,
+	FileUploadItemCancel,
+	FileUploadSubmit,
 	FileUploadMedia,
 	getFileSizeFromBytes,
+	truncateText,
 	type FileUploadProps
 }
