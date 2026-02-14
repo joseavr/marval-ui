@@ -1,7 +1,5 @@
 "use client"
 
-// TODO cancel upload
-
 import { Slot } from "@radix-ui/react-slot"
 import {
 	FileArchiveIcon,
@@ -293,6 +291,7 @@ type Actions =
 	| { type: "SYNC_FROM_VALUE"; files: File[] }
 	| { type: "SET_DELETED_FILE"; file: File; fileState: FileState }
 	| { type: "SET_UPLOAD_PROGRESS"; file: File; progress: number }
+	| { type: "SET_UPLOAD_PROGRESS_BATCH"; updates: Array<{ file: File; progress: number }> }
 	| { type: "SET_UPLOAD_SUCCESS"; file: File }
 	| { type: "SET_UPLOAD_ERROR"; file: File; error: string }
 	| { type: "SET_UPLOAD_CANCELLED"; file: File }
@@ -367,6 +366,22 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 					status: "uploading",
 					progress: action.progress
 				})
+			}
+			return { ...state, fileMap: files }
+		}
+
+		case "SET_UPLOAD_PROGRESS_BATCH": {
+			if (action.updates.length === 0) return state
+			const files = new Map(state.fileMap)
+			for (const { file, progress } of action.updates) {
+				const fileState = files.get(file)
+				if (fileState) {
+					files.set(file, {
+						...fileState,
+						status: "uploading",
+						progress: Math.min(Math.max(0, progress), 100)
+					})
+				}
 			}
 			return { ...state, fileMap: files }
 		}
@@ -561,6 +576,28 @@ function FileUploadRoot(props: FileUploadProps) {
 	const urlCacheRef = useRef(state.urlCache)
 	urlCacheRef.current = state.urlCache
 
+	// Batch upload progress updates to at most one store update per animation frame
+	const pendingProgressRef = useRef<Map<File, number>>(new Map())
+	const rafScheduledRef = useRef(false)
+	const flushProgressRef = useRef(() => {
+		if (pendingProgressRef.current.size === 0) {
+			rafScheduledRef.current = false
+			return
+		}
+		const updates = Array.from(pendingProgressRef.current.entries()).map(
+			([file, progress]) => ({ file, progress })
+		)
+		pendingProgressRef.current.clear()
+		rafScheduledRef.current = false
+		dispatch({ type: "SET_UPLOAD_PROGRESS_BATCH", updates })
+	})
+	const scheduleProgressFlushRef = useRef(() => {
+		pendingProgressRef.current = pendingProgressRef.current ?? new Map()
+		if (rafScheduledRef.current) return
+		rafScheduledRef.current = true
+		requestAnimationFrame(() => flushProgressRef.current())
+	})
+
 	// clean up orphan Blob URLs on unmount only to prevent memory leaks
 	useEffect(() => {
 		return () => {
@@ -593,12 +630,9 @@ function FileUploadRoot(props: FileUploadProps) {
 						return
 					}
 
-					// TODO: Fix performance issue: dozens of store updates per frame
-					dispatch({
-						type: "SET_UPLOAD_PROGRESS",
-						file,
-						progress: Math.min(Math.max(0, progress), 100)
-					})
+					const clamped = Math.min(Math.max(0, progress), 100)
+					pendingProgressRef.current.set(file, clamped)
+					scheduleProgressFlushRef.current()
 				},
 				onSuccess: (file) => {
 					const abortController = state.abortControllerMap.get(file)
@@ -1487,6 +1521,7 @@ function FileUploadItemProgress({
 					aria-labelledby={itemContext.nameId}
 					className={cn(
 						"absolute inset-0 bg-input transition-[clip-path] duration-300 ease-linear dark:bg-muted-foreground/50",
+						fillVariant === "left-t-right" ? "-z-10" : "opacity-80",
 						className
 					)}
 					style={{
