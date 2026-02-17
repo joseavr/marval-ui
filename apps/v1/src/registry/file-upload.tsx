@@ -1,8 +1,5 @@
 "use client"
 
-// TODO dragging over dropzone style
-// TODO fix delay when updating `status` to "Completed". ItemStatus displays a bit after the onProgress() was set to 100
-
 import { Slot } from "@radix-ui/react-slot"
 import {
 	FileArchiveIcon,
