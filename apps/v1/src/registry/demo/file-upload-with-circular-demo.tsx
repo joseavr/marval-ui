@@ -59,24 +59,26 @@ export function FileUploadWithCircularDemo() {
 				onUpload={handleUpload}
 				multiple
 				autoUpload
+				className="size-full"
 			>
-				<div className="flex flex-row flex-wrap">
+				<div className="flex size-full flex-row flex-wrap">
 					<FileUploadList
 						forceMount
-						className="w-full flex-wrap gap-4 divide-border/50"
+						className="w-full flex-wrap gap-4 divide-border/50 overflow-visible"
 						orientation="horizontal"
 					>
 						<FileUploadDropzone
 							variant="dropzone"
-							className="h-[200px] w-[150px] flex-row border-0 bg-accent hover:bg-neutral-200 data-dragging:bg-neutral-200 dark:bg-input/30 dark:data-dragging:bg-input/90 dark:hover:bg-input/50"
+							className="h-[200px] w-[200px] flex-col gap-2 border-2 border-foreground/30 border-dashed bg-accent shadow-2xl hover:bg-neutral-200 data-dragging:bg-neutral-200 dark:bg-input/30 dark:data-dragging:bg-input/90 dark:hover:bg-input/50"
 						>
-							<UploadIcon className="size-12" />
+							<UploadIcon className="size-12 text-muted-foreground" />
+							<span className="text-muted-foreground">Upload Images</span>
 						</FileUploadDropzone>
 
 						{files.map((file) => {
 							return (
 								<FileUploadItem
-									className="group/item flex h-[200px] w-[150px] gap-1 rounded-lg px-0 py-0 ring-0"
+									className="group/item flex h-[200px] w-[200px] gap-1 rounded-lg px-0 py-0 ring-0"
 									key={file.name}
 								>
 									<FileUploadItemPreview className="size-full rounded-lg border-none">

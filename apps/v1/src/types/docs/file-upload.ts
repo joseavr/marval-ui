@@ -11,7 +11,7 @@ export interface FileUploadProps {
 	 * - Use this prop for controlled usage.
 	 * - Should be used in conjunction with `onValueChange`.
 	 */
-	value: File[]
+	files: File[]
 	/**
 	 * Callback called when files are added or removed.
 	 * - Should be used in conjunction with `value`.
@@ -23,7 +23,7 @@ export interface FileUploadProps {
 	 * }}
 	 * ```
 	 */
-	onValueChange: (files: File[] | ((prevFiles: File[]) => File[])) => void
+	onFilesChange: (files: File[]) => void
 	/**
 	 * Callback called when all files are accepted after validation checks.
 	 */
@@ -181,20 +181,6 @@ export interface FileUploadTriggerProps {
 	asChild?: boolean
 }
 
-export interface FileUploadDeleteProps {
-	/** The children of the component */
-	children?: React.ReactNode
-	/** Whether to merge props with direct child.  */
-	asChild?: boolean
-}
-
-export interface FileUploadRetryProps {
-	/** The children of the component */
-	children?: React.ReactNode
-	/** Whether to merge props with direct child.  */
-	asChild?: boolean
-}
-
 export interface FileUploadSubmit {
 	/** Whether to merge props with direct child.  */
 	asChild?: boolean
@@ -229,9 +215,24 @@ export interface FileUploadListProps {
 	 */
 	direction?: "normal" | "reverse"
 	className?: string
-
 	/** Whether to merge props with direct child.  */
 	asChild?: boolean
+	/**
+	 * Whether to force mount the list even if there are no files.
+	 *
+	 * ```
+	 * <FileUploadList forceMount>
+	 *   {files.length === 0 ? (
+	 *     <p>No files uploaded</p>
+	 *   ) : (
+	 *     files.map((file) => (
+	 *       <FileUploadItem key={file.name} value={file} />
+	 *     ))
+	 *   )}
+	 * </FileUploadList>
+	 * ```
+	 */
+	forceMount?: boolean
 }
 
 export interface FileUploadItemProps {
@@ -258,11 +259,39 @@ export interface FileUploadItemProps {
 	asChild?: boolean
 }
 
+export interface FileUploadItemPreviewProps {
+	/**
+	 * An optional callback to render a custom file preview, overriding the default one.
+	 *
+	 * ```tsx
+	 * render={(file, fallback) => {
+	 *   if(file.extension.startsWith(".jpg")) {
+	 *     return <CustomJPGPreview file={file.fileObject}/>
+	 *   }
+	 *   // use default behavior for everything else
+	 *   return fallback()
+	 * }}
+	 * ```
+	 *
+	 * @param file - an object with the file object, file type, and file extension.
+	 * @param fallback - a fallback function that renders the default file preview.
+	 */
+	render?: (
+		file: { fileObject: File; type: string; extension: string },
+		fallback: () => React.ReactNode
+	) => React.ReactNode
+	/** The class name of the component */
+	className?: string
+	/** The children of the component */
+	children?: React.ReactNode
+}
+
+
 export interface FileUploadItemNameProps {
 	/** The class name of the component */
 	className?: boolean
 	/** Control the maximum length of the file name to be displayed.
-	 * - When filename length exceeds (`maxVisibleChars` + 3), show half from the start and half from the end with "..." in between. 
+	 * - When filename length exceeds (`maxVisibleChars` + 3), show half from the start and half from the end with "..." in between.
 	 */
 	maxVisibleChars?: number
 }
@@ -313,7 +342,7 @@ export interface FileUploadItemStatusProps {
 	render?: (status: FileState["status"]) => React.ReactNode
 }
 
-export interface FileUploadItemErrorMessageProps {
+export interface FileUploadItemErrorProps {
 	/** The class name of the component */
 	className?: string
 }
@@ -325,32 +354,6 @@ export interface FileUploadItemMetadataProps {
 	className?: boolean
 }
 
-export interface FileUploadItemPreviewProps {
-	/**
-	 * An optional callback to render a custom file preview, overriding the default one.
-	 *
-	 * ```tsx
-	 * render={(file, fallback) => {
-	 *   if(file.extension.startsWith(".jpg")) {
-	 *     return <CustomJPGPreview file={file.fileObject}/>
-	 *   }
-	 *   // use default behavior for everything else
-	 *   return fallback()
-	 * }}
-	 * ```
-	 *
-	 * @param file - an object with the file object, file type, and file extension.
-	 * @param fallback - a fallback function that renders the default file preview.
-	 */
-	render?: (
-		file: { fileObject: File; type: string; extension: string },
-		fallback: () => React.ReactNode
-	) => React.ReactNode
-	/** The class name of the component */
-	className?: string
-	/** The children of the component */
-	children?: React.ReactNode
-}
 
 export interface FileUploadItemProgressProps {
 	/**
@@ -392,6 +395,12 @@ export interface FileUploadItemProgressProps {
 	 * @default "bottom-t-top"
 	 */
 	fillVariant?: "bottom-t-top" | "left-t-right"
+	/** 
+	 * Set the stroke width of the circular progress. 
+	 * 
+	 * @default 2
+	 */
+	strokeWidth?: number
 	/**
 	 * The size (in pixels) of the circular progress. Only applies when variant is `circular`.
 	 * ```tsx
@@ -432,4 +441,24 @@ export interface FileUploadItemProgressWithLabelProps {
 
 export interface FileUploadMediaProps {
 	asChild?: boolean
+}
+
+export interface FileUploadItemDeleteProps {
+	/** The children of the component */
+	children?: React.ReactNode
+	/** Whether to merge props with direct child.  */
+	asChild?: boolean
+}
+
+export interface FileUploadItemRetryProps {
+	/** The children of the component */
+	children?: React.ReactNode
+	/** Whether to merge props with direct child.  */
+	asChild?: boolean
+}
+
+
+export interface FileUploadItemCancelProps { 
+	asChild?: boolean
+	className?: string
 }

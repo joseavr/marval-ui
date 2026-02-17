@@ -281,7 +281,7 @@ export const mdxComponents: MDXComponents = {
 					isCodeBlock &&
 						"wrap-break-word relative grid min-w-full overflow-x-auto rounded-lg border-0 bg-transparent py-3 pt-3 font-mono text-sm [scrollbar-width:none] [&>span[data-line]]:min-w-max [&>span[data-line]]:overflow-visible",
 					!isCodeBlock &&
-						"relative mx-px inline-block rounded-md border border-border bg-accent px-1 py-[0.12rem] align-baseline text-foreground leading-[1.2] dark:border-zinc-800 dark:bg-white/10",
+						"wrap-break-words relative mx-px rounded-md bg-muted px-[0.3rem] py-[0.2rem] font-mono text-[0.9rem] outline-none",
 					isInstallationCodeBlock && "select-all pt-3",
 					className
 				)}

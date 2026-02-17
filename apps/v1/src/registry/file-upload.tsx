@@ -1,10 +1,13 @@
 "use client"
 
+// TODO dragging over dropzone style
+// TODO fix delay when updating `status` to "Completed". ItemStatus displays a bit after the onProgress() was set to 100
+
 import { Slot } from "@radix-ui/react-slot"
 import {
 	FileArchiveIcon,
 	FileCogIcon,
-	FileX,
+	MinusIcon,
 	Upload,
 	UploadCloudIcon,
 	XIcon
@@ -291,7 +294,10 @@ type Actions =
 	| { type: "SYNC_FROM_VALUE"; files: File[] }
 	| { type: "SET_DELETED_FILE"; file: File; fileState: FileState }
 	| { type: "SET_UPLOAD_PROGRESS"; file: File; progress: number }
-	| { type: "SET_UPLOAD_PROGRESS_BATCH"; updates: Array<{ file: File; progress: number }> }
+	| {
+			type: "SET_UPLOAD_PROGRESS_BATCH"
+			updates: Array<{ file: File; progress: number }>
+	  }
 	| { type: "SET_UPLOAD_SUCCESS"; file: File }
 	| { type: "SET_UPLOAD_ERROR"; file: File; error: string }
 	| { type: "SET_UPLOAD_CANCELLED"; file: File }
@@ -299,7 +305,9 @@ type Actions =
 	| { type: "SET_INVALID"; isInvalid: boolean }
 
 function reducer(state: InternalState = initialState, action: Actions): InternalState {
-	switch (action.type) {
+	const type = action.type
+
+	switch (type) {
 		case "SYNC_FROM_VALUE": {
 			const internalFileMap = new Map(state.fileMap)
 			const urlCacheMap = new Map(state.urlCache)
@@ -395,6 +403,19 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 			return { ...state, fileMap: files }
 		}
 
+		case "SET_UPLOAD_ERROR": {
+			const files = new Map(state.fileMap)
+			const fileState = files.get(action.file)
+			if (fileState) {
+				files.set(action.file, {
+					...fileState,
+					error: action.error,
+					status: "error"
+				})
+			}
+			return { ...state, fileMap: files }
+		}
+
 		case "SET_UPLOAD_CANCELLED": {
 			const files = new Map(state.fileMap)
 			const fileState = files.get(action.file)
@@ -411,7 +432,7 @@ function reducer(state: InternalState = initialState, action: Actions): Internal
 			return { ...state, isInvalid: action.isInvalid }
 
 		default:
-			throw new Error(`Unhandled action type: ${action.type}`)
+			throw new Error(`Unhandled action type: ${type satisfies never}`)
 	}
 }
 
@@ -460,7 +481,7 @@ interface FileUploadProps {
 	 * Callback called when files are added or removed.
 	 * - Should be used in conjunction with `value`.
 	 */
-	onFilesChange: (files: File[] | ((prevFiles: File[]) => File[])) => void
+	onFilesChange: (files: File[]) => void
 	/**
 	 * Callback called when all files are accepted after validation checks.
 	 */
@@ -541,6 +562,7 @@ interface FileUploadProps {
 	 */
 	asChild?: boolean
 }
+/** @link https://ui.joseavr.com/docs/components/file-upload */
 function FileUploadRoot(props: FileUploadProps) {
 	const {
 		files: value,
@@ -645,6 +667,7 @@ function FileUploadRoot(props: FileUploadProps) {
 				onError: (file, error) => {
 					// Remove abort controller on error
 					state.abortControllerMap.delete(file)
+
 					dispatch({
 						type: "SET_UPLOAD_ERROR",
 						file,
@@ -657,6 +680,7 @@ function FileUploadRoot(props: FileUploadProps) {
 			for (const file of files) {
 				// Remove abort controller on error
 				state.abortControllerMap.delete(file)
+
 				dispatch({
 					type: "SET_UPLOAD_ERROR",
 					file,
@@ -838,6 +862,8 @@ interface FileUploadDropzoneProps extends React.ComponentProps<"div"> {
 	variant?: "dropzone" | "wrapper"
 	renderOverlay?: React.ReactNode
 }
+
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaddropzone */
 function FileUploadDropzone({
 	asChild,
 	variant = "dropzone",
@@ -946,7 +972,7 @@ function FileUploadDropzone({
 
 	const variants = {
 		dropzone: cn(
-			"flex select-none flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 hover:bg-accent/30 focus-visible:border-ring/50 data-disabled:pointer-events-none data-dragging:border-primary/30 data-invalid:border-destructive data-dragging:bg-accent/30 data-invalid:ring-destructive/20"
+			"flex select-none flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed p-6 hover:bg-accent/30 focus-visible:border-ring/50 data-disabled:pointer-events-none data-dragging:border-foreground/90 data-invalid:border-destructive data-dragging:bg-accent/50 data-invalid:ring-destructive/20"
 		),
 		wrapper: cn("w-fit border-0 bg-transparent p-0 hover:bg-transparent")
 	}
@@ -1038,6 +1064,7 @@ function FileUploadDropzone({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploadtrigger */
 function FileUploadTrigger({
 	className,
 	asChild = false,
@@ -1074,6 +1101,8 @@ function FileUploadTrigger({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploadlist */
+
 function FileUploadList({
 	forceMount = false,
 	children: childrenProp,
@@ -1108,6 +1137,18 @@ function FileUploadList({
 	// Accounts for when there are non-FileUploadItem inside FileUploadList
 	// since we inject the files based on the index.
 	let shift = 0
+
+	const childrenArray = childrenProp
+	if (
+		React.isValidElement(childrenArray) &&
+		Array.isArray(childrenArray) &&
+		childrenArray.length === 1 &&
+		childrenArray[0].type !== FileUploadItem
+	) {
+		throw new Error(
+			"FileUploadList: the direct child must be a FileUploadItem type. Parent component (FileUploadList) covertly injects `file` to each FileUploadItem based on their index."
+		)
+	}
 
 	const children = React.Children.map(childrenProp, (child, index) => {
 		if (!React.isValidElement<{ value?: File }>(child)) {
@@ -1181,6 +1222,7 @@ interface FileUploadItemInternalProps extends FileUploadItemProps {
 	value: File
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditem */
 function FileUploadItem(props: FileUploadItemProps) {
 	return <FileUploadItemInternal {...(props as FileUploadItemInternalProps)} />
 }
@@ -1255,7 +1297,7 @@ function FileUploadItemInternal({
 								<FileUploadItemDelete className="flex data-[status=uploading]:hidden" />
 							</div>
 						</div>
-						<FileUploadItemProgressWithLabel forceMount labelPosition="right" />
+						<FileUploadItemProgressWithLabel labelPosition="right" />
 					</div>
 				)}
 				<span id={statusId} className="sr-only">
@@ -1266,6 +1308,7 @@ function FileUploadItemInternal({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemname */
 function FileUploadItemName({
 	className,
 	maxVisibleChars
@@ -1290,6 +1333,7 @@ function FileUploadItemName({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemsize */
 function FileUploadItemSize({ className }: { className?: string }) {
 	const { fileState, sizeId } = useItemContext("file-upload-item-size")
 	const fileStatus = fileState.status
@@ -1309,6 +1353,7 @@ function FileUploadItemSize({ className }: { className?: string }) {
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemstatus */
 function FileUploadItemStatus({
 	render,
 	className
@@ -1342,7 +1387,8 @@ function FileUploadItemStatus({
 	)
 }
 
-function FileUploadItemErrorMessage({ className }: { className?: string }) {
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemerror */
+function FileUploadItemError({ className }: { className?: string }) {
 	const { fileState, messageId } = useItemContext("file-upload-item-error-message")
 	if (!fileState.error) return null
 	return (
@@ -1356,6 +1402,7 @@ function FileUploadItemErrorMessage({ className }: { className?: string }) {
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemmetadata */
 function FileUploadItemMetadata({
 	children,
 	className
@@ -1373,10 +1420,8 @@ function FileUploadItemMetadata({
 					<FileUploadItemName />
 					<div className="flex gap-2 text-muted-foreground text-sm">
 						<FileUploadItemSize />
-						-
-						<FileUploadItemStatus />
 					</div>
-					<FileUploadItemErrorMessage />
+					<FileUploadItemError />
 				</>
 			)}
 		</div>
@@ -1398,6 +1443,7 @@ function ItemDefaultPreview({ file }: { file: File }) {
 	return getFileIcon(file)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditempreview */
 function FileUploadItemPreview({
 	render,
 	className,
@@ -1439,6 +1485,7 @@ function FileUploadItemPreview({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemprogress */
 function FileUploadItemProgress({
 	variant = "linear",
 	fillVariant = "bottom-t-top",
@@ -1520,7 +1567,7 @@ function FileUploadItemProgress({
 					aria-valuetext={`${progressValue}%`}
 					aria-labelledby={itemContext.nameId}
 					className={cn(
-						"absolute inset-0 bg-input transition-[clip-path] duration-300 ease-linear dark:bg-muted-foreground/50",
+						"absolute inset-0 bg-muted transition-[clip-path] duration-300 ease-linear dark:bg-muted-foreground/50",
 						fillVariant === "left-t-right" ? "-z-10" : "opacity-80",
 						className
 					)}
@@ -1591,6 +1638,7 @@ function FileUploadItemProgress({
 	}
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemprogresslabel */
 function FileUploadItemProgressLabel({
 	className,
 	forceMount
@@ -1607,6 +1655,7 @@ function FileUploadItemProgressLabel({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemprogresswithlabel */
 function FileUploadItemProgressWithLabel({
 	labelPosition = "right",
 	forceMount,
@@ -1689,6 +1738,7 @@ function FileUploadItemProgressWithLabel({
 	}
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemdelete */
 function FileUploadItemDelete({
 	children,
 	asChild = false,
@@ -1728,7 +1778,10 @@ function FileUploadItemDelete({
 			aria-controls={itemContext.id}
 			aria-label="Delete file"
 			aria-describedby={itemContext.nameId}
-			className={cn("text-muted-foreground", className)}
+			className={cn(
+				"text-muted-foreground transition-[color] hover:text-foreground",
+				className
+			)}
 			onClick={handleClick}
 			{...props}
 		>
@@ -1737,6 +1790,7 @@ function FileUploadItemDelete({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemretry */
 function FileUploadItemRetry({
 	asChild = false,
 	children,
@@ -1766,15 +1820,15 @@ function FileUploadItemRetry({
 			aria-label="Retry file"
 			aria-describedby={itemContext.nameId}
 			onClick={handleClick}
+			className="group text-muted-foreground text-sm transition-[color] hover:text-foreground"
 			{...props}
 		>
-			{children ?? (
-				<span className="text-destructive text-sm hover:underline">Try again</span>
-			)}
+			{children ?? <span className="group-hover:underline">Try again</span>}
 		</RetryPrimitive>
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploaditemcancel */
 function FileUploadItemCancel({
 	asChild = false,
 	children,
@@ -1818,11 +1872,12 @@ function FileUploadItemCancel({
 			className={cn("text-muted-foreground hover:text-foreground", className)}
 			{...props}
 		>
-			{children ?? <FileX className="size-4" />}
+			{children ?? <MinusIcon className="size-4" />}
 		</CancelPrimitive>
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploadsubmit */
 function FileUploadSubmit({
 	className,
 	asChild = false,
@@ -1862,6 +1917,7 @@ function FileUploadSubmit({
 	)
 }
 
+/** @link https://ui.joseavr.com/docs/components/file-upload#fileuploamedia */
 function FileUploadMedia({
 	className,
 	variant = "default",
@@ -1881,7 +1937,7 @@ function FileUploadMedia({
 		<div
 			data-slot="file-upload-media"
 			className={cn(
-				"flex shrink-0 items-center justify-center gap-2 [&_svg]:pointer-events-none",
+				"flex shrink-0 items-center justify-center gap-2 text-foreground [&_svg]:pointer-events-none",
 				variants[variant],
 				className
 			)}
@@ -1894,6 +1950,7 @@ export {
 	FileUploadRoot as FileUpload,
 	FileUploadDropzone,
 	FileUploadTrigger,
+	FileUploadSubmit,
 	FileUploadList,
 	FileUploadItem,
 	FileUploadItemPreview,
@@ -1901,14 +1958,13 @@ export {
 	FileUploadItemName,
 	FileUploadItemSize,
 	FileUploadItemStatus,
-	FileUploadItemErrorMessage,
+	FileUploadItemError,
 	FileUploadItemProgressWithLabel,
 	FileUploadItemProgress,
 	FileUploadItemProgressLabel,
 	FileUploadItemDelete,
 	FileUploadItemRetry,
 	FileUploadItemCancel,
-	FileUploadSubmit,
 	FileUploadMedia,
 	getFileSizeFromBytes,
 	truncateText,

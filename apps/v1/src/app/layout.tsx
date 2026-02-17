@@ -7,6 +7,7 @@ import { Providers } from "@/components/shared/app-providers"
 import { TailwindIndicator } from "@/components/shared/tailwind-indicator"
 import { ThemeProvider } from "@/components/shared/theme-provider"
 import { cn } from "@/lib/utils"
+import { ConsoleXProvider } from "@/components/shared/consolex/ConsoleXProvider"
 
 export const metadata: Metadata = {
 	title: "Marval UI",
@@ -41,6 +42,7 @@ export default function RootLayout({
 				>
 					<Providers>{children}</Providers>
 				</ThemeProvider>
+				<ConsoleXProvider />
 				<TailwindIndicator align="bottom-right" />
 			</body>
 		</html>

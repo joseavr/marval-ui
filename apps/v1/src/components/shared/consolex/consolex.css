@@ -1,0 +1,133 @@
+:root {
+	/* light theme */
+	--cx-background: #ffffff;
+	--cx-foreground: #111111;
+	--cx-muted: #6b7280;
+	--cx-border: #e5e7eb;
+	--cx-accent: #0ea5e9;
+	--cx-panel-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+	--cx-radius: 12px;
+	--cx-font-size: 12px;
+	--cx-mono-font: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.dark {
+	--cx-background: #0b0b0b;
+	--cx-foreground: #e5e5e5;
+	--cx-muted: #9ca3af;
+	--cx-border: #222;
+	--cx-accent: #6ee7b7;
+	--cx-panel-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+/* trigger */
+
+.cx-trigger {
+	position: fixed;
+	z-index: 999999;
+	padding: 8px 12px;
+	border-radius: 999px;
+	color: var(--cx-background);
+	background: var(--cx-foreground);
+	border: 1px solid var(--cx-border);
+	cursor: grab;
+	font-size: var(--cx-font-size);
+	box-shadow: var(--cx-panel-shadow);
+}
+
+.cx-panel {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	width: 420px;
+	height: 480px;
+	background: var(--cx-background);
+	color: var(--cx-foreground);
+	border-radius: var(--cx-radius);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+	z-index: 999998;
+	box-shadow: var(--cx-panel-shadow);
+	border: 1px solid var(--cx-border);
+}
+
+.cx-panel header {
+	padding: 10px;
+	border-bottom: 1px solid var(--cx-border);
+	display: flex;
+	justify-content: space-between;
+}
+
+.cx-logs {
+	overflow: auto;
+	padding: 10px;
+	font-family: var(--cx-mono-font);
+	font-size: var(--cx-font-size);
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.cx-log {
+	margin-bottom: 14px;
+	border-bottom: 1px solid var(--cx-border);
+	padding-bottom: 8px;
+}
+
+.cx-preview {
+	color: #6ee7b7;
+}
+
+.cx-component {
+	color: var(--cx-accent);
+	font-weight: 600;
+}
+
+.cx-meta {
+	display: flex;
+	width: 100%;
+	color: inherit;
+	text-align: left;
+
+	& button.collapsible {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+	}
+	& button.cx-copy {
+		margin-left: auto;
+	}
+	&:hover {
+		background: rgba(255, 255, 255, 0.04);
+	}
+}
+
+.cx-copy {
+	transform-origin: center;
+	&:active {
+		scale: 90% 90%;
+	}
+	& svg {
+		width: 14px;
+		height: 14px;
+	}
+}
+
+.cx-expand {
+	& svg {
+		width: 14px;
+		height: 14px;
+		transition-property: transform, translate, scale, rotate;
+		transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		transition-duration: 150ms;
+		&:is(:where(.group)[data-open] *) {
+			rotate: 90deg;
+		}
+	}
+}
+
+.cx-time {
+	color: var(--cx-muted);
+}
+
+.cx-preview {
+	color: var(--cx-accent);
+}

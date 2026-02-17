@@ -108,7 +108,7 @@ import {
 	FileUploadItemName,
 	FileUploadItemSize,
 	FileUploadItemStatus,
-	FileUploadItemErrorMessage,
+	FileUploadItemError,
 	FileUploadItemProgressWithLabel,
 	FileUploadItemProgress,
 	FileUploadItemProgressLabel,
@@ -177,7 +177,7 @@ WIP
 
 ### With Submit
 
-Use `render` from `FileUploadItemPreview` to render a custom icon/image for the item preview. 
+Use `render` from `<FileUploadItemPreview />` to render a custom icon/image for the item preview. 
 
 <ComponentPreview align="start" demoComponent={<FileUploadWithSubmitDemo />}>
 ```tsx
@@ -187,7 +187,7 @@ DONE
 
 ### With Chat Input
 
-Wrap chat input form with `FileUploadDropzone` variant `wrapper` to support dropzone.
+Wrap chat input form with `<FileUploadDropzone />` and variant `wrapper` to support dropzone.
 
 <ComponentPreview align="start" demoComponent={<FileUploadWithChatDemo />}>
 ```tsx
@@ -196,6 +196,8 @@ DONE
 </ComponentPreview>
 
 ### With Hook Form
+
+Leverage React Hook Form for performant, flexible form handling. Use `<Field />` from Shadcn/ui.
 
 <ComponentPreview align="start" demoComponent={<FileUploadWithFormDemo />}>
 ```tsx
@@ -224,17 +226,13 @@ A button that opens the native file selection .
 <ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadTriggerProps"/>
 
 
-### FileUploadDelete
 
-A button that removes a file from the list.
+### FileUploadMedia
 
-<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadDeleteProps"/>
+A container with variants to display svg icons or images.
 
-### FileUploadRetry
+<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadMediaProps"/>
 
-A button that retries uploading a file after failure. 
-
-<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadRetryProps"/>
 
 ### FileUploadSubmit
 
@@ -277,15 +275,15 @@ Displays in real-time the status of the uploaded file.
 
 <ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemStatusProps"/>
 
-### FileUploadItemErrorMessage
+### FileUploadItemError
 
-Displays the error message if any when uploading.
+Displays an error message that occurred during the file upload.
 
-<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemErrorMessageProps"/>
+<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemErrorProps"/>
 
 ### FileUploadItemMetadata
 
-Container that display default file information such as name, size, and error messages.
+Container that displays default file information such as name, size, and error messages.
 
 <ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemMetadataProps"/>
 
@@ -316,9 +314,22 @@ A component that displays both progress indicator and progress percentage.
 
 <ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemProgressWithLabelProps"/>
 
+### FileUploadItemDelete
 
-### FileUploadMedia
+A button that removes a file from the list.
 
-A component with variants to display svg icons or images.
+<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemDeleteProps"/>
 
-<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadMediaProps"/>
+### FileUploadItemRetry
+
+A button that retries uploading a file after failure. 
+
+<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemRetryProps"/>
+
+
+### FileUploadItemCancel
+
+A button that cancels the uploading process.
+
+<ComponentApiTable path="./src/types/docs/file-upload.ts" name="FileUploadItemCancelProps"/>
+

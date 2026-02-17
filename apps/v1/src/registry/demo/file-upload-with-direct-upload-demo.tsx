@@ -7,6 +7,11 @@ import {
 	FileUpload,
 	FileUploadDropzone,
 	FileUploadItem,
+	FileUploadItemCancel,
+	FileUploadItemDelete,
+	FileUploadItemMetadata,
+	FileUploadItemPreview,
+	FileUploadItemProgressWithLabel,
 	FileUploadList,
 	FileUploadMedia,
 	type FileUploadProps
@@ -48,7 +53,7 @@ export function FileUploadWithDirectUploadDemo() {
 	}
 
 	return (
-		<div className="mx-auto flex w-lg flex-col gap-2 rounded-4xl border border-border p-8 shadow-xl">
+		<div className="mx-auto flex w-lg flex-col gap-2 overflow-hidden rounded-4xl border border-border p-8 shadow-xl">
 			<h1 className="font-medium text-xl">Upload and attach files</h1>
 			<span className="text-muted-foreground text-sm">Attach files to this project</span>
 			<FileUpload
@@ -84,7 +89,19 @@ export function FileUploadWithDirectUploadDemo() {
 						<FileUploadItem
 							key={file.name}
 							className="rounded-3xl **:data-[slot=file-upload-progress-indicator]:bg-accent-foreground"
-						/>
+						>
+							<div className="flex w-full flex-col gap-2.5">
+								<div className="flex w-full items-center gap-2">
+									<FileUploadItemPreview className="rounded-md"/>
+									<FileUploadItemMetadata />
+									<div className="flex items-center gap-1">
+										<FileUploadItemCancel className="hidden data-[status=uploading]:flex" />
+										<FileUploadItemDelete className="flex data-[status=uploading]:hidden" />
+									</div>
+								</div>
+								<FileUploadItemProgressWithLabel forceMount labelPosition="right" />
+							</div>
+						</FileUploadItem>
 					))}
 				</FileUploadList>
 			</FileUpload>

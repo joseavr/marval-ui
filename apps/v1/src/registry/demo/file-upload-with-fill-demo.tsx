@@ -7,6 +7,7 @@ import {
 	FileUpload,
 	FileUploadDropzone,
 	FileUploadItem,
+	FileUploadItemCancel,
 	FileUploadItemDelete,
 	FileUploadItemMetadata,
 	FileUploadItemName,
@@ -15,7 +16,6 @@ import {
 	FileUploadItemSize,
 	FileUploadItemStatus,
 	FileUploadList,
-	FileUploadMedia,
 	type FileUploadProps,
 	FileUploadTrigger
 } from "@/registry/file-upload"
@@ -57,63 +57,65 @@ export function FileUploadWithFillDemo() {
 
 	return (
 		<div className="mx-auto mt-20 max-w-lg">
+			<h1>File Upload</h1>
+
 			<FileUpload
 				files={files}
 				onFilesChange={setFiles}
 				accept={"image/*"}
 				onUpload={handleUpload}
+				maxSize={1024 * 1024 * 10}
 				autoUpload
 				multiple
-				className="w-xs max-w-xs"
+				className="w-sm max-w-sm"
 			>
 				<FileUploadDropzone className="w-full">
-					<div className="flex flex-col items-center gap-1">
-						<FileUploadMedia
-							variant="icon"
-							className="size-12 rounded-full bg-transparent"
-						>
-							<Upload className="size-6" />
-						</FileUploadMedia>
+					<div className="flex items-center gap-2">
+						<Upload className="size-5" />
+
 						<span className="font-medium text-foreground text-sm">
-							Drag and drop files here
+							Drag and drop or{" "}
+							<span>
+								<FileUploadTrigger className="px-0 hover:underline">
+									choose file
+								</FileUploadTrigger>{" "}
+								to upload
+							</span>
 						</span>
-						<span className="text-muted-foreground text-xs">Or click to browse</span>
 					</div>
-					<FileUploadTrigger asChild>
-						<button
-							type="button"
-							className="mt-2 border border-border text-foreground dark:bg-input/30"
-						>
-							Browse files
-						</button>
-					</FileUploadTrigger>
 				</FileUploadDropzone>
+
+				<span className="mb-4 text-muted-foreground text-xs">
+					Recommended max. size: 10 MB, Accepted file types: png, jpg, jpeg.
+				</span>
 
 				<FileUploadList className="w-full">
 					{files.map((file) => (
 						<FileUploadItem key={file.name} className="overflow-hidden">
-							<div className="flex w-full items-center gap-2">
+							<div className="relative flex w-full items-center gap-2">
 								<FileUploadItemPreview className="size-8" />
 								<FileUploadItemMetadata>
 									<FileUploadItemName />
-									<span className="flex gap-1">
-										<FileUploadItemSize className="flex text-xs data-[status=uploading]:hidden" />
-
+									<span className="flex justify-between gap-1">
+										<FileUploadItemSize className="flex text-xs" />
 										<FileUploadItemStatus
-											className="hidden text-muted-foreground text-xs capitalize data-[status=success]:flex"
+											className="text-muted-foreground text-xs capitalize"
 											render={(status) => {
-												if (status === "success") return `- Done`
+												if (status === "success") return `completed`
+												if (status === "idle") return
+												return status
 											}}
 										/>
 									</span>
-									<FileUploadItemStatus
-										className="hidden text-muted-foreground text-xs capitalize data-[status=uploading]:flex"
-										render={(status) => `${status}...`}
-									/>
 								</FileUploadItemMetadata>
-								<FileUploadItemDelete />
+								<FileUploadItemCancel className="absolute top-0 right-0 hidden data-[status=uploading]:flex" />
+								<FileUploadItemDelete className="absolute top-0 right-0 data-[status=uploading]:hidden" />
 							</div>
-							<FileUploadItemProgress variant="fill" fillVariant="left-t-right" />
+							<FileUploadItemProgress
+								forceMount
+								variant="fill"
+								fillVariant="left-t-right"
+							/>
 						</FileUploadItem>
 					))}
 				</FileUploadList>
