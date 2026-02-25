@@ -33,6 +33,7 @@ const SidebarConfig: AppSidebarDataType = [
 			// { label: "Tree", href: "/docs/components/tree", disabled: true },
 			{ label: "File Upload", href: "/docs/components/file-upload" },
 			{ label: "Timeline", href: "/docs/components/timeline", disabled: true },
+			{ label: "Sortable List", href: "/docs/components/sortable-list" }
 			// { label: "Spoiler", href: "/docs/components/spoiler", disabled: true },
 			// {
 			// 	label: "Inifinty Scroll",
@@ -41,7 +42,7 @@ const SidebarConfig: AppSidebarDataType = [
 			// },
 			// { label: "QR Code", href: "/docs/components/qr", disabled: true },
 			// { label: "Video Player", href: "/docs/components/video-player", disabled: true },
-			{ label: "Sortable List", href: "/docs/components/sortable-list", disabled: true }
+			
 			// { label: "Tour", href: "/docs/components/tour", disabled: true }
 		]
 	},

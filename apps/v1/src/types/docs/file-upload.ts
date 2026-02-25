@@ -9,16 +9,16 @@ export interface FileUploadProps {
 	/**
 	 * The controlled files currently being managed.
 	 * - Use this prop for controlled usage.
-	 * - Should be used in conjunction with `onValueChange`.
+	 * - Should be used in conjunction with `onFilesChange`.
 	 */
 	files: File[]
 	/**
 	 * Callback called when files are added or removed.
-	 * - Should be used in conjunction with `value`.
+	 * - Should be used in conjunction with `files`.
 	 * ```ts
 	 * const [state, setState] = useState()
 	 *
-	 * onValueChange={(files) => {
+	 * onFilesChange={(files) => {
 	 *   setState(files)
 	 * }}
 	 * ```

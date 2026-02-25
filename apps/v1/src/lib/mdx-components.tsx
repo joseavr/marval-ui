@@ -5,8 +5,10 @@ import { ClipboardButton, ClipboardIcon } from "@/components/shared/clipboard-bu
 import { Code } from "@/components/shared/code"
 import { ComponentApiTable } from "@/components/shared/component-api-table"
 import { ComponentPreview } from "@/components/shared/component-preview"
+import { DataAttributesTable } from "@/components/shared/data-attributes-table"
 import { ExternalLink } from "@/components/shared/external-link"
 import { Info } from "@/components/shared/info"
+import { KeyboardShortcutsTable } from "@/components/shared/keyboard-shortcuts-table"
 import {
 	CodeBlock,
 	CodeBlockContentWithExpand,
@@ -30,6 +32,8 @@ import { FileUploadWithSubmitDemo } from "@/registry/demo/file-upload-with-submi
 import { FileUploadWithValidationDemo } from "@/registry/demo/file-upload-with-validation-demo"
 import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
+import { SortableListDemo } from "@/registry/demo/sortable-list-demo"
+import { SortableListDemo2 } from "@/registry/demo/sortable-list-demo-2"
 
 const demoComponents = {
 	ButtonDemo,
@@ -43,7 +47,9 @@ const demoComponents = {
 	FileUploadWithCircularDemo,
 	FileUploadWithChatDemo,
 	FileUploadWithFormDemo,
-	FileUploadWithSubmitDemo
+	FileUploadWithSubmitDemo,
+	SortableListDemo,
+	SortableListDemo2
 }
 
 const defaultMdxComponents = {
@@ -189,6 +195,8 @@ export const mdxComponents: MDXComponents = {
 	...defaultMdxComponents,
 	...demoComponents,
 	ComponentApiTable,
+	DataAttributesTable,
+	KeyboardShortcutsTable,
 	figure: ({
 		className,
 		__language__,

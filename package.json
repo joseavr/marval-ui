@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
+    "dev:v1": "turbo run --filter=v1 dev",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
