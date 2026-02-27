@@ -83,9 +83,8 @@ const timelineVariants = cva("relative flex", {
 	}
 })
 
-interface TimelineProps {
+interface TimelineProps extends React.PropsWithChildren {
 	className?: string
-	children?: React.ReactNode
 	activeIndex?: number
 	orientation?: "horizontal" | "vertical"
 	variant?: "linear" | "alternate"
@@ -212,7 +211,6 @@ const timelineItemVariants = cva("group/item relative flex", {
 })
 
 type TimelineItemContextValue = {
-	lineVariant: NonNullable<TimelineItemProps["lineVariant"]>
 	status: ItemStatus
 	isAlternateRight: boolean
 	itemIndex: TimelineItemInternalProps["itemIndex"]
@@ -231,7 +229,6 @@ function useTimelineItemContext(consumerName: string) {
 }
 
 interface TimelineItemProps {
-	lineVariant?: "dashed" | "solid"
 	className?: string
 	children?: React.ReactNode
 }
@@ -246,7 +243,6 @@ function TimelineItem(props: TimelineItemProps) {
 }
 
 function TimelineItemInternal({
-	lineVariant = "solid",
 	className,
 	itemIndex,
 	isLastItem,
@@ -259,7 +255,6 @@ function TimelineItemInternal({
 	const status = getItemStatus(itemIndex, activeIndex)
 
 	const contextValue: TimelineItemContextValue = {
-		lineVariant,
 		isAlternateRight,
 		status,
 		itemIndex,
@@ -291,7 +286,7 @@ function TimelineItemInternal({
 }
 
 const timelineBulletVariants = cva(
-	"relative z-10 flex size-(--timeline-bullet-size) shrink-0 items-center justify-center rounded-full border-2 bg-background",
+	"relative z-10 flex size-(--timeline-bullet-size) shrink-0 items-center justify-center rounded-full bg-background [border-width:var(--timeline-connector-width)]",
 	{
 		variants: {
 			status: {
@@ -340,8 +335,7 @@ const timelineBulletVariants = cva(
 	}
 )
 
-interface TimelineBulletProps {
-	children?: React.ReactNode
+interface TimelineBulletProps extends React.PropsWithChildren {
 	className?: string
 }
 function TimelineBullet({ children, className }: TimelineBulletProps) {
@@ -368,15 +362,15 @@ function TimelineBullet({ children, className }: TimelineBulletProps) {
 	)
 }
 
-const timelineConnectorVariants = cva("absolute z-0", {
+const timelineConnectorVariants = cva("absolute z-0 w-0", {
 	variants: {
 		isCompleted: {
-			true: "bg-primary",
-			false: "bg-border"
+			true: "border-primary",
+			false: "border-border"
 		},
 		orientation: {
-			vertical: "",
-			horizontal: ""
+			vertical: "border-l [border-left-width:var(--timeline-connector-width)]",
+			horizontal: "border-t [border-top-width:var(--timeline-connector-width)]"
 		},
 		variant: {
 			linear: "",
@@ -387,8 +381,8 @@ const timelineConnectorVariants = cva("absolute z-0", {
 			false: ""
 		},
 		lineVariant: {
-			solid: "border border-primary border-solid bg-transparent",
-			dashed: "border border-primary border-dashed bg-transparent"
+			solid: "border-solid",
+			dashed: "border-dashed"
 		}
 	},
 	compoundVariants: [
@@ -396,37 +390,36 @@ const timelineConnectorVariants = cva("absolute z-0", {
 			orientation: "vertical",
 			variant: "linear",
 			class:
-				"start-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] top-3 h-full w-(--timeline-connector-width)"
-		},
-		{
-			orientation: "horizontal",
-			variant: "linear",
-			class:
-				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] h-(--timeline-connector-width) w-full"
+				"start-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] top-3 h-full"
 		},
 		{
 			orientation: "vertical",
 			variant: "alternate",
 			isAlternateRight: false,
-			class:
-				"top-2 -right-[calc(var(--timeline-connector-width)/2)] h-full w-(--timeline-connector-width)"
+			class: "top-2 -right-[calc(var(--timeline-connector-width)/2)] h-full"
 		},
 		{
 			orientation: "vertical",
 			variant: "alternate",
 			isAlternateRight: true,
+			class: "top-2 -left-[calc(var(--timeline-connector-width)/2)] h-full"
+		},
+		{
+			orientation: "horizontal",
+			variant: "linear",
 			class:
-				"top-2 -left-[calc(var(--timeline-connector-width)/2)] h-full w-(--timeline-connector-width)"
+				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] w-full"
 		},
 		{
 			orientation: "horizontal",
 			variant: "alternate",
 			class:
-				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-thickness)/2)] left-3 row-start-2 h-(--timeline-connector-thickness) w-full"
+				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-thickness)/2)] left-3 row-start-2 w-full"
 		}
 	],
 	defaultVariants: {
 		isCompleted: false,
+		lineVariant: "solid",
 		orientation: "vertical",
 		variant: "linear",
 		isAlternateRight: false
@@ -436,16 +429,17 @@ const timelineConnectorVariants = cva("absolute z-0", {
 interface TimelineConnectorProps extends React.PropsWithChildren {
 	className?: string
 	forceMount?: boolean
+	variant?: "solid" | "dashed"
 }
 
 function TimelineConnector({
 	forceMount = false,
 	className,
-	children
+	variant: lineVariant = "solid"
 }: TimelineConnectorProps) {
 	const { activeIndex, orientation, variant, isReverse } =
 		useTimelineContext(CONNECTOR_NAME)
-	const { isAlternateRight, itemIndex, lineVariant, status, isLastItem, isFirstItem } =
+	const { isAlternateRight, itemIndex, status, isLastItem, isFirstItem } =
 		useTimelineItemContext(CONNECTOR_NAME)
 
 	const nextItemIndex = itemIndex + 1
@@ -478,9 +472,7 @@ function TimelineConnector({
 					className
 				})
 			)}
-		>
-			{children}
-		</div>
+		/>
 	)
 }
 
