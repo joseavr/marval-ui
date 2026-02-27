@@ -34,6 +34,7 @@ import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
 import { SortableListDemo } from "@/registry/demo/sortable-list-demo"
 import { SortableListDemo2 } from "@/registry/demo/sortable-list-demo-2"
+import { TimelineReverseDemo } from "@/registry/demo/timeline-demo-reverse-demo"
 
 const demoComponents = {
 	ButtonDemo,
@@ -49,7 +50,8 @@ const demoComponents = {
 	FileUploadWithFormDemo,
 	FileUploadWithSubmitDemo,
 	SortableListDemo,
-	SortableListDemo2
+	SortableListDemo2,
+	TimelineReverseDemo
 }
 
 const defaultMdxComponents = {
