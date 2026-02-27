@@ -1,3 +1,5 @@
+"use client"
+
 import { cva } from "class-variance-authority"
 import React, { createContext, useContext } from "react"
 
@@ -11,8 +13,11 @@ const BULLET_NAME = "TimelineBullet"
 const CONNECTOR_NAME = "TimelineConnector"
 const CONTENT_NAME = "TimelineContent"
 
-function getItemStatus(itemIndex: number, activeIndex: number | undefined): ItemStatus {
-	if (activeIndex === undefined) return "pending"
+function getItemStatus(
+	itemIndex: number | undefined,
+	activeIndex: number | undefined
+): ItemStatus {
+	if (activeIndex === undefined || itemIndex === undefined) return "pending"
 	if (itemIndex < activeIndex) return "completed"
 	if (itemIndex === activeIndex) return "active"
 	return "pending"
@@ -22,6 +27,7 @@ type TimelineContextValue = {
 	activeIndex: TimelineProps["activeIndex"]
 	orientation: TimelineProps["orientation"]
 	variant: TimelineProps["variant"]
+	isReverse: TimelineProps["reverse"]
 }
 
 const TimelineContext = createContext<TimelineContextValue | undefined>(undefined)
@@ -43,28 +49,32 @@ const timelineVariants = cva("relative flex", {
 		variant: {
 			linear: "",
 			alternate: ""
+		},
+		isReverse: {
+			true: "",
+			false: ""
 		}
 	},
 	compoundVariants: [
 		{
 			orientation: "vertical",
-			variant: "linear",
-			class: "gap-6"
+			isReverse: true,
+			class: "flex-col-reverse"
 		},
 		{
 			orientation: "horizontal",
-			variant: "linear",
-			class: "[&>div]:pr-8"
+			isReverse: true,
+			class: "flex-row-reverse"
 		},
 		{
 			orientation: "vertical",
 			variant: "alternate",
-			class: "relative w-full gap-3"
+			class: "relative w-full"
 		},
 		{
 			orientation: "horizontal",
 			variant: "alternate",
-			class: "items-center gap-4"
+			class: "items-center"
 		}
 	],
 	defaultVariants: {
@@ -81,6 +91,7 @@ interface TimelineProps {
 	variant?: "linear" | "alternate"
 	bulletSize?: number
 	lineWidth?: number
+	reverse?: boolean
 }
 
 function Timeline({
@@ -90,24 +101,34 @@ function Timeline({
 	variant = "linear",
 	bulletSize,
 	lineWidth,
+	reverse,
 	className
 }: TimelineProps) {
 	const contextValue: TimelineContextValue = {
 		activeIndex,
 		orientation,
-		variant
+		variant,
+		isReverse: reverse
 	}
 
-	const items = React.Children.map(children, (item, index) => {
-		if (!React.isValidElement<{ itemIndex: number; isLastItem: boolean }>(item))
+	const _children = React.Children.toArray(children)
+
+	const items = React.Children.map(_children, (item, index) => {
+		if (
+			!React.isValidElement<{
+				itemIndex: number
+				isLastItem: boolean
+				isFirstItem: boolean
+			}>(item)
+		)
 			throw new Error("Children must be an Component or React Element")
-		if (!Array.isArray(children))
-			throw new Error("Children must be an array of Component or React Element")
-		if (item.type !== TimelineItem)
+		if (item.type !== TimelineItem) {
 			throw new Error("The direct children must be an Array of TimelineItem")
+		}
 		return React.cloneElement(item, {
 			itemIndex: index,
-			isLastItem: index === children.length - 1
+			isLastItem: index === _children.length - 1,
+			isFirstItem: index === 0
 		})
 	})
 
@@ -119,17 +140,17 @@ function Timeline({
 				data-variant={variant}
 				style={
 					{
-						"--timeline-bullet-size": CSS.px(bulletSize ?? 2),
-						"--timeline-connector-width": CSS.px(lineWidth ?? 14)
+						"--timeline-bullet-size": `${bulletSize ?? 14}px`,
+						"--timeline-connector-width": `${lineWidth ?? 2}px`
 					} as React.CSSProperties
 				}
 				className={cn(
-					// "*:not-last:pr-8",
 					"*:not-last:pr-8",
 					timelineVariants({
 						orientation,
 						variant,
-						className
+						className,
+						isReverse: reverse
 					})
 				)}
 			>
@@ -139,7 +160,7 @@ function Timeline({
 	)
 }
 
-const timelineItemVariants = cva("relative flex", {
+const timelineItemVariants = cva("group/item relative flex", {
 	variants: {
 		orientation: {
 			vertical: "",
@@ -158,29 +179,29 @@ const timelineItemVariants = cva("relative flex", {
 		{
 			orientation: "vertical",
 			variant: "linear",
-			class: "gap-3 pb-8 last:pb-0"
-		},
-		{
-			orientation: "horizontal",
-			variant: "linear",
-			class: "flex-col gap-3"
+			class: "gap-3"
 		},
 		{
 			orientation: "vertical",
 			variant: "alternate",
 			isAlternateRight: false,
-			class: "w-1/2 gap-3 pr-6 pb-12 last:pb-0"
+			class: "w-1/2 gap-3 pr-6"
 		},
 		{
 			orientation: "vertical",
 			variant: "alternate",
 			isAlternateRight: true,
-			class: "ml-auto w-1/2 flex-row-reverse gap-3 pb-12 pl-6 last:pb-0"
+			class: "ml-auto w-1/2 flex-row-reverse gap-3 pl-6"
+		},
+		{
+			orientation: "horizontal",
+			variant: "linear",
+			class: "flex-col gap-3 pr-8 last:pr-0"
 		},
 		{
 			orientation: "horizontal",
 			variant: "alternate",
-			class: "grid min-w-0 grid-rows-[1fr_auto_1fr] gap-3"
+			class: "grid min-w-0 grid-rows-[1fr_auto_1fr] gap-3 pr-4 last:pr-0"
 		}
 	],
 	defaultVariants: {
@@ -196,6 +217,7 @@ type TimelineItemContextValue = {
 	isAlternateRight: boolean
 	itemIndex: TimelineItemInternalProps["itemIndex"]
 	isLastItem: TimelineItemInternalProps["isLastItem"]
+	isFirstItem: TimelineItemInternalProps["isFirstItem"]
 }
 
 const TimelineItemContext = createContext<TimelineItemContextValue | undefined>(undefined)
@@ -217,6 +239,7 @@ interface TimelineItemProps {
 interface TimelineItemInternalProps extends TimelineItemProps {
 	itemIndex: number
 	isLastItem: boolean
+	isFirstItem: boolean
 }
 function TimelineItem(props: TimelineItemProps) {
 	return <TimelineItemInternal {...(props as TimelineItemInternalProps)} />
@@ -227,6 +250,7 @@ function TimelineItemInternal({
 	className,
 	itemIndex,
 	isLastItem,
+	isFirstItem,
 	children
 }: TimelineItemInternalProps) {
 	const { orientation, variant, activeIndex } = useTimelineContext(ITEM_NAME)
@@ -239,7 +263,8 @@ function TimelineItemInternal({
 		isAlternateRight,
 		status,
 		itemIndex,
-		isLastItem
+		isLastItem,
+		isFirstItem
 	}
 
 	return (
@@ -362,8 +387,8 @@ const timelineConnectorVariants = cva("absolute z-0", {
 			false: ""
 		},
 		lineVariant: {
-			solid: "border-solid",
-			dashed: "border-dashed"
+			solid: "border border-primary border-solid bg-transparent",
+			dashed: "border border-primary border-dashed bg-transparent"
 		}
 	},
 	compoundVariants: [
@@ -371,13 +396,13 @@ const timelineConnectorVariants = cva("absolute z-0", {
 			orientation: "vertical",
 			variant: "linear",
 			class:
-				"start-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] top-3 h-[calc(100%+0.5rem)] w-(--timeline-connector-width)"
+				"start-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] top-3 h-full w-(--timeline-connector-width)"
 		},
 		{
 			orientation: "horizontal",
 			variant: "linear",
 			class:
-				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] h-(--timeline-connector-width) w-[calc(100%+0.5rem)]"
+				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] h-(--timeline-connector-width) w-full"
 		},
 		{
 			orientation: "vertical",
@@ -397,7 +422,7 @@ const timelineConnectorVariants = cva("absolute z-0", {
 			orientation: "horizontal",
 			variant: "alternate",
 			class:
-				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-thickness)/2)] left-3 row-start-2 h-(--timeline-connector-thickness) w-[calc(100%+0.5rem)]"
+				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-thickness)/2)] left-3 row-start-2 h-(--timeline-connector-thickness) w-full"
 		}
 	],
 	defaultVariants: {
@@ -418,17 +443,23 @@ function TimelineConnector({
 	className,
 	children
 }: TimelineConnectorProps) {
-	const { activeIndex, orientation, variant } = useTimelineContext(CONNECTOR_NAME)
-	const { isAlternateRight, itemIndex, isLastItem, lineVariant, status } =
+	const { activeIndex, orientation, variant, isReverse } =
+		useTimelineContext(CONNECTOR_NAME)
+	const { isAlternateRight, itemIndex, lineVariant, status, isLastItem, isFirstItem } =
 		useTimelineItemContext(CONNECTOR_NAME)
 
 	const nextItemIndex = itemIndex + 1
 	const nextItemStatus = isLastItem ? null : getItemStatus(nextItemIndex, activeIndex)
 
-	if (!forceMount && isLastItem) return null
+	const reverseNextItemIndex = itemIndex
+	const reverseNextItemStatus = getItemStatus(reverseNextItemIndex, activeIndex)
 
-	const isConnectorCompleted =
-		nextItemStatus === "completed" || nextItemStatus === "active"
+	if (isReverse && !forceMount && isFirstItem) return null
+	if (!isReverse && !forceMount && isLastItem) return null
+
+	const isConnectorCompleted = !isReverse
+		? nextItemStatus === "completed" || nextItemStatus === "active"
+		: reverseNextItemStatus === "completed" || reverseNextItemStatus === "active"
 
 	return (
 		<div
@@ -469,6 +500,11 @@ const timelineContentVariants = cva("flex-1", {
 		}
 	},
 	compoundVariants: [
+		{
+			orientation: "vertical",
+			variant: "linear",
+			class: "pb-15"
+		},
 		{
 			variant: "alternate",
 			orientation: "vertical",
