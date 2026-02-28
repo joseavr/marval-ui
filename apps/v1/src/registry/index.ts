@@ -124,8 +124,8 @@ const Index = {
 	},
 	"timeline-demo": {
 		activeIndex: {
-			type: "number"
-			, default: -1
+			type: "number",
+			default: -1
 		},
 		lineWidth: {
 			type: "number",
@@ -146,8 +146,8 @@ const Index = {
 		}),
 		variant: arrayProperty({
 			type: "array",
-			enum: ["linear", "alternate"] as const,
-			default: "linear"
+			enum: ["default", "alternate"] as const,
+			default: "default"
 		})
 	}
 } satisfies Record<string, ComponentProperties>

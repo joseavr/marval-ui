@@ -5,7 +5,7 @@ import React, { createContext, useContext } from "react"
 
 import { cn } from "@/lib/utils"
 
-type ItemStatus = "pending" | "active" | "completed"
+type ItemStatus = "upcoming" | "current" | "completed"
 
 const ROOT_NAME = "Timeline"
 const ITEM_NAME = "TimelineItem"
@@ -17,10 +17,10 @@ function getItemStatus(
 	itemIndex: number | undefined,
 	activeIndex: number | undefined
 ): ItemStatus {
-	if (activeIndex === undefined || itemIndex === undefined) return "pending"
+	if (activeIndex === undefined || itemIndex === undefined) return "upcoming"
 	if (itemIndex < activeIndex) return "completed"
-	if (itemIndex === activeIndex) return "active"
-	return "pending"
+	if (itemIndex === activeIndex) return "current"
+	return "upcoming"
 }
 
 type TimelineContextValue = {
@@ -47,7 +47,7 @@ const timelineVariants = cva("relative flex", {
 			horizontal: "flex-row items-start"
 		},
 		variant: {
-			linear: "",
+			default: "",
 			alternate: ""
 		},
 		isReverse: {
@@ -79,7 +79,7 @@ const timelineVariants = cva("relative flex", {
 	],
 	defaultVariants: {
 		orientation: "vertical",
-		variant: "linear"
+		variant: "default"
 	}
 })
 
@@ -87,7 +87,7 @@ interface TimelineProps extends React.PropsWithChildren {
 	className?: string
 	activeIndex?: number
 	orientation?: "horizontal" | "vertical"
-	variant?: "linear" | "alternate"
+	variant?: "default" | "alternate"
 	bulletSize?: number
 	lineWidth?: number
 	reverse?: boolean
@@ -97,7 +97,7 @@ function Timeline({
 	children,
 	activeIndex,
 	orientation,
-	variant = "linear",
+	variant = "default",
 	bulletSize,
 	lineWidth,
 	reverse,
@@ -162,11 +162,11 @@ function Timeline({
 const timelineItemVariants = cva("group/item relative flex", {
 	variants: {
 		orientation: {
-			vertical: "pb-15 last:pb-0",
-			horizontal: "pr-8 last:pr-0"
+			vertical: "",
+			horizontal: ""
 		},
 		variant: {
-			linear: "",
+			default: "",
 			alternate: ""
 		},
 		isAlternateRight: {
@@ -177,7 +177,7 @@ const timelineItemVariants = cva("group/item relative flex", {
 	compoundVariants: [
 		{
 			orientation: "vertical",
-			variant: "linear",
+			variant: "default",
 			class: "gap-3"
 		},
 		{
@@ -194,7 +194,7 @@ const timelineItemVariants = cva("group/item relative flex", {
 		},
 		{
 			orientation: "horizontal",
-			variant: "linear",
+			variant: "default",
 			class: "flex-col gap-3 pr-8"
 		},
 		{
@@ -205,7 +205,7 @@ const timelineItemVariants = cva("group/item relative flex", {
 	],
 	defaultVariants: {
 		orientation: "vertical",
-		variant: "linear",
+		variant: "default",
 		isAlternateRight: false
 	}
 })
@@ -265,7 +265,7 @@ function TimelineItemInternal({
 	return (
 		<TimelineItemContext value={contextValue}>
 			<li
-				aria-current={status === "active" ? "step" : undefined}
+				aria-current={status === "current" ? "step" : undefined}
 				data-slot="timeline-item"
 				data-status={status}
 				data-orientation={orientation}
@@ -291,15 +291,15 @@ const timelineBulletVariants = cva(
 		variants: {
 			status: {
 				completed: "border-primary",
-				active: "border-primary",
-				pending: "border-border"
+				current: "border-primary",
+				upcoming: "border-border"
 			},
 			orientation: {
 				vertical: "",
 				horizontal: ""
 			},
 			variant: {
-				linear: "",
+				default: "",
 				alternate: ""
 			},
 			isAlternateRight: {
@@ -327,9 +327,9 @@ const timelineBulletVariants = cva(
 			}
 		],
 		defaultVariants: {
-			status: "pending",
+			status: "upcoming",
 			orientation: "vertical",
-			variant: "linear",
+			variant: "default",
 			isAlternateRight: false
 		}
 	}
@@ -373,7 +373,7 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 			horizontal: "border-t [border-top-width:var(--timeline-connector-width)]"
 		},
 		variant: {
-			linear: "",
+			default: "",
 			alternate: ""
 		},
 		isAlternateRight: {
@@ -388,7 +388,7 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 	compoundVariants: [
 		{
 			orientation: "vertical",
-			variant: "linear",
+			variant: "default",
 			class:
 				"start-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] top-3 h-full"
 		},
@@ -406,7 +406,7 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 		},
 		{
 			orientation: "horizontal",
-			variant: "linear",
+			variant: "default",
 			class:
 				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] w-full"
 		},
@@ -421,7 +421,7 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 		isCompleted: false,
 		lineVariant: "solid",
 		orientation: "vertical",
-		variant: "linear",
+		variant: "default",
 		isAlternateRight: false
 	}
 })
@@ -452,8 +452,8 @@ function TimelineConnector({
 	if (!isReverse && !forceMount && isLastItem) return null
 
 	const isConnectorCompleted = !isReverse
-		? nextItemStatus === "completed" || nextItemStatus === "active"
-		: reverseNextItemStatus === "completed" || reverseNextItemStatus === "active"
+		? nextItemStatus === "completed" || nextItemStatus === "current"
+		: reverseNextItemStatus === "completed" || reverseNextItemStatus === "current"
 
 	return (
 		<div
@@ -479,14 +479,18 @@ function TimelineConnector({
 const timelineContentVariants = cva("flex-1", {
 	variants: {
 		orientation: {
-			vertical: "",
-			horizontal: ""
+			vertical: "pb-15",
+			horizontal: "pr-8 group-last/item:pr-0"
 		},
 		variant: {
-			linear: "",
+			default: "",
 			alternate: ""
 		},
 		isAlternateRight: {
+			true: "",
+			false: ""
+		},
+		isReverse: {
 			true: "",
 			false: ""
 		}
@@ -494,9 +498,29 @@ const timelineContentVariants = cva("flex-1", {
 	compoundVariants: [
 		{
 			orientation: "vertical",
+			isReverse: true,
+			class: "group-first/item:pb-0"
+		},
+		{
+			orientation: "vertical",
+			isReverse: false,
+			class: "group-last/item:pb-0"
+		},
+		{
+			orientation: "vertical",
 			variant: "alternate",
 			isAlternateRight: false,
 			class: "text-right"
+		},
+		{
+			orientation: "horizontal",
+			isReverse: true,
+			class: "group-first/item:pr-0"
+		},
+		{
+			orientation: "horizontal",
+			isReverse: false,
+			class: "group-last/item:pr-0"
 		},
 		{
 			orientation: "horizontal",
@@ -513,8 +537,9 @@ const timelineContentVariants = cva("flex-1", {
 	],
 	defaultVariants: {
 		orientation: "vertical",
-		variant: "linear",
-		isAlternateRight: false
+		variant: "default",
+		isAlternateRight: false,
+		isReverse: false
 	}
 })
 
@@ -524,7 +549,7 @@ interface TimelineContentProps {
 }
 
 function TimelineContent({ children, className }: TimelineContentProps) {
-	const { variant, orientation } = useTimelineContext(CONTENT_NAME)
+	const { variant, orientation, isReverse } = useTimelineContext(CONTENT_NAME)
 	const { status, isAlternateRight } = useTimelineItemContext(CONTENT_NAME)
 
 	return (
@@ -536,6 +561,7 @@ function TimelineContent({ children, className }: TimelineContentProps) {
 					orientation,
 					variant,
 					isAlternateRight,
+					isReverse,
 					className
 				})
 			)}
