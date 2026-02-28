@@ -37,6 +37,7 @@ import { SortableListDemo2 } from "@/registry/demo/sortable-list-demo-2"
 import { TimelineDemo } from "@/registry/demo/timeline-demo"
 import { TimelineHorizontalDemo } from "@/registry/demo/timeline-horizontal-demo"
 import { TimelineReverseDemo } from "@/registry/demo/timeline-reverse-demo"
+import { TimelineBulletDemo } from "@/registry/demo/timeline-bullet-demo"
 
 const demoComponents = {
 	ButtonDemo,
@@ -55,7 +56,8 @@ const demoComponents = {
 	SortableListDemo2,
 	TimelineDemo,
 	TimelineReverseDemo,
-	TimelineHorizontalDemo
+	TimelineHorizontalDemo,
+	TimelineBulletDemo
 }
 
 const defaultMdxComponents = {

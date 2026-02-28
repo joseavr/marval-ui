@@ -23,6 +23,26 @@ WIP
 
 ## Usage
 
+```tsx
+import {
+  Timeline,
+  TimelineItem,
+  TimelineBullet,
+  TimelineConnector,
+  TimelineContent
+} from "@/components/marval-ui/timeline";
+```
+
+```tsx
+<Timeline>
+  <TimelineItem>
+    <TimelineBullet />
+    <TimelineConnector />
+    <TimelineContent />
+  </TimelineItem>
+</Timeline>
+```
+
 ### Horizontal 
 
 Use `horizontal` prop to display the timeline in a row.
@@ -46,6 +66,14 @@ WIP
 
 
 ### With Custom Bullets
+
+Add custom icons or content to the timeline bullets and controls its size with `bulletSize` prop.
+
+<ComponentPreview demoComponent={<TimelineBulletDemo />} align="center">
+```tsx
+WIP
+```
+</ComponentPreview>
 
 ## API Reference
 
