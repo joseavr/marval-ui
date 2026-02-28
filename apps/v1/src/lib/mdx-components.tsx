@@ -38,6 +38,7 @@ import { TimelineDemo } from "@/registry/demo/timeline-demo"
 import { TimelineHorizontalDemo } from "@/registry/demo/timeline-horizontal-demo"
 import { TimelineReverseDemo } from "@/registry/demo/timeline-reverse-demo"
 import { TimelineBulletDemo } from "@/registry/demo/timeline-bullet-demo"
+import { TimelineVerticalAlternateDemo } from "@/registry/demo/timeline-vertical-alternate-demo"
 
 const demoComponents = {
 	ButtonDemo,
@@ -57,7 +58,9 @@ const demoComponents = {
 	TimelineDemo,
 	TimelineReverseDemo,
 	TimelineHorizontalDemo,
-	TimelineBulletDemo
+	TimelineBulletDemo,
+	TimelineVerticalAlternateDemo,
+	
 }
 
 const defaultMdxComponents = {
