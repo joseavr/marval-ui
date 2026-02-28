@@ -61,7 +61,7 @@ export function TimelineDemo() {
 								"solid"
 							}
 						/>
-						<TimelineContent className="flex max-w-68 flex-col gap-1">
+						<TimelineContent className="flex w-50 flex-col gap-1">
 							<div className="-mt-1 font-medium text-lg">{item.title}</div>
 							<div className="text-muted-foreground text-sm">{item.description}</div>
 							<div className="text-xs">{item.dateTime}</div>

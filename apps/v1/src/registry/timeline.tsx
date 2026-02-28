@@ -162,8 +162,8 @@ function Timeline({
 const timelineItemVariants = cva("group/item relative flex", {
 	variants: {
 		orientation: {
-			vertical: "",
-			horizontal: ""
+			vertical: "pb-15 last:pb-0",
+			horizontal: "pr-8 last:pr-0"
 		},
 		variant: {
 			linear: "",
@@ -195,12 +195,12 @@ const timelineItemVariants = cva("group/item relative flex", {
 		{
 			orientation: "horizontal",
 			variant: "linear",
-			class: "flex-col gap-3 pr-8 last:pr-0"
+			class: "flex-col gap-3 pr-8"
 		},
 		{
 			orientation: "horizontal",
 			variant: "alternate",
-			class: "grid min-w-0 grid-rows-[1fr_auto_1fr] gap-3 pr-4 last:pr-0"
+			class: "grid min-w-0 grid-rows-[1fr_auto_1fr] gap-3 pr-4"
 		}
 	],
 	defaultVariants: {
@@ -494,24 +494,19 @@ const timelineContentVariants = cva("flex-1", {
 	compoundVariants: [
 		{
 			orientation: "vertical",
-			variant: "linear",
-			class: "pb-15"
-		},
-		{
 			variant: "alternate",
-			orientation: "vertical",
 			isAlternateRight: false,
 			class: "text-right"
 		},
 		{
-			variant: "alternate",
 			orientation: "horizontal",
+			variant: "alternate",
 			isAlternateRight: false,
 			class: "row-start-3 pt-2"
 		},
 		{
-			variant: "alternate",
 			orientation: "horizontal",
+			variant: "alternate",
 			isAlternateRight: true,
 			class: "row-start-1 pb-2"
 		}
