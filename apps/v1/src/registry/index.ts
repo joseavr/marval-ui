@@ -1,12 +1,14 @@
-import type { ButtonVariantProps } from "@/registry/button"
-import type { CopyButtonVariantProps } from "@/registry/copy-button"
+type ArrayPropertyConfig<T extends readonly string[]> = {
+	type: "array"
+	enum: T
+	default: T[number]
+}
+
+const arrayProperty = <T extends readonly string[]>(config: ArrayPropertyConfig<T>) =>
+	config
 
 type PropertyConfig =
-	| {
-			type: "array"
-			enum: string[]
-			default: string
-	  }
+	| ArrayPropertyConfig<readonly string[]>
 	| {
 			type: "boolean"
 			default: boolean
@@ -35,7 +37,7 @@ const Index = {
 			type: "boolean",
 			default: false
 		},
-		variant: {
+		variant: arrayProperty({
 			type: "array",
 			enum: [
 				"default",
@@ -53,16 +55,14 @@ const Index = {
 				"brand-destructive-primary",
 				"brand-destructive-secondary",
 				"brand-destructive-tertiary"
-			] as NonNullable<ButtonVariantProps["variant"]>[],
-			default: "default" satisfies Extract<ButtonVariantProps["variant"], "default">
-		},
-		size: {
+			] as const,
+			default: "default"
+		}),
+		size: arrayProperty({
 			type: "array",
-			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as NonNullable<
-				ButtonVariantProps["size"]
-			>[],
-			default: "default" satisfies Extract<ButtonVariantProps["size"], "default">
-		}
+			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as const,
+			default: "default"
+		})
 	},
 	"copy-button-demo": {
 		textToCopy: {
@@ -73,7 +73,7 @@ const Index = {
 			type: "number",
 			default: 2000
 		},
-		variant: {
+		variant: arrayProperty({
 			type: "array",
 			enum: [
 				"default",
@@ -91,16 +91,14 @@ const Index = {
 				"brand-destructive-primary",
 				"brand-destructive-secondary",
 				"brand-destructive-tertiary"
-			] as NonNullable<CopyButtonVariantProps["variant"]>[],
-			default: "outline" satisfies Extract<CopyButtonVariantProps["variant"], "outline">
-		},
-		size: {
+			] as const,
+			default: "outline"
+		}),
+		size: arrayProperty({
 			type: "array",
-			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as NonNullable<
-				CopyButtonVariantProps["size"]
-			>[],
-			default: "icon-sm" satisfies Extract<CopyButtonVariantProps["size"], "icon-sm">
-		}
+			enum: ["default", "sm", "lg", "icon-sm", "icon", "icon-lg"] as const,
+			default: "icon-sm"
+		})
 	},
 	"file-upload-demo": {
 		maxFiles: {
@@ -123,6 +121,34 @@ const Index = {
 			type: "boolean",
 			default: false
 		}
+	},
+	"timeline-demo": {
+		activeIndex: {
+			type: "number"
+			, default: -1
+		},
+		lineWidth: {
+			type: "number",
+			default: 3
+		},
+		bulletSize: {
+			type: "number",
+			default: 20
+		},
+		reverse: {
+			type: "boolean",
+			default: false
+		},
+		orientation: arrayProperty({
+			type: "array",
+			enum: ["vertical", "horizontal"] as const,
+			default: "vertical"
+		}),
+		variant: arrayProperty({
+			type: "array",
+			enum: ["linear", "alternate"] as const,
+			default: "linear"
+		})
 	}
 } satisfies Record<string, ComponentProperties>
 
