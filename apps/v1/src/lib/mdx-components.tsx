@@ -34,10 +34,11 @@ import { NetworkStatusDemo } from "@/registry/demo/network-status-demo"
 import { NetworkStatusWithBannerDemo } from "@/registry/demo/network-status-with-banner-demo"
 import { SortableListDemo } from "@/registry/demo/sortable-list-demo"
 import { SortableListDemo2 } from "@/registry/demo/sortable-list-demo-2"
+import { TimelineBulletDemo } from "@/registry/demo/timeline-bullet-demo"
 import { TimelineDemo } from "@/registry/demo/timeline-demo"
+import { TimelineHorizontalAlternateDemo } from "@/registry/demo/timeline-horizontal-alternate"
 import { TimelineHorizontalDemo } from "@/registry/demo/timeline-horizontal-demo"
 import { TimelineReverseDemo } from "@/registry/demo/timeline-reverse-demo"
-import { TimelineBulletDemo } from "@/registry/demo/timeline-bullet-demo"
 import { TimelineVerticalAlternateDemo } from "@/registry/demo/timeline-vertical-alternate-demo"
 
 const demoComponents = {
@@ -60,7 +61,7 @@ const demoComponents = {
 	TimelineHorizontalDemo,
 	TimelineBulletDemo,
 	TimelineVerticalAlternateDemo,
-	
+	TimelineHorizontalAlternateDemo
 }
 
 const defaultMdxComponents = {

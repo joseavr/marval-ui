@@ -408,13 +408,13 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 			orientation: "horizontal",
 			variant: "default",
 			class:
-				"start-3 top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] w-full"
+				"start-3 top-[calc(var(--timeline-bullet-size)/2-(var(--timeline-connector-width)/2))] w-full"
 		},
 		{
 			orientation: "horizontal",
 			variant: "alternate",
 			class:
-				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-thickness)/2)] left-3 row-start-2 w-full"
+				"top-[calc(var(--timeline-bullet-size)/2-var(--timeline-connector-width)/2)] left-(--timeline-bullet-size) row-start-2 w-[calc(100%-var(--timeline-bullet-size))]"
 		}
 	],
 	defaultVariants: {
@@ -514,16 +514,6 @@ const timelineContentVariants = cva("flex-1", {
 		},
 		{
 			orientation: "horizontal",
-			isReverse: true,
-			class: "group-first/item:pr-0"
-		},
-		{
-			orientation: "horizontal",
-			isReverse: false,
-			class: "group-last/item:pr-0"
-		},
-		{
-			orientation: "horizontal",
 			variant: "alternate",
 			isAlternateRight: false,
 			class: "row-start-3 pt-2"
@@ -533,6 +523,16 @@ const timelineContentVariants = cva("flex-1", {
 			variant: "alternate",
 			isAlternateRight: true,
 			class: "row-start-1 pb-2"
+		},
+		{
+			orientation: "horizontal",
+			isReverse: true,
+			class: "group-first/item:pr-0"
+		},
+		{
+			orientation: "horizontal",
+			isReverse: false,
+			class: "group-last/item:pr-0"
 		}
 	],
 	defaultVariants: {

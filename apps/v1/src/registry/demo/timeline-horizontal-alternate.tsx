@@ -51,20 +51,20 @@ const timelineItems = [
 	}
 ]
 
-export function TimelineVerticalAlternateDemo() {
+export function TimelineHorizontalAlternateDemo() {
 	return (
-		<div>
-			<Timeline variant="alternate" className="w-100">
+		<div className="ml-55 flex">
+			<Timeline variant="alternate" orientation="horizontal">
 				{timelineItems.map((item) => (
 					<TimelineItem key={item.id}>
 						<TimelineBullet />
 						<TimelineConnector />
-						<TimelineContent>
+						<TimelineContent className="w-50">
 							<div className="text-muted-foreground text-xs">
 								{formatDate(new Date(item.date).getTime())}
 							</div>
-							<div className="font-medium">{item.title}</div>
-							<div className="text-md text-muted-foreground">{item.description}</div>
+							<div className="font-medium text-base">{item.title}</div>
+							<div className="text-muted-foreground text-sm">{item.description}</div>
 						</TimelineContent>
 					</TimelineItem>
 				))}
