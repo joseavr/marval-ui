@@ -119,10 +119,8 @@ function Timeline({
 				isLastItem: boolean
 				isFirstItem: boolean
 			}>(item)
-		)
-			throw new Error("Children must be an Component or React Element")
-		if (item.type !== TimelineItem) {
-			throw new Error("The direct children must be an Array of TimelineItem")
+		) {
+			return item
 		}
 		return React.cloneElement(item, {
 			itemIndex: index,
@@ -144,7 +142,6 @@ function Timeline({
 					} as React.CSSProperties
 				}
 				className={cn(
-					"*:not-last:pr-8",
 					timelineVariants({
 						orientation,
 						variant,
@@ -195,7 +192,7 @@ const timelineItemVariants = cva("group/item relative flex", {
 		{
 			orientation: "horizontal",
 			variant: "default",
-			class: "flex-col gap-3 pr-8"
+			class: "flex-col gap-3"
 		},
 		{
 			orientation: "horizontal",
