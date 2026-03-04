@@ -27,23 +27,17 @@ const timelineItems = [
 		description: "Complete profile",
 		status: "upcoming"
 	},
-	{
-		id: "step-4",
-		title: "Step 4",
-		description: "Get started",
-		status: "upcoming"
-	}
 ]
 
 export function TimelineHorizontalDemo() {
 	return (
-		<div>
+		<div className="m-auto">
 			<Timeline orientation="horizontal">
 				{timelineItems.map((item) => (
 					<TimelineItem key={item.id}>
 						<TimelineBullet />
 						<TimelineConnector />
-						<TimelineContent>
+						<TimelineContent className="w-35">
 							<div className="font-medium text-lg">{item.title}</div>
 							<div className="text-muted-foreground">{item.description}</div>
 						</TimelineContent>
