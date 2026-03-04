@@ -427,9 +427,9 @@ const timelineConnectorVariants = cva("absolute z-0 w-0", {
 })
 
 interface TimelineConnectorProps extends React.PropsWithChildren {
-	className?: string
-	forceMount?: boolean
 	variant?: "solid" | "dashed"
+	forceMount?: boolean
+	className?: string
 }
 
 function TimelineConnector({
