@@ -10,7 +10,6 @@ import {
 
 const formatDate = (timestamp: number) => {
 	const date = new Date(timestamp)
-	console.log(date)
 
 	const formatter = new Intl.DateTimeFormat("en-US", {
 		month: "short",
