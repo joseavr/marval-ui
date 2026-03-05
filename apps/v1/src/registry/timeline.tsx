@@ -91,6 +91,7 @@ interface TimelineProps extends React.PropsWithChildren {
 	bulletSize?: number
 	lineWidth?: number
 	reverse?: boolean
+	ariaLabel?: string
 }
 
 function Timeline({
@@ -101,7 +102,8 @@ function Timeline({
 	bulletSize,
 	lineWidth,
 	reverse,
-	className
+	className,
+	ariaLabel = "Timeline"
 }: TimelineProps) {
 	const contextValue: TimelineContextValue = {
 		activeIndex,
@@ -111,6 +113,7 @@ function Timeline({
 	}
 
 	const _children = React.Children.toArray(children)
+	const totalItems = React.Children.count(_children)
 
 	const items = React.Children.map(_children, (item, index) => {
 		if (
@@ -124,14 +127,28 @@ function Timeline({
 		}
 		return React.cloneElement(item, {
 			itemIndex: index,
-			isLastItem: index === _children.length - 1,
+			isLastItem: index === totalItems - 1,
 			isFirstItem: index === 0
 		})
 	})
 
+	React.useEffect(() => {
+		if (activeIndex !== undefined) {
+			const statusMessage =
+				activeIndex === 0
+					? `Timeline: Started at step ${activeIndex + 1} of ${totalItems}`
+					: `Timeline: Now at step ${activeIndex + 1} of ${totalItems}`
+			const announcement = document.getElementById("timeline-announcer")
+			if (announcement) {
+				announcement.textContent = statusMessage
+			}
+		}
+	}, [activeIndex, totalItems])
+
 	return (
 		<TimelineContext value={contextValue}>
 			<ul
+				aria-label={ariaLabel}
 				data-slot="timeline"
 				data-orientation={orientation}
 				data-variant={variant}
@@ -152,6 +169,12 @@ function Timeline({
 			>
 				{items}
 			</ul>
+			<output
+				id="timeline-announcer"
+				aria-live="polite"
+				aria-atomic="true"
+				className="sr-only"
+			/>
 		</TimelineContext>
 	)
 }
@@ -251,6 +274,12 @@ function TimelineItemInternal({
 	const isAlternateRight = variant === "alternate" && itemIndex % 2 === 1
 	const status = getItemStatus(itemIndex, activeIndex)
 
+	const statusLabels: Record<ItemStatus, string> = {
+		completed: "Completed",
+		current: "Current step",
+		upcoming: "Upcoming"
+	}
+
 	const contextValue: TimelineItemContextValue = {
 		isAlternateRight,
 		status,
@@ -263,6 +292,7 @@ function TimelineItemInternal({
 		<TimelineItemContext value={contextValue}>
 			<li
 				aria-current={status === "current" ? "step" : undefined}
+				aria-label={`Step ${itemIndex + 1}: ${statusLabels[status]}`}
 				data-slot="timeline-item"
 				data-status={status}
 				data-orientation={orientation}
@@ -283,7 +313,7 @@ function TimelineItemInternal({
 }
 
 const timelineBulletVariants = cva(
-	"relative z-10 flex size-(--timeline-bullet-size) shrink-0 items-center justify-center rounded-full bg-background [border-width:var(--timeline-connector-width)]",
+	"relative z-10 flex size-(--timeline-bullet-size) shrink-0 items-center justify-center rounded-full bg-background text-background [border-width:var(--timeline-connector-width)] dark:text-foreground",
 	{
 		variants: {
 			status: {
@@ -341,6 +371,7 @@ function TimelineBullet({ children, className }: TimelineBulletProps) {
 
 	return (
 		<div
+			aria-hidden="true"
 			data-slot="timeline-bullet"
 			data-status={status}
 			data-orientation={orientation}

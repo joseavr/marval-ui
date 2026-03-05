@@ -734,3 +734,36 @@ The visual line that connects between timeline items.
 	{ title: "[data-status]", value: `"completed" | "current" | "upcoming"`},
 	{ title: "[data-orientation]", value: `"vertical" | "horizontal"`}
 ]} />
+
+## Accessibility
+
+The Timeline component follows WCAG 2.2 guidelines and includes comprehensive accessibility support:
+
+### Screen Reader Support
+
+- **Timeline**: Uses `role="list"` with an accessible `aria-label` (defaults to "Timeline")
+- **Timeline items**: Each item announces its position and status via `aria-label="Step X: [status]"`, where status is "Completed", "Current step", or "Upcoming"
+- **Current item**: Uses `aria-current="step"` to indicate the active step
+- **TimelineBullet**: Marked with `aria-hidden="true"` as it's decorative
+- **TimelineConnector**: Marked with `aria-hidden="true"` as it's decorative
+
+### Live Region
+
+The component includes an invisible live region that announces step changes:
+
+```tsx
+<div
+  id="timeline-announcer"
+  role="status"
+  aria-live="polite"
+  aria-atomic="true"
+  className="sr-only"
+/>
+```
+
+When `activeIndex` changes, a screen reader announces the current step position.
+
+This announces messages like:
+- "Timeline: Started at step 1 of 5" (when activeIndex is 0)
+- "Timeline: Now at step 3 of 5" (when activeIndex changes)
+
