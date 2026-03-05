@@ -23,7 +23,7 @@ const formatDate = (timestamp: number) => {
 	const parts = formatter.formatToParts(date)
 
 	const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ""
-	return `${get("month")} ${get("day")}, ${get("year")} at ${get("hour")}:${get("minute")} ${get("dayPeriod")}`
+	return `${get("month")} ${get("day")}, ${get("year")}`
 }
 
 const timelineItems = [
@@ -53,7 +53,7 @@ const timelineItems = [
 export function TimelineVerticalAlternateDemo() {
 	return (
 		<div>
-			<Timeline variant="alternate" className="w-100">
+			<Timeline variant="alternate" className="w-110">
 				{timelineItems.map((item) => (
 					<TimelineItem key={item.id}>
 						<TimelineBullet />
@@ -63,7 +63,9 @@ export function TimelineVerticalAlternateDemo() {
 								{formatDate(new Date(item.date).getTime())}
 							</div>
 							<div className="font-medium">{item.title}</div>
-							<div className="text-md text-muted-foreground">{item.description}</div>
+							<div className="text-md text-muted-foreground">
+								{item.description}
+							</div>
 						</TimelineContent>
 					</TimelineItem>
 				))}
