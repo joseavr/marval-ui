@@ -18,8 +18,8 @@ interface DataAttributesTableProps {
 
 export function DataAttributesTable({ data, slot }: DataAttributesTableProps) {
 	const allAttributes = [
+		...(slot ? [{ title: "[data-slot]", value: `"${slot}"` }] : []),
 		...(data ?? []),
-		...(slot ? [{ title: "[data-slot]", value: `"${slot}"` }] : [])
 	]
 
 	return (
