@@ -15,7 +15,78 @@ metadata:
 
 <ComponentPreview demoComponent={<TimelineDemo />} demoName="timeline-demo">
 ```tsx
-WIP
+"use client"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const timelineItems = [
+	{
+		id: "new-branch",
+		dateTime: "2 hours ago",
+		title: "New Branch",
+		description: "You've created new branch fix-notifications from master"
+	},
+	{
+		id: "commits",
+		dateTime: "52 minutes ago",
+		title: "Commits",
+		description: "You've pushed 23 commits to fix-notifications branch"
+	},
+	{
+		id: "pull-request",
+		dateTime: "34 minutes ago",
+		title: "Pull Request",
+		description:
+			"You've submitted a pull request Fix incorrect notification message (#187)"
+	},
+	{
+		id: "code-review",
+		dateTime: "12 minutes ago",
+		title: "Code Review",
+		description: "John Wick left a code review on your pull request"
+	}
+]
+
+export function TimelineDemo() {
+
+	return (
+		<div className="mt-20 max-w-sm">
+			<Timeline
+				activeIndex={activeIndex}
+				lineWidth={lineWidth}
+				bulletSize={bulletSize}
+				reverse={reverse}
+				orientation={orientation}
+				variant={variant}
+			>
+				{timelineItems.map((item, index) => (
+					<TimelineItem key={item.id}>
+						<TimelineBullet />
+						<TimelineConnector
+							variant={
+								(!reverse && index === timelineItems.length - 2 && "dashed") ||
+								(reverse && index === timelineItems.length - 1 && "dashed") ||
+								"solid"
+							}
+						/>
+						<TimelineContent className="flex w-50 flex-col gap-1">
+							<div className="-mt-1 font-medium text-lg">{item.title}</div>
+							<div className="text-muted-foreground text-sm">{item.description}</div>
+							<div className="text-xs">{item.dateTime}</div>
+						</TimelineContent>
+					</TimelineItem>
+				))}
+			</Timeline>
+		</div>
+	)
+}
+
 ```
 </ComponentPreview>
 
@@ -628,7 +699,60 @@ import {
 
 Use `horizontal` prop to display the timeline in a row.
 
-<ComponentPreview demoComponent={<TimelineHorizontalDemo/>} />
+<ComponentPreview demoComponent={<TimelineHorizontalDemo/>}>
+```tsx
+"use client"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const timelineItems = [
+	{
+		id: "step-1",
+		title: "Step 1",
+		description: "Create account",
+		status: "completed"
+	},
+	{
+		id: "step-2",
+		title: "Step 2",
+		description: "Verify email",
+		status: "current"
+	},
+	{
+		id: "step-3",
+		title: "Step 3",
+		description: "Complete profile",
+		status: "upcoming"
+	},
+]
+
+export function TimelineHorizontalDemo() {
+	return (
+		<div className="m-auto">
+			<Timeline orientation="horizontal">
+				{timelineItems.map((item) => (
+					<TimelineItem key={item.id}>
+						<TimelineBullet />
+						<TimelineConnector />
+						<TimelineContent className="w-35">
+							<div className="font-medium text-lg">{item.title}</div>
+							<div className="text-muted-foreground">{item.description}</div>
+						</TimelineContent>
+					</TimelineItem>
+				))}
+			</Timeline>
+		</div>
+	)
+}
+
+```
+</ComponentPreview>
 
 ### Reverse
 
@@ -638,7 +762,87 @@ Manage timeline item states with the root component's `activeIndex` prop. Items 
 
 <ComponentPreview demoComponent={<TimelineReverseDemo />} align="center">
 ```tsx
-WIP
+"use client"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const timelineItems = [
+	{
+		id: "1.0.0",
+		dateTime: "2025-12-14",
+		date: "Dec 14, 2025",
+		version: "1.0.0",
+		title: "Components",
+		description: `
+    <ul>
+      <li> New Radix UI \`CopyButton\` component.</li>
+      <li> New Radix UI \`Button\` component.</li>
+      <li> New Radix UI \`FileUpload\` components to add the \`followCursor\` and \`followCursorSpringOptions\` props.</li>
+      <li> New Radix UI \`SortableList\` components to add the \`followCursor\` and \`followCursorSpringOptions\` props.</li>
+    </ul>
+    `
+	},
+	{
+		id: "1.5.0",
+		dateTime: "2026-01-01",
+		date: "Jan 1, 2025",
+		version: "1.5.0",
+		title: "Hooks",
+		description: `
+    <ul>
+      <li> Added new hook \`useNetworkStatus\`. </li>
+      <li> Added new snippet \`Typescript Cheatsheet\`. </li>
+    </ul>
+    `
+	},
+	{
+		id: "2.0.0",
+		dateTime: "2026-02-15",
+		date: "Feb 15, 2025",
+		version: "2.0.0",
+		title: "Components",
+		description: `
+    <ul>
+      <li> New Radix UI \`Timeline\` component. </li>
+      <li> Update of the Radix UI \`FileUpload\` component to add new styles </li>
+    </ul>
+    `
+	}
+]
+
+export function TimelineReverseDemo() {
+	return (
+		<Timeline reverse activeIndex={2}>
+			{timelineItems.map((item) => (
+				<TimelineItem key={item.id}>
+					<div className="relative h-auto w-28 shrink-0 max-sm:mb-2">{item.date}</div>
+					<div className="relative h-auto w-auto">
+						<TimelineBullet className="mt-1" />
+						<TimelineConnector className="mt-1" />
+					</div>
+					<TimelineContent className="flex flex-col gap-2">
+						<div className="w-fit rounded-lg border border-border bg-accent px-1.5 py-0.5 text-sm">
+							{item.version}
+						</div>
+						<div className="font-semibold text-lg">{item.title}</div>
+						<div
+							className="prose"
+							// biome-ignore lint/security/noDangerouslySetInnerHtml: Demo purposes
+							dangerouslySetInnerHTML={{ __html: item.description }}
+						/>
+					</TimelineContent>
+				</TimelineItem>
+			))}
+		</Timeline>
+	)
+}
+
 ```
 </ComponentPreview>
 
@@ -649,7 +853,82 @@ Display timeline events in a vertical layout, with an alternating pattern with c
 
 <ComponentPreview demoComponent={<TimelineVerticalAlternateDemo />}>
 ```tsx
-WIP
+"use client"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const formatDate = (timestamp: number) => {
+	const date = new Date(timestamp)
+
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+		hour: "numeric",
+		minute: "2-digit",
+		hour12: true
+	})
+
+	const parts = formatter.formatToParts(date)
+
+	const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ""
+	return `${get("month")} ${get("day")}, ${get("year")}`
+}
+
+const timelineItems = [
+	{
+		id: "1",
+		title: "Project Kickoff",
+		description: "Initial planning session and requirement alignment.",
+		date: "2025-12-15T13:00:00.000Z",
+		status: "completed"
+	},
+	{
+		id: "2",
+		title: "Design Phase",
+		description: "Wireframes and design system setup.",
+		date: "2026-01-01T15:00:00.000Z",
+		status: "completed"
+	},
+	{
+		id: "3",
+		title: "Public Launch",
+		description: "Release timeline component to production.",
+		date: "2024-03-01T20:00:00.000Z",
+		status: "upcoming"
+	}
+]
+
+export function TimelineVerticalAlternateDemo() {
+	return (
+		<div>
+			<Timeline variant="alternate" className="w-110">
+				{timelineItems.map((item) => (
+					<TimelineItem key={item.id}>
+						<TimelineBullet />
+						<TimelineConnector />
+						<TimelineContent>
+							<div className="text-muted-foreground text-xs">
+								{formatDate(new Date(item.date).getTime())}
+							</div>
+							<div className="font-medium">{item.title}</div>
+							<div className="text-md text-muted-foreground">
+								{item.description}
+							</div>
+						</TimelineContent>
+					</TimelineItem>
+				))}
+			</Timeline>
+		</div>
+	)
+}
+
 ```
 </ComponentPreview>
 
@@ -659,7 +938,80 @@ Display timeline events in a horizontal layout, with items alternating between t
 
 <ComponentPreview demoComponent={<TimelineHorizontalAlternateDemo />} align="left">
 ```tsx
-WIP
+"use client"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const formatDate = (timestamp: number) => {
+	const date = new Date(timestamp)
+
+	const formatter = new Intl.DateTimeFormat("en-US", {
+		month: "short",
+		day: "2-digit",
+		year: "numeric",
+		hour: "numeric",
+		minute: "2-digit",
+		hour12: true
+	})
+
+	const parts = formatter.formatToParts(date)
+
+	const get = (type: string) => parts.find((p) => p.type === type)?.value ?? ""
+	return `${get("month")} ${get("day")}, ${get("year")} at ${get("hour")}:${get("minute")} ${get("dayPeriod")}`
+}
+
+const timelineItems = [
+	{
+		id: "1",
+		title: "Project Kickoff",
+		description: "Initial planning session and requirement alignment.",
+		date: "2025-12-15T13:00:00.000Z",
+		status: "completed"
+	},
+	{
+		id: "2",
+		title: "Design Phase",
+		description: "Wireframes and design system setup.",
+		date: "2026-01-01T15:00:00.000Z",
+		status: "completed"
+	},
+	{
+		id: "3",
+		title: "Public Launch",
+		description: "Release timeline component to production.",
+		date: "2024-03-01T20:00:00.000Z",
+		status: "upcoming"
+	}
+]
+
+export function TimelineHorizontalAlternateDemo() {
+	return (
+		<div className="ml-55 flex">
+			<Timeline variant="alternate" orientation="horizontal">
+				{timelineItems.map((item) => (
+					<TimelineItem key={item.id}>
+						<TimelineBullet />
+						<TimelineConnector />
+						<TimelineContent className="w-50">
+							<div className="text-muted-foreground text-xs">
+								{formatDate(new Date(item.date).getTime())}
+							</div>
+							<div className="font-medium text-base">{item.title}</div>
+							<div className="text-muted-foreground text-sm">{item.description}</div>
+						</TimelineContent>
+					</TimelineItem>
+				))}
+			</Timeline>
+		</div>
+	)
+}
+
 ```
 </ComponentPreview>
 
@@ -670,7 +1022,86 @@ Add custom icons or content to the timeline bullets and control its size with `b
 
 <ComponentPreview demoComponent={<TimelineBulletDemo />} align="center">
 ```tsx
-WIP
+"use client"
+
+import { Check, Circle, Package, Truck } from "lucide-react"
+
+import {
+	Timeline,
+	TimelineBullet,
+	TimelineConnector,
+	TimelineContent,
+	TimelineItem
+} from "@/components/marval-ui/timeline"
+
+const timelineItems = [
+	{
+		id: "order-confirmed",
+		title: "Order confirmed",
+		description: "Your order and payment have been received.",
+		time: "2 days ago",
+		status: "completed",
+		Icon: <Check className="size-4" />
+	},
+	{
+		id: "packed",
+		title: "Packed",
+		description: "Your items have been packed and labeled.",
+		time: "1 day ago",
+		status: "completed",
+		Icon: <Package className="size-4" />
+	},
+	{
+		id: "in-transit",
+		title: "In transit",
+		description: "Your package is on its way to you.",
+		time: "Now",
+		status: "current",
+		Icon: <Truck className="size-4" />
+	},
+	{
+		id: "delivered",
+		title: "Delivered",
+		description: "Estimated delivery tomorrow.",
+		time: undefined,
+		status: "upcoming",
+		Icon: <Circle className="size-4" />
+	}
+]
+
+export function TimelineBulletDemo() {
+	// If the API sends out the status field,
+	// just find the index of the active item.
+	// The Root component will handle the styles.
+	const activeIndex = timelineItems.findIndex((item) => item.status === "current")
+
+	return (
+		<div>
+			<Timeline activeIndex={activeIndex} bulletSize={34} lineWidth={3}>
+				{timelineItems.map((item) => (
+					<TimelineItem key={item.id}>
+						<TimelineBullet
+							className={
+								item.status === "current" || item.status === "completed"
+									? "bg-primary"
+									: ""
+							}
+						>
+							{item.Icon}
+						</TimelineBullet>
+						<TimelineConnector variant={item.status === "current" ? "dashed" : "solid"} />
+						<TimelineContent>
+							<div className="font-medium text-md">{item.title}</div>
+							<div className="text-muted-foreground text-sm">{item.description}</div>
+							<div className="text-muted-foreground text-xs">{item.time}</div>
+						</TimelineContent>
+					</TimelineItem>
+				))}
+			</Timeline>
+		</div>
+	)
+}
+
 ```
 </ComponentPreview>
 
