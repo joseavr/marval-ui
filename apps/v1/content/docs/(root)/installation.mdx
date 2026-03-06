@@ -17,7 +17,7 @@ Our components are built with Tailwindcss, Motion, Radix UI.
 
 This project and the components are written in TypeScript. We recommend using TypeScript for your project.
 
-<Step>Motion</Step>
+<Step>Install [Motion](https://motion.dev/docs/react)</Step>
 
 Marval UI ships smooth, production-grade animated UI components with Motion library.
 
@@ -64,7 +64,7 @@ Finally, add Tailwind CSS import
 @import "tailwindcss"
 ```
 
-<Step>Install Radix UI</Step>
+<Step>Install [Radix UI](https://www.radix-ui.com/primitives/docs/overview/getting-started)</Step>
 
 Our base components rely on Radix UI.
 
@@ -73,6 +73,14 @@ npm install radix-ui
 ```
 
 The `radix-ui` is tree-shakable, that is, the final bundle will include only the components you import.
+
+<Step>Install Lucide icon library</Step>
+
+We use Lucide React as our default icon library for our components.
+
+```bash showHeader
+npm install lucide-react
+```
 
 <Step>Install `cn()` utility</Step>
 
@@ -175,9 +183,10 @@ Add the following CSS variables.
 	--sidebar-border: oklch(1 0 0 / 10%);
 	--sidebar-ring: oklch(0.556 0 0);
 }
+
 ```
 
-Configure Tailwind CSS utility classes to use predefined CSS variables.
+Configure Tailwind CSS utility classes to use the predefined CSS variables.
 
 ```css showHeader filepath="src/styles/globals.css" showExpand
 ...
@@ -246,6 +255,7 @@ Configure Tailwind CSS utility classes to use predefined CSS variables.
 	}
 }
 ```
+
 
 ## Working with LLMs
 

@@ -1,6 +1,5 @@
 "use client"
 
-import { Slot } from "@radix-ui/react-slot"
 import {
 	FileArchiveIcon,
 	FileCogIcon,
@@ -10,6 +9,7 @@ import {
 	XIcon
 } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
+import { Slot } from "radix-ui"
 import React, {
 	createContext,
 	type Dispatch,
@@ -819,7 +819,7 @@ function FileUploadRoot(props: FileUploadProps) {
 		}
 	}
 
-	const RootPrimitive = asChild ? Slot : "div"
+	const RootPrimitive = asChild ? Slot.Root : "div"
 
 	return (
 		<FileUploadContext value={contextValue}>
@@ -974,7 +974,7 @@ function FileUploadDropzone({
 		wrapper: cn("w-fit border-0 bg-transparent p-0 hover:bg-transparent")
 	}
 
-	const DropzonePrimitive = asChild ? Slot : "div"
+	const DropzonePrimitive = asChild ? Slot.Root : "div"
 
 	return (
 		<DropzonePrimitive
@@ -1077,7 +1077,7 @@ function FileUploadTrigger({
 		context.meta.rootInputRef.current?.click()
 	}
 
-	const TriggerPrimitive = asChild ? Slot : "button"
+	const TriggerPrimitive = asChild ? Slot.Root : "button"
 
 	return (
 		<TriggerPrimitive
@@ -1162,7 +1162,7 @@ function FileUploadList({
 		})
 	})
 
-	const ListPrimitive = asChild ? Slot : "div"
+	const ListPrimitive = asChild ? Slot.Root : "div"
 
 	return (
 		<ListPrimitive
@@ -1523,7 +1523,7 @@ function FileUploadItemProgress({
 
 	if (!shouldRender) return null
 
-	const ItemProgressPrimitive = asChild ? Slot : "div"
+	const ItemProgressPrimitive = asChild ? Slot.Root : "div"
 
 	switch (variant) {
 		case "linear":
@@ -1765,7 +1765,7 @@ function FileUploadItemDelete({
 		rootContext.onValueChange(rootContext.value.filter((f) => f !== fileToRemove))
 	}
 
-	const ItemDeletePrimitive = asChild ? Slot : "button"
+	const ItemDeletePrimitive = asChild ? Slot.Root : "button"
 
 	return (
 		<ItemDeletePrimitive
@@ -1807,7 +1807,7 @@ function FileUploadItemRetry({
 		await rootContext.onUploadFiles([file])
 	}
 
-	const RetryPrimitive = asChild ? Slot : "button"
+	const RetryPrimitive = asChild ? Slot.Root : "button"
 
 	return (
 		<RetryPrimitive
@@ -1855,7 +1855,7 @@ function FileUploadItemCancel({
 	// Only show cancel button when file is uploading
 	if (itemContext.fileState.status !== "uploading") return null
 
-	const CancelPrimitive = asChild ? Slot : "button"
+	const CancelPrimitive = asChild ? Slot.Root : "button"
 
 	return (
 		<CancelPrimitive
@@ -1897,7 +1897,7 @@ function FileUploadSubmit({
 
 	if (fileCount === 0) return null
 
-	const SubmitPrimitive = asChild ? Slot : "button"
+	const SubmitPrimitive = asChild ? Slot.Root : "button"
 
 	return (
 		<SubmitPrimitive

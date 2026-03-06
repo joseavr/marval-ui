@@ -23,8 +23,8 @@ import {
 	useSortable
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { Slot } from "@radix-ui/react-slot"
 import { GripVertical } from "lucide-react"
+import { Slot } from "radix-ui"
 import React from "react"
 import { createPortal } from "react-dom"
 
@@ -208,7 +208,7 @@ function SortableDragHandle({
 
 	if (asChild) {
 		return (
-			<Slot
+			<Slot.Root
 				data-slot="sortable-drag-handle"
 				{...attributes}
 				{...listeners}
@@ -217,7 +217,7 @@ function SortableDragHandle({
 				aria-disabled={isDragging}
 			>
 				{children}
-			</Slot>
+			</Slot.Root>
 		)
 	}
 

@@ -1,8 +1,8 @@
 "use client"
 
-import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { LoaderIcon } from "lucide-react"
+import { Slot } from "radix-ui"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -97,13 +97,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			)
 		}
 		return (
-			<Slot
+			<Slot.Root
 				className={cn(buttonVariants({ variant, size, className }))}
 				ref={ref}
 				{...props}
 			>
 				{children}
-			</Slot>
+			</Slot.Root>
 		)
 	}
 )

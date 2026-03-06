@@ -21,7 +21,7 @@ metadata:
 import { ArrowUpIcon } from "lucide-react"
 import { useState } from "react"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/marval-ui/button"
 
 export function ButtonDemo() {
 	return (
@@ -64,9 +64,9 @@ export function cn(...inputs: ClassValue[]) {
 ```ts showLineNumbers filepath="src/components/marval-ui/button.tsx" showHeader showExpand
 "use client"
 
-import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { LoaderIcon } from "lucide-react"
+import { Slot } from "radix-ui"
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -90,7 +90,7 @@ const buttonVariants = cva(
 				"brand-secondary":
 					"bg-primary-foreground text-primary hover:bg-[color-mix(in_oklab,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 active:bg-primary-foreground dark:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20 dark:hover:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/30",
 				"brand-tertiary":
-					"bg-transparent text-primary hover:bg-primary-foreground active:bg-[color-mix(in_srgb,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20",
+					"bg-transparent text-primary hover:bg-primary-foreground active:bg-[color-mix(in_oklab,var(--color-primary)_50%,var(--color-primary-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-primary)_80%,var(--color-primary-foreground)_20%)]/20",
 
 				"brand-neutral-primary":
 					"bg-secondary text-secondary-foreground hover:bg-secondary-foreground/10 active:bg-secondary",
@@ -104,15 +104,16 @@ const buttonVariants = cva(
 				"brand-destructive-secondary":
 					"bg-destructive-foreground text-destructive hover:bg-[color-mix(in_oklab,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 active:bg-destructive-foreground dark:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30",
 				"brand-destructive-tertiary":
-					"bg-transparent text-destructive hover:bg-destructive-foreground active:bg-[color-mix(in_srgb,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20"
+					"bg-transparent text-destructive hover:bg-destructive-foreground active:bg-[color-mix(in_oklab,var(--color-destructive)_50%,var(--color-destructive-foreground)_50%)]/20 dark:active:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/30 dark:hover:bg-[color-mix(in_oklab,var(--color-destructive)_20%,var(--color-destructive-foreground)_80%)]/20"
 			},
 			size: {
-				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg]:size-3.5!",
+				sm: "h-7 gap-1.5 px-3 text-xs has-[>svg]:px-2.5 [&_svg:not([class*='size-'])]:size-3.5!",
 				default: "h-8 px-4 py-2 has-[>svg]:px-3",
 				lg: "h-9 px-6 has-[>svg]:px-4",
-				"icon-sm": "size-7 [&_svg]:size-3.5!",
-				icon: "size-8 [&_svg]:size-4!",
-				"icon-lg": "size-9 [&_svg]:size-4!"
+				icon: "size-8 [&_svg:not([class*='size-'])]:size-4",
+				"icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
+				"icon-sm": "size-7 [&_svg:not([class*='size-'])]:size-3.5",
+				"icon-lg": "size-9 [&_svg:not([class*='size-'])]:size-4"
 			}
 		},
 		defaultVariants: {
@@ -160,13 +161,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 			)
 		}
 		return (
-			<Slot
+			<Slot.Root
 				className={cn(buttonVariants({ variant, size, className }))}
 				ref={ref}
 				{...props}
 			>
 				{children}
-			</Slot>
+			</Slot.Root>
 		)
 	}
 )
