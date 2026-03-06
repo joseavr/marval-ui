@@ -1,6 +1,7 @@
 import { DocsSideBar } from "@/components/pages/docs/sidebar"
 import { AppFooter } from "@/components/shared/app-footer"
 import { AppHeader } from "@/components/shared/app-header"
+import { GlassBlur } from "@/components/shared/glass-blur"
 import { Container } from "@/components/shared/page-container"
 import { RootLayout } from "@/components/shared/root-layout"
 
@@ -18,6 +19,7 @@ export default function DocsLayout({ children }: { children: React.ReactNode }) 
 				</Container>
 			</div>
 			<AppFooter />
+			<GlassBlur />
 		</RootLayout>
 	)
 }
